@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
+//Criar tipos com struct serve para ajudar na hora de usar funções com struct
+
+//Criando os tipos de struct
 typedef struct{
     		
-   	int casasAndadas;
-   	char time;
+   	int casasAndadas; //Quando chegar em 56 (algo assim) o jogador vence
+   	char time; //Para representar as peças no tabuleiro
 } peca;
 		
 typedef struct{
@@ -17,7 +21,7 @@ typedef struct{
 	
 	jogador jogadorA;
 	jogador jogadorB;
-	int array[68];
+	int matriz[21][5]; //Tabuleiro 21x5 com espaços em branco (21 + 21 + 5 + 5 dá 52 que é o num de casas que existem no ludo)
 } tabuleiro;
 
 
@@ -27,126 +31,36 @@ void printaTabuleiro(tabuleiro *t){
 	
 	//print jogador A
 	
-	for(i = 0; i < 2; i++){
-		printf("|");
-		for(j = 0; j < 21; j++){
-			
-			if(i%2 == 1){
-				printf("  |");
-			}
-			else{
-				printf("%c%c|", 238, 238);
-			}
-		}
-		printf("\n");
-	}
-	
-	for(i = 0; i < 2; i++){
-		printf("|");
-		for(j = 0; j < 21; j++){
-			
-			if(i%2 == 1 && j < 6){
-				printf("->|");
-			}
-			else if(i%2 == 1 && j >= 19){
-				printf("  |");
-			}
-			else if(i%2 == 0 && (j < 6 || j >= 19)){
-				printf("%c%c|", 238, 238);
-			}
-			else if(i%2 == 0 && !(j < 6 || j >= 19)){
-				printf("%c%c ", 238, 238);
-			}
-			else{
-				printf("   ");
-			}
-		}
-		printf("\n");
-	}
-	
-	for(i = 0; i < 2; i++){
-		
-		printf("|");
-		for(j = 0; j < 21; j++){
-			if((i%2 == 1 && (j < 1||j >=19)) || j == 19){
-				printf("  |");
-			}
-			else if(i%2 == 0 && (j < 1 || j > 19)){
-				printf("%c%c|", 238, 238);
-			}
-			else if(i%2 == 0 && j < 6){
-				printf("%c%c ", 238, 238);
-			}
-			else{
-				printf("   ");
-			}
-		}
-		printf("\n");
-	}
-	
-	for(i = 0; i < 2; i++){
-		printf("|");
-		for(j = 0; j < 21; j++){
-			
-			if(i%2 == 1 && j > 14){
-				printf("<-|");
-			}
-			else if((i%2 == 1 && j == 0) || j == 14){
-				printf("  |");
-			}
-			else if(i%2 == 0 && (j > 14 || j == 0) ){
-				printf("%c%c|", 238, 238);
-			}
-			else{
-				printf("   ");
-			}
-		}
-		printf("\n");
-	}
-	
-	for(i = 0; i < 2; i++){
-		printf("|");
-		for(j = 0; j < 21; j++){
-			
-			if(i%2 == 1){
-				printf("  |");
-			}
-			else{
-				printf("%c%c|", 238, 238);
-			}
-		}
-		printf("\n");
-	}
-	
-	for(i = 0; i < 21; i++){
-		
-		printf(" %c%c", 238, 238);
-	}
-	
-	printf("\n");
 	//print jogador B
 }
 
 void geraTabuleiro(tabuleiro *t){
 	
-	int i;
-	for(i = 0; i < 68; i++){
-		t->array[i] = 0;
-	}
+	int i, j;
+	for(i = 0; i < 5; i++){
+		for(j = 0; j < 21; j++){
+			t->matriz[i][j] = 0; //Sim, realmente é [i][j], bizarro
+		}
+	} //Define tudo como 0, quando tiver alguem será 1
+	//Se quiser pode gerar as armadilhas ja aqui
 }
 
 void singlePlayer(){
 					
+	//Cria as peças
 	peca peca1A;
 	peca peca2A;
 	peca peca1B;
 	peca peca2B;
 	
+	//Cria os jogadores
 	jogador jogadorA;
 	jogador jogadorB;
 	
+	//Cria o tabuleiro
 	tabuleiro tabuleiro;
 	
+	//Atribuições
 	peca1A.casasAndadas = 0;
 	peca1A.time = 'A';
 	peca2A.casasAndadas = 0;
@@ -167,6 +81,7 @@ void singlePlayer(){
 	tabuleiro.jogadorB = jogadorB;
 	geraTabuleiro(&tabuleiro);
 	
+	//O jogo de verdade começará aqui
 	char p[1000];
 	while(1){
 		
@@ -174,24 +89,33 @@ void singlePlayer(){
 	
 
 		setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
-		scanf("%[^\n]s", &p); //digitar qualquer coisa para rodar o dado
-	
+		scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
+
+		if(strcmp(p, "desistir") == 0){ //desistir do jogo
+			break;
+		}
+		system("clear"); //limpa a tela
+
 		printf("\nTeste1\n");
 	}
 }
 
 void multiPlayer(){
 	
+	//Cria as peças
 	peca peca1A;
 	peca peca2A;
 	peca peca1B;
 	peca peca2B;
 	
+	//Cria os jogadores
 	jogador jogadorA;
 	jogador jogadorB;
 	
+	//Cria o tabuleiro
 	tabuleiro tabuleiro;
 	
+	//Atribuições
 	peca1A.casasAndadas = 0;
 	peca1A.time = 'A';
 	peca2A.casasAndadas = 0;
@@ -212,6 +136,7 @@ void multiPlayer(){
 	tabuleiro.jogadorB = jogadorB;
 	geraTabuleiro(&tabuleiro);
 	
+	//O jogo de verdade começará aqui
 	char p[1000];
 	while(1){
 		
@@ -219,14 +144,18 @@ void multiPlayer(){
 	
 
 		setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
-		scanf("%[^\n]s", &p); //digitar qualquer coisa para rodar o dado
-	
-		printf("\nTeste2\n");
+		scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
+		
+		if(strcmp(p, "desistir") == 0){ //desistir do jogo
+			break;
+		}
+		system("clear"); //limpa a tela
 	}
 }
 
 int main(){
 	
+	//Aqui cuida do menu
 	int continuar = 1;
 	int num;
 	char cont[3];
@@ -265,7 +194,7 @@ int main(){
     
     	while (1){
     		printf("Deseja continuar? sim/nao\n");
-        	scanf("%s", &cont);
+        	scanf("%s", cont);
         	if (strcmp(cont, "nao") == 0){
             	continuar = 0;
             	break;
@@ -281,7 +210,7 @@ int main(){
 }
 
 /*
-
+	Tabuleiro classico
 
 	printf(" ");
 	for(i = 0; i < 44; i++){
