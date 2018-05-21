@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -62,13 +62,13 @@ void singlePlayer(){
 	
 	//Atribuições
 	peca1A.casasAndadas = 0;
-	peca1A.time = 'A';
+	peca1A.time = 'A1';
 	peca2A.casasAndadas = 0;
-	peca2A.time = 'A';
+	peca2A.time = 'A2';
 	peca1B.casasAndadas = 0;
-	peca1B.time = 'B';
+	peca1B.time = 'B1';
 	peca2B.casasAndadas = 0;
-	peca2B.time = 'B';
+	peca2B.time = 'B2';
 	
 	jogadorA.peca1 = peca1A;
 	jogadorA.peca2 = peca2A;
@@ -117,13 +117,13 @@ void multiPlayer(){
 	
 	//Atribuições
 	peca1A.casasAndadas = 0;
-	peca1A.time = 'A';
+	peca1A.time = 'A1';
 	peca2A.casasAndadas = 0;
-	peca2A.time = 'A';
+	peca2A.time = 'A2';
 	peca1B.casasAndadas = 0;
-	peca1B.time = 'B';
+	peca1B.time = 'B1';
 	peca2B.casasAndadas = 0;
-	peca2B.time = 'B';
+	peca2B.time = 'B2';
 	
 	jogadorA.peca1 = peca1A;
 	jogadorA.peca2 = peca2A;
@@ -208,108 +208,3 @@ int main(){
         }
     }
 }
-
-/*
-	Tabuleiro classico
-
-	printf(" ");
-	for(i = 0; i < 44; i++){
-		if(i != 17 && i != 26){
-			printf("_");
-		}
-		else{
-			printf(" ");
-		}
-	}
-	printf(" \n");
-	for(i = 0; i < 12; i++){
-		printf("|");
-		for(j = 0; j < 17; j++){
-			if((i == 1 || i == 9 || i == 11)){
-				printf("_");
-			}
-			else{
-				printf(" ");
-			}
-		}
-		printf("|");
-		
-		for(j = 0; j < 3; j++){
-			if(i%2 == 1){
-				printf("__|");
-			}
-			else{
-				printf("  |");
-			}
-		}
-		for(j = 0; j < 17; j++){
-			if((i == 1 || i == 9 || i == 11)){
-				printf("_");
-			}
-			else{
-				printf(" ");
-			}
-		}
-		printf("|");
-		
-		
-		printf("\n");
-	}
-	
-	for(i = 0; i < 6; i++){
-		
-		for(j = 0; j < 6; j++){
-			if(i%2 == 1){
-				printf("|__");
-			}
-			else{
-				printf("|  ");
-			}
-		}
-		printf("|________|");
-		for(j = 0; j < 6; j++){
-			if(i%2 == 1){
-				printf("__|");
-			}
-			else{
-				printf("  |");
-			}
-		}
-		printf("\n");		
-	}
-	
-	for(i = 0; i < 12; i++){
-		printf("|");
-		for(j = 0; j < 17; j++){
-			if((i == 1 || i == 9 || i == 11)){
-				printf("_");
-			}
-			else{
-				printf(" ");
-			}
-		}
-		printf("|");
-		
-		for(j = 0; j < 3; j++){
-			if(i%2 == 1){
-				printf("__|");
-			}
-			else{
-				printf("  |");
-			}
-		}
-		for(j = 0; j < 17; j++){
-			if((i == 1 || i == 9 || i == 11)){
-				printf("_");
-			}
-			else{
-				printf(" ");
-			}
-		}
-		printf("|");
-		
-		
-		printf("\n");
-	}
-
-*/
