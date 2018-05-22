@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>// necessario p as funçoes rand() e srand()
+#include <stdlib.h> // necessario p as funçoes rand() e srand()
 #include <time.h> //necessario p funçao time()
 
 
@@ -14,17 +14,15 @@
 
 
 //IDENTIFICADORES DO JOGADOR
-const char PLAYER_A = 10;
-const char PLAYER_B = 20;
+const char PLAYER_A = 'A';
+const char PLAYER_B = 'B';
 
-// PARA ABORDAGEM UTILIZANDO ARRAY SIMPLES TEM-SE UMA DISTANCIA DE 26 CASAS DO INICIO DE UM PARA O DO OUTRO ADVERSARIO
+// DISTANCIA DE 26 CASAS DO INICIO DE UM PARA O INICIO DO OUTRO ADVERSARIO
 #define OFFSET_PLAYER_B 26
-// TAMANHO DO TABULEIRO COM 51 CELULAS SEM O "CAMINHO DOURADO"
-#define TAMANHO_TABULEIRO 51
+// TAMANHO DO TABULEIRO COM 57 CELULAS
+#define TAMANHO_TABULEIRO 57
 #define INDICE_MAXIMO_TABULEIRO (TAMANHO_TABULEIRO-1)
-//TAMANHO
-#define TAMANHO_CAMINHO_DOURADO 6
-#define INDICE_MAXIMO_CAMINHO_DOURADO (TAMANHO_CAMINHO_DOURADO-1)
+
 //MAXIMO DE PECA POR JOGADOR
 const char MAX_PECAS_JOGADOR = 2;
 
@@ -44,14 +42,10 @@ typedef struct {
 } jogador;
 
 typedef struct {
+
     jogador jogadorA;
     jogador jogadorB;
-    char matriz[TAMANHO_TABULEIRO][4]; //TABULEIRO COM 4 SLOTS EM CADA CELULA PARA REPRESENTAR OS ESPACOS PARA
-    // ... CADA PECA ORGANIZADO NO SENTIDO [ A1, A2, B1, B2 ]
-    char caminho_dourado[TAMANHO_CAMINHO_DOURADO][4]; //CAMINHO DOURADO COM 4 SLOTS EM CADA CELULA PARA REPRESENTAR OS ESPACOS PARA
-    /* ... CADA PECA ORGANIZADO NO SENTIDO [ A1, A2, B1, B2 ], assim:
-     *  o caminho_dourado[x][i] referesse a i-esima peca citada acima da x-esima celula
-    */
+    int matriz[21][5]; //Tabuleiro 21x5 com espaços em branco (21 + 21 + 5 + 5 dá 52 que é o num de casas que existem no ludo)
 } tabuleiro;
 
 /**
@@ -64,28 +58,21 @@ typedef struct {
 int ocupado(char *matrizAChecar[], int posicao, int peca) {
     return matrizAChecar[posicao][peca];
 }
+
 /**
  *  ... Move a peca a quantidade dada de casas indicadas  ...
- * @param t
- * @param posicaoInicial A sua posicao de partida para o movimento
+ * @param pecaAMover a peca a ser movimentada
  * @param qtdeCasas A quantidade de casas a ser movido
- * @param jogador O identificador (definido em macro) do jogador para poder calcular sua posicao na matriz
- * @param peca a peca a ser movida
  * @return Retorna ERRO se nao for possivel mover
  */
-int movePeca(tabuleiro *t, char posicaoInicial, char qtdeCasas, int jogador, int peca) {
-    //TODO: Desta forma a peca nao volta de um array dourado para o comum
+int movePeca(peca *pecaAMover, char qtdeCasas) {
     char status = ERRO;
-    char posicaoAbsoluta = (jogador == PLAYER_A) ? posicaoInicial : (posicaoInicial % OFFSET_PLAYER_B);
+    char posicaoInicial = pecaAMover->casasAndadas;
+    //TODO: VERIFICAR SE EH POSSIVEL VOLTAR CASAS
+    char posicaoAbsoluta = (pecaAMover->time == PLAYER_A) ? posicaoInicial : (posicaoInicial+OFFSET_PLAYER_B) % INDICE_MAXIMO_TABULEIRO;
     char novaPosicao = posicaoAbsoluta + qtdeCasas;
     if (novaPosicao <= INDICE_MAXIMO_TABULEIRO) {
-        t->matriz[posicaoInicial][peca] = FALSE;
-        t->matriz[novaPosicao][peca] = TRUE;
-        status = SEM_ERRO;
-    }else if(novaPosicao <= INDICE_MAXIMO_TABULEIRO+INDICE_MAXIMO_CAMINHO_DOURADO){
-        //Caso passe para o caminho dourado
-        t->matriz[posicaoInicial][peca] = FALSE;
-        t->caminho_dourado[novaPosicao][peca] = TRUE;
+        pecaAMover->casasAndadas = novaPosicao;
         status = SEM_ERRO;
     }
     return status;
@@ -97,20 +84,8 @@ int movePeca(tabuleiro *t, char posicaoInicial, char qtdeCasas, int jogador, int
  * @param jogador o jogador a ser verificado se ganhou (Note que utiliza as macros PLAYER_ definida no inicio do cod )
  * @return Booleano definido na macro no inicio do codigo
  */
-char ganhou(tabuleiro t, int jogador) {
-    int i, limite;
-    if (jogador == PLAYER_A) {
-        i = 0;
-        limite = 2;
-    } else {
-        i = 2;
-        limite = 4;
-    }
-    char qtdePecasNaCelula = 0;
-    for (; i < limite; ++i) {
-        if (ocupado(t.caminho_dourado, INDICE_MAXIMO_CAMINHO_DOURADO, i)) qtdePecasNaCelula++;
-    }
-    return qtdePecasNaCelula == MAX_PECAS_JOGADOR;
+char ganhou(jogador j) {
+    return (j.peca1.casasAndadas == INDICE_MAXIMO_TABULEIRO) && (j.peca2.casasAndadas == INDICE_MAXIMO_TABULEIRO);
 }
 
 /**
@@ -148,22 +123,18 @@ void printaTabuleiro(tabuleiro *t) {
 void geraTabuleiro(tabuleiro *t) {
 
     int i, j;
-    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
-        for (int j = 0; j < 2 * MAX_PECAS_JOGADOR; j++) {
-            t->matriz[i][j] = FALSE; //Sim, realmente é [i][j], bizarro
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 21; j++) {
+            t->matriz[i][j] = 0; //Sim, realmente é [i][j], bizarro
         }
     } //Define tudo como 0, quando tiver alguem será 1
     //Se quiser pode gerar as armadilhas ja aqui
-
-    // preenche o caminho dourado com False
-    for (i = 0; i < TAMANHO_CAMINHO_DOURADO; i++) {
-        for (j = 0; j < 2 * MAX_PECAS_JOGADOR; j++) {
-            t->caminho_dourado[i][j] = FALSE;
-        }
-    }
 }
 
-// Modelagem do Dado
+/**
+ * ... Funcao que modela dado simples ...
+ * @return Valor entre 1 e 6
+ */
 int rodaDado() {
     srand(time(0));
     return rand() % 6 + 1;
@@ -171,24 +142,11 @@ int rodaDado() {
 
 
 void singlePlayer() {
-
-    //Cria as peças
-    peca peca1A = {
-            .casasAndadas = 0,
-            .time = 'A'
-    };
-    peca peca2A = {
-            .casasAndadas = 0,
-            .time = 'A'
-    };
-    peca peca1B = {
-            .casasAndadas = 0,
-            .time = 'B'
-    };
-    peca peca2B = {
-            .casasAndadas = 0,
-            .time = 'B'
-    };
+//Cria as peças
+    peca peca1A;
+    peca peca2A;
+    peca peca1B;
+    peca peca2B;
 
     //Cria os jogadores
     jogador jogadorA;
@@ -198,6 +156,14 @@ void singlePlayer() {
     tabuleiro tabuleiro;
 
     //Atribuições
+    peca1A.casasAndadas = 0;
+    peca1A.time = 'A';
+    peca2A.casasAndadas = 0;
+    peca2A.time = 'A';
+    peca1B.casasAndadas = 0;
+    peca1B.time = 'B';
+    peca2B.casasAndadas = 0;
+    peca2B.time = 'B';
 
     jogadorA.peca1 = peca1A;
     jogadorA.peca2 = peca2A;
@@ -212,13 +178,14 @@ void singlePlayer() {
 
     //O jogo de verdade começará aqui
     char p[1000];
-    while (TRUE) {
+    while (1) {
+
         printaTabuleiro(&tabuleiro);
+
+
         setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
-        printf("\ndigitar qualquer coisa para rodar o dado\n");
         scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
 
-        printf("\nValor obtido: %d\n", rodaDado());
         if (strcmp(p, "desistir") == 0) { //desistir do jogo
             break;
         }
@@ -231,22 +198,10 @@ void singlePlayer() {
 void multiPlayer() {
 
     //Cria as peças
-    peca peca1A = {
-            .casasAndadas = 0,
-            .time = 'A'
-    };
-    peca peca2A = {
-            .casasAndadas = 0,
-            .time = 'A'
-    };
-    peca peca1B = {
-            .casasAndadas = 0,
-            .time = 'B'
-    };
-    peca peca2B = {
-            .casasAndadas = 0,
-            .time = 'B'
-    };
+    peca peca1A;
+    peca peca2A;
+    peca peca1B;
+    peca peca2B;
 
     //Cria os jogadores
     jogador jogadorA;
@@ -256,6 +211,14 @@ void multiPlayer() {
     tabuleiro tabuleiro;
 
     //Atribuições
+    peca1A.casasAndadas = 0;
+    peca1A.time = 'A';
+    peca2A.casasAndadas = 0;
+    peca2A.time = 'A';
+    peca1B.casasAndadas = 0;
+    peca1B.time = 'B';
+    peca2B.casasAndadas = 0;
+    peca2B.time = 'B';
 
     jogadorA.peca1 = peca1A;
     jogadorA.peca2 = peca2A;
@@ -270,11 +233,11 @@ void multiPlayer() {
 
     //O jogo de verdade começará aqui
     char p[1000];
-    while (TRUE) {
+    while (1) {
 
         printaTabuleiro(&tabuleiro);
 
-        printf("\ndigitar qualquer coisa para rodar o dado\n");
+
         setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
         scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
 
