@@ -86,6 +86,7 @@ int movePeca(tabuleiro *t, char posicaoInicial, char qtdeCasas, int jogador, int
         //Caso passe para o caminho dourado
         t->matriz[posicaoInicial][peca] = FALSE;
         t->caminho_dourado[novaPosicao][peca] = TRUE;
+        status = SEM_ERRO;
     }
     return status;
 }
