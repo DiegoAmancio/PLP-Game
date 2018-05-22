@@ -64,8 +64,17 @@ typedef struct {
 int ocupado(char *matrizAChecar[], int posicao, int peca) {
     return matrizAChecar[posicao][peca];
 }
-
+/**
+ *  ... Move a peca a quantidade dada de casas indicadas  ...
+ * @param t
+ * @param posicaoInicial A sua posicao de partida para o movimento
+ * @param qtdeCasas A quantidade de casas a ser movido
+ * @param jogador O identificador (definido em macro) do jogador para poder calcular sua posicao na matriz
+ * @param peca a peca a ser movida
+ * @return Retorna ERRO se nao for possivel mover
+ */
 int movePeca(tabuleiro *t, char posicaoInicial, char qtdeCasas, int jogador, int peca) {
+    //TODO: Desta forma a peca nao volta de um array dourado para o comum
     char status = ERRO;
     char posicaoAbsoluta = (jogador == PLAYER_A) ? posicaoInicial : (posicaoInicial % OFFSET_PLAYER_B);
     char novaPosicao = posicaoAbsoluta + qtdeCasas;
@@ -73,6 +82,10 @@ int movePeca(tabuleiro *t, char posicaoInicial, char qtdeCasas, int jogador, int
         t->matriz[posicaoInicial][peca] = FALSE;
         t->matriz[novaPosicao][peca] = TRUE;
         status = SEM_ERRO;
+    }else if(novaPosicao <= INDICE_MAXIMO_TABULEIRO+INDICE_MAXIMO_CAMINHO_DOURADO){
+        //Caso passe para o caminho dourado
+        t->matriz[posicaoInicial][peca] = FALSE;
+        t->caminho_dourado[novaPosicao][peca] = TRUE;
     }
     return status;
 }
