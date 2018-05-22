@@ -49,14 +49,26 @@ typedef struct {
 } tabuleiro;
 
 /**
- * ... Verifica se a posicao dada possui a peca especificada ...
+ * ... retorna a quantidade de pecas ocupadas na posicao dada ...
  *
- * @param matrizAChecar A matriz a checar se estah ocupado
+ * @param t o tabuleiro do jogo
  * @param posicao qual celula a verificar
- * @param o indice de qual peca da celula a verificar
+ * @param timeOcupado o time no qual quer verificar se estah ocupado
+ * @return a quantidade de pecas na celula dada [0-2]
  */
-int ocupado(char *matrizAChecar[], int posicao, int peca) {
-    return matrizAChecar[posicao][peca];
+int qtdeOcupado(tabuleiro t, int posicao, char timeOcupado) {
+    int qtde = 0;
+    jogador jogadorOcupado;
+    if (timeOcupado == PLAYER_A) {
+        jogadorOcupado = t.jogadorA;
+    } else {
+        jogadorOcupado = t.jogadorB;
+    }
+
+    qtde += (jogadorOcupado.peca1.casasAndadas == posicao);
+    qtde += (jogadorOcupado.peca2.casasAndadas == posicao);
+
+    return qtde;
 }
 
 /**
@@ -69,13 +81,25 @@ int movePeca(peca *pecaAMover, char qtdeCasas) {
     char status = ERRO;
     char posicaoInicial = pecaAMover->casasAndadas;
     //TODO: VERIFICAR SE EH POSSIVEL VOLTAR CASAS
-    char posicaoAbsoluta = (pecaAMover->time == PLAYER_A) ? posicaoInicial : (posicaoInicial+OFFSET_PLAYER_B) % INDICE_MAXIMO_TABULEIRO;
+    char posicaoAbsoluta = (pecaAMover->time == PLAYER_A) ? posicaoInicial : (posicaoInicial + OFFSET_PLAYER_B) %
+                                                                             INDICE_MAXIMO_TABULEIRO;
     char novaPosicao = posicaoAbsoluta + qtdeCasas;
-    if (novaPosicao <= INDICE_MAXIMO_TABULEIRO) {
+    if (novaPosicao >= 0 && novaPosicao <= INDICE_MAXIMO_TABULEIRO) {
         pecaAMover->casasAndadas = novaPosicao;
         status = SEM_ERRO;
     }
     return status;
+}
+
+/**
+ *  ... Move a peca para o inicio  ...
+ *  .... Na forma de numero de casas + (-numero de casas) totalizando zero ...
+ * @param pecaAMover a peca a ser movimentada
+ * @param qtdeCasas A quantidade de casas a ser movido
+ * @return Retorna ERRO se nao for possivel mover
+ */
+int voltaParaInicio(peca *pecaAMover) {
+    return movePeca(pecaAMover, -pecaAMover->casasAndadas);
 }
 
 /**
@@ -91,24 +115,16 @@ char ganhou(jogador j) {
 /**
  * ... Verifica se pode comer peca do adversario ...
  * @param t o tabuleiro do jogo
- * @param posicao o indice da celula no qual quer verificar
- * @param jogador o jogador a ser verificado se pode comer (Note que utiliza as macros PLAYER_ definida no inicio do cod )
- * @return Booleano definido na macro no inicio do codigo
+ * @param pecaComedora a peca movida que quer verificar se pode comer alguma outra
+ * @return Booleano definido na macro no inicio do codigo se for possivel comer peca adversaria
  */
-char podeComer(tabuleiro t, int posicao, char jogador) {
-    int i, limite;  //as pecas a serem verificadas dependem de ql jogador que quer comer
-    if (jogador == PLAYER_A) {
-        i = 2;
-        limite = 4;
-    } else {
-        i = 0;
-        limite = 2;
+char podeComer(tabuleiro t, peca pecaComedora) {
+    char podeComer = FALSE;
+    char adversario = (pecaComedora.time == PLAYER_A) ? PLAYER_B : PLAYER_A;
+    if (qtdeOcupado(t, pecaComedora.casasAndadas, adversario) < MAX_PECAS_JOGADOR) {
+        podeComer = TRUE;
     }
-    int qtdePecaAdversario = 0;
-    for (; i < limite; ++i) {
-        if (ocupado(t.matriz, posicao, i)) qtdePecaAdversario++;
-    }
-    return qtdePecaAdversario == 1;
+    return podeComer;
 }
 
 void printaTabuleiro(tabuleiro *t) {
@@ -178,20 +194,20 @@ void singlePlayer() {
 
     //O jogo de verdade começará aqui
     char p[1000];
-    while (1) {
+    while (TRUE) {
 
         printaTabuleiro(&tabuleiro);
 
-
+        printf("digitar qualquer coisa para rodar o dado ou desistir para sair");
         setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
         scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
-
         if (strcmp(p, "desistir") == 0) { //desistir do jogo
             break;
         }
         system("clear"); //limpa a tela
 
         printf("\nTeste1\n");
+        printf("\nValor do dado %d\n", rodaDado());
     }
 }
 
@@ -233,7 +249,7 @@ void multiPlayer() {
 
     //O jogo de verdade começará aqui
     char p[1000];
-    while (1) {
+    while (TRUE) {
 
         printaTabuleiro(&tabuleiro);
 
