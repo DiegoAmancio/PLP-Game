@@ -119,12 +119,8 @@ char ganhou(jogador j) {
  * @return Booleano definido na macro no inicio do codigo se for possivel comer peca adversaria
  */
 char podeComer(tabuleiro t, peca pecaComedora) {
-    char podeComer = FALSE;
     char adversario = (pecaComedora.time == PLAYER_A) ? PLAYER_B : PLAYER_A;
-    if (qtdeOcupado(t, pecaComedora.casasAndadas, adversario) < MAX_PECAS_JOGADOR) {
-        podeComer = TRUE;
-    }
-    return podeComer;
+    return qtdeOcupado(t, pecaComedora.casasAndadas, adversario) == 1;
 }
 
 void printaTabuleiro(tabuleiro *t) {
