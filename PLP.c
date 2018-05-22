@@ -62,13 +62,13 @@ void singlePlayer(){
 	
 	//Atribuições
 	peca1A.casasAndadas = 0;
-	peca1A.time = 'A1';
+	peca1A.time = 'A';
 	peca2A.casasAndadas = 0;
-	peca2A.time = 'A2';
+	peca2A.time = 'A';
 	peca1B.casasAndadas = 0;
-	peca1B.time = 'B1';
+	peca1B.time = 'B';
 	peca2B.casasAndadas = 0;
-	peca2B.time = 'B2';
+	peca2B.time = 'B';
 	
 	jogadorA.peca1 = peca1A;
 	jogadorA.peca2 = peca2A;
@@ -117,13 +117,13 @@ void multiPlayer(){
 	
 	//Atribuições
 	peca1A.casasAndadas = 0;
-	peca1A.time = 'A1';
+	peca1A.time = 'A';
 	peca2A.casasAndadas = 0;
-	peca2A.time = 'A2';
+	peca2A.time = 'A';
 	peca1B.casasAndadas = 0;
-	peca1B.time = 'B1';
+	peca1B.time = 'B';
 	peca2B.casasAndadas = 0;
-	peca2B.time = 'B2';
+	peca2B.time = 'B';
 	
 	jogadorA.peca1 = peca1A;
 	jogadorA.peca2 = peca2A;
