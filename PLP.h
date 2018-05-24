@@ -134,12 +134,12 @@
 	void printaTabuleiro(tabuleiro *t) {
 
 	    int i, j;
-		//Falta print dos jogadores, as posições do tabuleiro similares ao xadrez e do lado um print  das posições de cada peça
+		//Falta as posições do tabuleiro similares ao xadrez e do lado um print  das posições de cada peça
 	    printf(" ______ \n");
-		printf("|      |\n");		
+		t->jogadorA.peca1.x == -1? printf("|      |  peca1: base\n") : printf("|      |  peca1: x:%d y:%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y);
 		printf("|  %s  |\n", t->jogadorA.peca1.x == -1 ? t->jogadorA.peca1.representacao : "  ");
 		printf("|  %s  |\n", t->jogadorA.peca2.x == -1 ? t->jogadorA.peca2.representacao : "  ");
-		printf("|______|\n");	
+		t->jogadorA.peca2.x == -1? printf("|______|  peca2: base\n") : printf("|______|  peca2: x:%d y:%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y);
 		
 		for(i = 0; i < 21; i++){
 			printf(" __");
@@ -243,10 +243,11 @@
 			printf("\n");
 		}		
 	    printf("                                                         ______ \n");
-		printf("                                                        |      |\n");		
+		t->jogadorB.peca1.x == -1? printf("                                           peca1: base  |      |\n") : printf("                                        peca1: x:%d y:%d  |      |\n", t->jogadorB.peca1.x, t->jogadorB.peca1.y);	
 		printf("                                                        |  %s  |\n", t->jogadorB.peca1.x == -1 ? t->jogadorB.peca1.representacao : "  ");
 		printf("                                                        |  %s  |\n", t->jogadorB.peca2.x == -1 ? t->jogadorB.peca2.representacao : "  ");
-		printf("                                                        |______|\n\n");	
+		t->jogadorB.peca1.x == -1? printf("                                           peca1: base  |______|\n\n") : printf("                                        peca1: x:%d y:%d  |______|\n\n", t->jogadorB.peca1.x, t->jogadorB.peca1.y);	
+
 	}
 
 	void geraTabuleiro(tabuleiro *t) {
