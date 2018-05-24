@@ -68,9 +68,9 @@
 	    int qtde = 0;
 	    jogador jogadorOcupado;
 	    if (timeOcupado == PLAYER_A) {
-		jogadorOcupado = t->jogadorA;
+			//jogadorOcupado = t.jogadorA;
 	    } else {
-		jogadorOcupado = t->jogadorB;
+			//jogadorOcupado = t.jogadorB;
 	    }
 
 	    qtde += (jogadorOcupado.peca1.casasAndadas == posicao);
@@ -79,13 +79,14 @@
 	    return qtde;
 	}
 
+
 	/**
 	 *  ... Move a peca a quantidade dada de casas indicadas  ...
 	 * @param pecaAMover a peca a ser movimentada
 	 * @param qtdeCasas A quantidade de casas a ser movido
 	 * @return Retorna ERRO se nao for possivel mover
 	 */
-	int movePeca(peca *pecaAMover, char qtdeCasas) {
+	int movePeca(peca pecaAMover, int qtdeCasas) {
 	    char status = ERRO;
 	    char posicaoInicial = pecaAMover->casasAndadas;
 	    //TODO: VERIFICAR SE EH POSSIVEL VOLTAR CASAS
@@ -106,8 +107,9 @@
 	 * @param qtdeCasas A quantidade de casas a ser movido
 	 * @return Retorna ERRO se nao for possivel mover
 	 */
-	int voltaParaInicio(peca *pecaAMover) {
-	    return movePeca(pecaAMover, -pecaAMover->casasAndadas);
+	int voltaParaInicio(peca pecaAMover) {
+	    //return movePeca(pecaAMover, -pecaAMover->casasAndadas);
+		return 0;
 	}
 
 	/**
@@ -267,9 +269,11 @@
 	int rodaDado() {
 	    srand(time(0));
 	    int saidaDado = rand() % 7;
-	    if(saidaDado == 0){
+	    if(saidaDado == 0 ){
 			saidaDado++;
-	    }
+	    }else if(saidaDado > 6){
+			saidaDado = 1;
+		}
 	    return saidaDado;
 	}
 
@@ -277,53 +281,46 @@
 		srand(time(0));
 		int numArmadilha = rand() % 5;
 	
-	if (numArmadilha == 0) {
-		numArmadilha == 1;
-	}
-	if (numArmadilha == 1) {
-		printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado/n Se você tirou 6, seu carro tem asas e conseguiu evitar o desvio");
-		sleep(2);
-		if(numdado = 6){
-			break;
+		if (numArmadilha == 0) {
+			numArmadilha == 1;
 		}
-		else
+		if (numArmadilha == 1) {
+			printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado/n Se você tirou 6, seu carro tem asas e conseguiu evitar o desvio");
+			sleep(2);
+			if(numdado != 6){
+				movePeca(pecaJogador,numdado);
+			}
+			
+			
+		}
+		else if (numArmadilha == 2)
 		{
+			printf("Armadilha: Gasolina Acabando e o posto a frente cobra muito caro! /n Retorne 2 espaços para abastecer no posto anterior");
+			movePeca(pecaJogador,-2);
+
+		}
+		else if (numArmadilha == 3)
+		{
+			printf("Armadilha: Blitz na Rodovia! /n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços");
+			sleep(2);
+			if(numdado %2 != 0){
+				movePeca(pecaJogador,-5);
+			}
+			
+			
+		}
+		else if (numArmadilha = 4)
+		{
+			printf("Armadilha: Dia de Emplacamento! /n Pague o Emplacamento e volte a metade da quantidade de casas que você andou!");
+			sleep(2);
+			numdado = (numdado/2) * -1;
 			movePeca(pecaJogador,numdado);
 		}
-		
-	}
-	else if (numArmadilha == 2)
-	{
-		printf("Armadilha: Gasolina Acabando e o posto a frente cobra muito caro! /n Retorne 2 espaços para abastecer no posto anterior");
-		movePeca(pecaJogador,-2);
-
-	}
-	else if (numArmadilha == 3)
-	{
-		printf("Armadilha: Blitz na Rodovia! /n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços");
-		sleep(2);
-		if(numdado %2 ==0){
-			break;
+		else if (numArmadilha = 5){
+			printf("Armadilha: Carona na abertura de ambulancia! /n Ande novamente o mesmo número de casas");
+			sleep(2);
+			movePeca(pecaJogador, numdado);
 		}
-		else
-		{
-			movePeca(pecaJogador,-5);
-		}
-		
-	}
-	else if (numArmadilha = 4)
-	{
-		printf("Armadilha: Dia de Emplacamento! /n Pague o Emplacamento e volte a metade da quantidade de casas que você andou!");
-		sleep(2);
-		dado = (dado/2) * -1;
-		movePeca(peca,dadoresult);
-	}
-	else if (numArmadilha = 5)
-	{
-		printf("Armadilha: Carona na abertura de ambulancia! /n Ande novamente o mesmo número de casas")
-		sleep(2);
-		movePeca(peca, numdado;
-	}
 	}
 
 
@@ -380,28 +377,31 @@
 	    geraTabuleiro(&tabuleiro);
 
 	    //O jogo de verdade começará aqui
-	    int dadoA, dadoB;
+	    int dadoPlayer, dadoBot;
 		char p[1000];
+		
 	    while (1) {
-
-		printaTabuleiro(&tabuleiro);
-		printf("\nsua vez\n");
-		printf("\ndigitar qualquer coisa para rodar o dado ou desistir para sair:\n");
-		setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
-		scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
-		if (strcmp(p, "desistir") == 0) { //desistir do jogo
-		    break;
-		}
-		system("clear"); //limpa a tela
-		
-		dadoA = rodaDado();
-		printf("\nSaiu no dado %d\n", dadoA);
-		printf("vez do bot\no bot joga o dado...");
-		
-		sleep(2);
-		dadoB = rodaDado();
-		printf("\nSaiu no dado %d\n", dadoB);
-		
+			
+			printaTabuleiro(&tabuleiro);
+			if(dadoPlayer > 0){
+				printf("Você tirou no dado %d\n", dadoPlayer);
+				printf("vez do bot: o bot joga o dado...");
+				sleep(2);
+				dadoBot = rodaDado();
+				printf("\nSaiu no dado %d\n", dadoBot);
+			}	
+			printf("Sua vez : aperte digite qualquer coisa para rodar o dado ou desistir para sair:\n");
+			
+			setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
+			scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
+			
+			if (strcmp(p, "desistir") == 0) { //desistir do jogo
+				break;
+			}
+			system("clear"); //limpa a tela
+			
+			dadoPlayer = rodaDado();			
+			
 	    }
 	}
 
