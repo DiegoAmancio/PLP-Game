@@ -161,54 +161,57 @@
 	    return saidaDado;
 	}
 
-	void geraArmadilha(jogador jogador, peca peca, int dado){
+	void geraArmadilha(peca pecaJogador, int numdado){
 		srand(time(0));
-		int numArmadilha = rand() % 7;
+		int numArmadilha = rand() % 5;
 	
+	if (numArmadilha == 0) {
+		numArmadilha == 1;
+	}
 	if (numArmadilha == 1) {
-		printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado exceto se você tirou 6!")
+		printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado/n Se você tirou 6, seu carro tem asas e conseguiu evitar o desvio");
 		sleep(2);
-		if(dado = 6){
+		if(numdado = 6){
 			break;
 		}
 		else
 		{
-			movePeca(peca, (char) dado);
+			movePeca(pecaJogador,numdado);
 		}
 		
 	}
 	else if (numArmadilha == 2)
 	{
-		printf("Armadilha: Parado no Tempo! /n Fique rodada sem jogar")
+		printf("Armadilha: Gasolina Acabando e o posto a frente cobra muito caro! /n Retorne 2 espaços para abastecer no posto anterior");
+		movePeca(pecaJogador,-2);
+
 	}
 	else if (numArmadilha == 3)
 	{
-		printf("Armadilha: Blitz na Rodovia! /n Para ser liberado o valor do dado precisa ser Par!")
+		printf("Armadilha: Blitz na Rodovia! /n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços");
+		sleep(2);
+		if(numdado %2 ==0){
+			break;
+		}
+		else
+		{
+			movePeca(pecaJogador,-5);
+		}
+		
 	}
 	else if (numArmadilha = 4)
 	{
-		printf("Armadilha: Pagamento de Dívidas! /n Volte a metade da quantidade de casas que você andou!")
+		printf("Armadilha: Dia de Emplacamento! /n Pague o Emplacamento e volte a metade da quantidade de casas que você andou!");
+		sleep(2);
+		dado = (dado/2) * -1;
+		movePeca(peca,dadoresult);
 	}
 	else if (numArmadilha = 5)
 	{
-		printf("Armadilha: Onda verde! /n Ande novamente o mesmo número de casas")
+		printf("Armadilha: Carona na abertura de ambulancia! /n Ande novamente o mesmo número de casas")
 		sleep(2);
-		movePeca(peca, (char) dado);
+		movePeca(peca, numdado;
 	}
-	else if (numArmadilha = 6)
-	{
-		printf("Armadilha: Cobrança de Dívidas /n Seu adversário volta o número de casas tirado no dado")
-		if(jogadorA)
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-		
 	}
 
 
