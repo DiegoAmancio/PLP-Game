@@ -34,8 +34,11 @@
 
 	//Criando os tipos de struct
 	typedef struct {
+		int x;
+		int y;
 	    int casasAndadas; //Quando chegar em 56 (algo assim) o jogador vence
 	    char time; //Para representar as peças no tabuleiro
+		char representacao[2];
 	} peca;
 
 	typedef struct {
@@ -61,13 +64,13 @@
 	 * @param timeOcupado o time no qual quer verificar se estah ocupado
 	 * @return a quantidade de pecas na celula dada [0-2]
 	 */
-	int qtdeOcupado(tabuleiro t, int posicao, char timeOcupado) {
+	int qtdeOcupado(tabuleiro *t, int posicao, char timeOcupado) {
 	    int qtde = 0;
 	    jogador jogadorOcupado;
 	    if (timeOcupado == PLAYER_A) {
-		jogadorOcupado = t.jogadorA;
+		jogadorOcupado = t->jogadorA;
 	    } else {
-		jogadorOcupado = t.jogadorB;
+		jogadorOcupado = t->jogadorB;
 	    }
 
 	    qtde += (jogadorOcupado.peca1.casasAndadas == posicao);
@@ -125,25 +128,134 @@
 	 */
 	char podeComer(tabuleiro t, peca pecaComedora) {
 	    char adversario = (pecaComedora.time == PLAYER_A) ? PLAYER_B : PLAYER_A;
-	    return qtdeOcupado(t, pecaComedora.casasAndadas, adversario) == 1;
+	    return qtdeOcupado(&t, pecaComedora.casasAndadas, adversario) == 1;
 	}
 
 	void printaTabuleiro(tabuleiro *t) {
 
 	    int i, j;
-
-	    //print jogador A
-
-	    //print jogador B
+		//Falta print dos jogadores, as posições do tabuleiro similares ao xadrez e do lado um print  das posições de cada peça
+	    printf(" ______ \n");
+		printf("|      |\n");		
+		printf("|  %s  |\n", t->jogadorA.peca1.x == -1 ? t->jogadorA.peca1.representacao : "  ");
+		printf("|  %s  |\n", t->jogadorA.peca2.x == -1 ? t->jogadorA.peca2.representacao : "  ");
+		printf("|______|\n");	
+		
+		for(i = 0; i < 21; i++){
+			printf(" __");
+		}
+		printf("\n");
+		
+		for(i = 0; i < 2; i++){
+			printf("|");
+			for(j = 0; j < 21; j++){
+				
+				if(i == 1){
+					printf("__|");
+				}
+				else{
+					t->matriz[0][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[0][j]);
+				}
+			}
+			printf("\n");
+		}
+		
+		for(i = 0; i < 2; i++){
+			printf("|");
+			for(j = 0; j < 21; j++){
+				
+				if(i == 0 && j < 6){
+					t->matriz[1][j] == 0 ? printf("->|") : printf(" %d|" ,t->matriz[1][j]);
+				}
+				else if(j == 19){
+					printf("  |");
+				}
+				else if(i == 0 && j ==20){
+					t->matriz[1][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[1][j]);
+				}
+				else if(i == 1 && (j < 6 || j == 20)){
+					printf("__|");
+				}
+				else if(i == 1 && !(j < 6 || j == 20)){
+					printf("   ");
+				}
+				else{
+					printf("   ");
+				}
+			}
+			printf("\n");
+		}
+		
+		for(i = 0; i < 2; i++){
+			
+			printf("|");
+			for(j = 0; j < 21; j++){
+				if((i == 1 && (j == 0||j >= 19))){
+					printf("__|");
+				}
+				else if(i == 0 && (j == 0 || j  >= 19)){
+					t->matriz[2][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[2][j]);
+				}
+				else if(i == 1 && j < 19 && j > 14){
+					printf("__ ");
+				}
+				else{
+					printf("   ");
+				}
+			}
+			printf("\n");
+		}
+		
+		for(i = 0; i < 2; i++){
+			printf("|");
+			for(j = 0; j < 21; j++){
+				
+				if(i == 0 && j > 14){
+					t->matriz[3][j] == 0 ? printf("<-|") : printf(" %d|" ,t->matriz[3][j]);
+				}
+				else if(i == 1 && (j == 0 || j >= 14)){
+					printf("__|");
+				}
+				else if(i == 0 && (j == 0 || j == 14)){
+					t->matriz[3][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[3][j]);
+				}
+				else if(i == 1){
+					printf("__ ");
+				}
+				else{
+					printf("   ");
+				}
+			}
+			printf("\n");
+		}
+		
+		for(i = 0; i < 2; i++){
+			printf("|");
+			for(j = 0; j < 21; j++){
+				
+				if(i%2 == 1){
+					printf("__|");
+				}
+				else{
+					t->matriz[4][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[4][j]);
+				}
+			}
+			printf("\n");
+		}		
+	    printf("                                                         ______ \n");
+		printf("                                                        |      |\n");		
+		printf("                                                        |  %s  |\n", t->jogadorB.peca1.x == -1 ? t->jogadorB.peca1.representacao : "  ");
+		printf("                                                        |  %s  |\n", t->jogadorB.peca2.x == -1 ? t->jogadorB.peca2.representacao : "  ");
+		printf("                                                        |______|\n\n");	
 	}
 
 	void geraTabuleiro(tabuleiro *t) {
 
 	    int i, j;
 	    for (i = 0; i < 5; i++) {
-		for (j = 0; j < 21; j++) {
-		    t->matriz[i][j] = 0; //Sim, realmente é [i][j], bizarro
-		}
+			for (j = 0; j < 21; j++) {
+		    	t->matriz[i][j] = 0; //Sim, realmente é [i][j], bizarro
+			}
 	    } //Define tudo como 0, quando tiver alguem será 1
 	    //Se quiser pode gerar as armadilhas ja aqui
 	}
@@ -156,14 +268,15 @@
 	    srand(time(0));
 	    int saidaDado = rand() % 7;
 	    if(saidaDado == 0){
-		saidaDado++;
+			saidaDado++;
 	    }
 	    return saidaDado;
 	}
 
 
 	void singlePlayer() {
-	//Cria as peças
+		
+		//Cria as peças
 	    peca peca1A;
 	    peca peca2A;
 	    peca peca1B;
@@ -179,12 +292,28 @@
 	    //Atribuições
 	    peca1A.casasAndadas = 0;
 	    peca1A.time = 'A';
+		peca1A.representacao[0] = 'A';
+		peca1A.representacao[1] = '1';
+		peca1A.x = -1;
+		peca1A.y = -1;
 	    peca2A.casasAndadas = 0;
 	    peca2A.time = 'A';
+		peca2A.representacao[0] = 'A';
+		peca2A.representacao[1] = '2';
+		peca2A.x = -1;
+		peca2A.y = -1;
 	    peca1B.casasAndadas = 0;
 	    peca1B.time = 'B';
+		peca1B.representacao[0] = 'B';
+		peca1B.representacao[1] = '1';
+		peca1B.x = -1;
+		peca1B.y = -1;
 	    peca2B.casasAndadas = 0;
 	    peca2B.time = 'B';
+		peca2B.representacao[0] = 'B';
+		peca2B.representacao[1] = '2';
+		peca2B.x = -1;
+		peca2B.y = -1;
 
 	    jogadorA.peca1 = peca1A;
 	    jogadorA.peca2 = peca2A;
@@ -198,7 +327,8 @@
 	    geraTabuleiro(&tabuleiro);
 
 	    //O jogo de verdade começará aqui
-	    char p[1000];
+	    int dadoA, dadoB;
+		char p[1000];
 	    while (1) {
 
 		printaTabuleiro(&tabuleiro);
@@ -211,11 +341,13 @@
 		}
 		system("clear"); //limpa a tela
 		
-		printf("\nSaiu no dado %d\n", rodaDado());
+		dadoA = rodaDado();
+		printf("\nSaiu no dado %d\n", dadoA);
 		printf("vez do bot\no bot joga o dado...");
 		
 		sleep(2);
-		printf("\nSaiu no dado %d\n", rodaDado());
+		dadoB = rodaDado();
+		printf("\nSaiu no dado %d\n", dadoB);
 		
 	    }
 	}
