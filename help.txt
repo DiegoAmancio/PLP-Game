@@ -2,20 +2,28 @@
 ************************************************************************************************************
 
 			                  *  * **** *    ****
-			                  *  * *    *    *  *
-			                  **** ***  *    ****
-			                  *  * *    *    * 
-			                  *  * **** **** *     
+			                  *  * *    *    *  *   
+			                  **** ***  *    ****   
+			                  *  * *    *    *      
+			                  *  * **** **** *      
 
 ------------------------------------------------------------------------------------------------------------
 ************************************************************************************************************
 
 					MODO DE JOGAR E CONTROLES
 
-		1-
-		2-
-		3-
-		4-
-		5-
+		1- Controles Simplificados, Para Rodar o dado, basta digitar qualquer coisa diferente de 'desistir' e teclar Enter
+		2- Caso seja escrito 'desistir' o jogo é finalizado, a vitória é do outro jogador e volta ao menu principal
+		
+		
+		
+
+					CREDITOS
+
+
+		1 - AISLAN
+		2 - DIEGO
+		3 - Gustavo Figueiredo Lino - 114211018
+		4 - KLEBERSON
 
 

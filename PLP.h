@@ -161,6 +161,56 @@
 	    return saidaDado;
 	}
 
+	void geraArmadilha(jogador jogador, peca peca, int dado){
+		srand(time(0));
+		int numArmadilha = rand() % 7;
+	
+	if (numArmadilha == 1) {
+		printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado exceto se você tirou 6!")
+		sleep(2);
+		if(dado = 6){
+			break;
+		}
+		else
+		{
+			movePeca(peca, (char) dado);
+		}
+		
+	}
+	else if (numArmadilha == 2)
+	{
+		printf("Armadilha: Parado no Tempo! /n Fique rodada sem jogar")
+	}
+	else if (numArmadilha == 3)
+	{
+		printf("Armadilha: Blitz na Rodovia! /n Para ser liberado o valor do dado precisa ser Par!")
+	}
+	else if (numArmadilha = 4)
+	{
+		printf("Armadilha: Pagamento de Dívidas! /n Volte a metade da quantidade de casas que você andou!")
+	}
+	else if (numArmadilha = 5)
+	{
+		printf("Armadilha: Onda verde! /n Ande novamente o mesmo número de casas")
+		sleep(2);
+		movePeca(peca, (char) dado);
+	}
+	else if (numArmadilha = 6)
+	{
+		printf("Armadilha: Cobrança de Dívidas /n Seu adversário volta o número de casas tirado no dado")
+		if(jogadorA)
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	}
+
 
 	void singlePlayer() {
 	//Cria as peças
