@@ -134,7 +134,7 @@
 	void printaTabuleiro(tabuleiro *t) {
 
 	    int i, j;
-		//Falta as posições do tabuleiro similares ao xadrez e do lado um print  das posições de cada peça
+		
 	    printf(" ______ \n");
 		t->jogadorA.peca1.x == -1? printf("|      |  peca1: base\n") : printf("|      |  peca1: x:%d y:%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y);
 		printf("|  %s  |\n", t->jogadorA.peca1.x == -1 ? t->jogadorA.peca1.representacao : "  ");
