@@ -86,7 +86,7 @@
 	 * @param qtdeCasas A quantidade de casas a ser movido
 	 * @return Retorna ERRO se nao for possivel mover
 	 */
-	int movePeca(peca pecaAMover, int qtdeCasas) {
+	int movePeca(peca *pecaAMover, int qtdeCasas) {
 	    char status = ERRO;
 	    char posicaoInicial = pecaAMover->casasAndadas;
 	    //TODO: VERIFICAR SE EH POSSIVEL VOLTAR CASAS
@@ -94,8 +94,8 @@
 		                                                                     INDICE_MAXIMO_TABULEIRO;
 	    char novaPosicao = posicaoAbsoluta + qtdeCasas;
 	    if (novaPosicao >= 0 && novaPosicao <= INDICE_MAXIMO_TABULEIRO) {
-		pecaAMover->casasAndadas = novaPosicao;
-		status = SEM_ERRO;
+			pecaAMover->casasAndadas = novaPosicao;
+			status = SEM_ERRO;
 	    }
 	    return status;
 	}
@@ -288,7 +288,7 @@
 			printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado/n Se você tirou 6, seu carro tem asas e conseguiu evitar o desvio");
 			sleep(2);
 			if(numdado != 6){
-				movePeca(pecaJogador,numdado);
+				movePeca(&pecaJogador,numdado);
 			}
 			
 			
@@ -296,7 +296,7 @@
 		else if (numArmadilha == 2)
 		{
 			printf("Armadilha: Gasolina Acabando e o posto a frente cobra muito caro! /n Retorne 2 espaços para abastecer no posto anterior");
-			movePeca(pecaJogador,-2);
+			movePeca(&pecaJogador,-2);
 
 		}
 		else if (numArmadilha == 3)
@@ -304,7 +304,7 @@
 			printf("Armadilha: Blitz na Rodovia! /n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços");
 			sleep(2);
 			if(numdado %2 != 0){
-				movePeca(pecaJogador,-5);
+				movePeca(&pecaJogador,-5);
 			}
 			
 			
@@ -314,12 +314,12 @@
 			printf("Armadilha: Dia de Emplacamento! /n Pague o Emplacamento e volte a metade da quantidade de casas que você andou!");
 			sleep(2);
 			numdado = (numdado/2) * -1;
-			movePeca(pecaJogador,numdado);
+			movePeca(&pecaJogador,numdado);
 		}
 		else if (numArmadilha = 5){
 			printf("Armadilha: Carona na abertura de ambulancia! /n Ande novamente o mesmo número de casas");
 			sleep(2);
-			movePeca(pecaJogador, numdado);
+			movePeca(&pecaJogador, numdado);
 		}
 	}
 
