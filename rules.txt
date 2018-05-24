@@ -1,0 +1,28 @@
+------------------------------------------------------------------------------------------------------------
+************************************************************************************************************
+
+			                 ***  *  * *    **** ****
+			                 *  * *  * *    *    *   
+			                 ***  *  * *    ***  ****
+			                 * *  *  * *    *       *
+			                 *  *  **  **** **** ****
+
+------------------------------------------------------------------------------------------------------------
+************************************************************************************************************
+
+					REGRAS GERAIS
+
+
+			
+		1- Os jogadores se revezam no sentido horário.
+		2- Cada lance, o jogador decide qual peça mover, caso tenha mais de uma em campo.
+		3- Uma peça simplesmente se move no sentido horário direção ao redor da pista dada pelo número lançado.
+		4- Se nenhuma peça pode legalmente se mover de acordo com o número jogado, o jogo passa para o próximo jogador.
+		5- Um lance de 6 no dado dá direito outro turno.
+		6- Um lance de 6 no dado dá direito a colocar outra peça do banco no jogo caso tenha.
+		7- Caso sua peça caia na mesma casa onde já exista outra peça, a outra peça é enviada novamente ao banco.
+				       
+
+					CONDIÇÃO DE VITÓRIA
+
+		1- O jogador que conseguir colocar suas duas peças na parte central do tabuleiro ganha a partida!
