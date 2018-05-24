@@ -1,4 +1,4 @@
-#include "PLP.h"
+﻿#include "PLP.h"
 
 
 int main() {
@@ -7,6 +7,8 @@ int main() {
     int continuar = 1;
     int num;
     char cont[3];
+    int sair;
+    FILE *fp;
     while (continuar) {
         while (TRUE) {
             printf("1 - SinglePlayer\n2 - MultiPlayer\n3 - Ajuda/Creditos\n4 - Regras\n5 - Sair\n");
@@ -26,11 +28,23 @@ int main() {
                 multiPlayer();
                 break;
             case 3  :
-                printf("aaaaa");
-                break;
+                fp = fopen("help.txt","r");
+                printf("Digite '1' para voltar");
+                scanf("%i", &sair);
+                
+                if (sair==1) {
+                    fclose(fp);
+                    break;
+                }
             case 4  :
-                printf("aaaa\n");
-                break;
+                fp = fopen("rules.txt", "r");
+                printf("Digite '1' para voltar");
+                scanf("%i", &sair);
+                if (sair == 1)
+                {
+                    fclose(fp);
+                    break;
+                }
             default :
                 continuar = 0;
                 continue;
