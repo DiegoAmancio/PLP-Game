@@ -1,31 +1,42 @@
-------------------------------------------------------------------------------------------------------------
-************************************************************************************************************
+-----------------------------------------------------------------------------------------
+*****************************************************************************************
 
-			                 ***  *  * *    **** ****
-			                 *  * *  * *    *    *   
-			                 ***  *  * *    ***  ****
-			                 * *  *  * *    *       *
-			                 *  *  **  **** **** ****
+			       ***  *  * *    **** ****
+			       *  * *  * *    *    *   
+			       ***  *  * *    ***  ****
+			       * *  *  * *    *       *
+			       *  *  **  **** **** ****
 
-------------------------------------------------------------------------------------------------------------
-************************************************************************************************************
+----------------------------------------------------------------------------------------
+****************************************************************************************
 
 					REGRAS GERAIS
 
 
 			
 		1 - Os jogadores se revezam no sentido horario.
-		2 - Cada lance, o jogador decide qual peça mover, caso tenha mais de uma em campo.
-		3 - Uma peca simplesmente se move no sentido horario direcao ao redor da pista dada pelo numero lancado.
-		4 - Se nenhuma peca pode legalmente se mover de acordo com o numero jogado, o jogo passa para o proximo jogador.
-		5 - Um lance de 6 no dado da direito outro turno.
-		6 - Um lance de 6 no dado da direito a colocar outra peca do banco no jogo caso tenha.
-		7 - Caso sua peca caia na mesma casa onde ja exista outra peca, a outra peca e enviada novamente ao banco.
+
+		2 - A cada lance, o jogador decide qual peï¿½a mover, caso tenha mais de 
+		uma em campo.
+
+		3 - Uma peca simplesmente se move no sentido horario direcao ao redor da
+		pista dada pelo numero lancado.
+
+		4 - Se nenhuma peca pode legalmente se mover de acordo com o numero 
+		jogado, o jogo passa para o proximo jogador.
+
+		5 - Um lance de 6 no dado da direito aoutro turno.
+
+		6 - Um lance de 6 no dado da direito a colocar outra peca do banco no 
+		jogo caso tenha.
+		
+		7 - Caso sua peca caia na mesma casa onde ja exista outra peca, a outra 
+		peca e enviada novamente ao banco.
 				       
 
-					CONDICAO DE VITÓRIA
+					CONDICAO DE VITORIA
 
-		1 - O jogador que conseguir colocar suas duas pecas na parte central do tabuleiro ganha a partida!
-
+		1 - O jogador que conseguir colocar suas duas pecas na parte central do
+		tabuleiro ganha a partida!
 
 

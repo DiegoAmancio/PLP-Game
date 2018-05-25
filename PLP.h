@@ -4,45 +4,23 @@
 	#include <stdio.h>
 	#include <unistd.h>
 	#include <string.h>
-	#include <stdlib.h> // necessario p as funçoes rand() e srand()   
-	#include <time.h> //necessario p funçao time()
-
-	#ifndef FALSE
-	#define FALSE (0)
-	#define TRUE (!(FALSE))
-	#endif
-
-	#define ERRO -1
-	#define SEM_ERRO 0
+	#include <stdlib.h>    
+	#include <time.h> 
 
 	int vez_do_bot = 0;
 
-	//IDENTIFICADORES DO JOGADOR
-	const char PLAYER_A = 'A';
-	const char PLAYER_B = 'B';
-
-	// DISTANCIA DE 26 CASAS DO INICIO DE UM PARA O INICIO DO OUTRO ADVERSARIO
-	#define OFFSET_PLAYER_B 26
-	// TAMANHO DO TABULEIRO COM 57 CELULAS
-	#define TAMANHO_TABULEIRO 57
-	#define INDICE_MAXIMO_TABULEIRO (TAMANHO_TABULEIRO-1)
-
-	//MAXIMO DE PECA POR JOGADOR
-	const char MAX_PECAS_JOGADOR = 2;
-
-
-	//Criar tipos com struct serve para ajudar na hora de usar funções com struct
-
 	//Criando os tipos de struct
 	typedef struct {
+
 		int x;
 		int y;
-	    int casasAndadas; //Quando chegar em 56 (algo assim) o jogador vence
-	    char time; //Para representar as peças no tabuleiro
+	    int casasAndadas;
+	    char time;
 		char representacao[2];
 	} peca;
 
 	typedef struct {
+
 	    peca peca1;
 	    peca peca2;
 	    char time;
@@ -55,85 +33,96 @@
 	    int matriz[21][5]; //Tabuleiro 21x5 com espaços em branco (21 + 21 + 5 + 5 dá 52 que é o num de casas que existem no ludo)
 	} tabuleiro;
 
-
-	/**
-	 *  ... Move a peca a quantidade dada de casas indicadas  ...
-	 * @param pecaAMover a peca a ser movimentada
-	 * @param qtdeCasas A quantidade de casas a ser movido
-	 * @return Retorna ERRO se nao for possivel mover
-	 */
-	int movePeca(tabuleiro *t, int qtdeCasas) {
+	
+int movePeca(tabuleiro *t, int qtdeCasas) {
 		
-		int numPeca;
-		peca pecaAMover;
-		if(!vez_do_bot){
+		int numPeca; //Numero da peça a ser movida
+		if(!vez_do_bot){ //Verifica se a vez é do bot ou não
 			
-			if(t->jogadorA.peca1.x == -1 && t->jogadorA.peca2.x == -1 && qtdeCasas != 6){
+			//Verificações se o player pode escolher alguma peça, caso não possa fazer alguma jogada será retornado 1 para fazer o jogo seguir
+			if(t->jogadorA.peca1.x == -1 && t->jogadorA.peca2.x == -1 && qtdeCasas != 6){ //As duas peças na base
 				return 1;
 			}
-			if(t->jogadorA.peca1.x == -1 && qtdeCasas < 6 && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){
+			if(t->jogadorA.peca1.x == -1 && qtdeCasas < 6 && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){ //Peca 1 na base e Peca 2 no caminho
 				return 1;
 			}
-			if(t->jogadorA.peca2.x == -1 && qtdeCasas < 6 && ((t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6) || (t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6))){
+			if(t->jogadorA.peca2.x == -1 && qtdeCasas < 6 && ((t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6) || (t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6))){ //Peca 1 no caminho e Peca 2 na base
 				return 1;
 			}
-			if(((t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6) || (t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6)) && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){
+			if(((t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6) || (t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6)) && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){ //As duas peças no caminho sem pode se mover
 				return 1;
 			}
-			printf("Escolha uma peca pra mover: ");
-			scanf("%d", &numPeca);
-			printf("\n");
+			while(1){
+				printf("Escolha uma peca pra mover: ");
+				scanf("%d", &numPeca);
+				printf("\n");
+				if(numPeca == 1 || numPeca == 2){
+					break;
+				}
+				else{
+					printf("Peca Invalida\n");
+				}
+			}
+
 			
 			if(numPeca == 1){
-				if(t->jogadorA.peca1.x == -1 && qtdeCasas == 6){
+				if(t->jogadorA.peca1.x == -1 && qtdeCasas == 6){ //Se tirar 6, pode sair da base
 					t->jogadorA.peca1.x = 0;
 					t->jogadorA.peca1.y = 1;
-					t->matriz[1][0]++;
-					vez_do_bot = !vez_do_bot;	
-					qtdeCasas = 0;				
+					t->matriz[1][0]++; //Atualizando o numero de pecas na posicao da matriz
+					vez_do_bot = !vez_do_bot; //Faz com que troque a vez, para na hora do jogo trocar de volta para o mesmo player
+					qtdeCasas = 0; //Zera a quantidade de casas para andar
 				}
-				if(t->jogadorA.peca1.x == -1 && qtdeCasas < 6){
+				//Verificacoes se a jogada e valida
+				if(t->jogadorA.peca1.x == -1 && qtdeCasas < 6){ //Peca na base e dado resultou em um numero menor do que 6
 					return 0;
 				}
-				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6){
+				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6){ //Peca no caminho, mas pode acabar passando da base
 					return 0;
 				}
-				if(qtdeCasas == 6){
+				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6){ //Peca ja chegou ao final
+					return 0;
+				}
+
+				if(qtdeCasas == 6){ //Jogar novamente
 					vez_do_bot = !vez_do_bot;
 				}
 
-				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x]--;
-				if(t->jogadorA.peca1.x == 0){
+				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x]--; //Retira da posicao atual
+				if(t->jogadorA.peca1.x == 0){ //Movimento se estiver na primeira linha
 					while(t->jogadorA.peca1.y < 20 && qtdeCasas > 0){
 						t->jogadorA.peca1.y++;
 						qtdeCasas--;
 					}
 				}
-				if(t->jogadorA.peca1.y == 20){
+				if(t->jogadorA.peca1.y == 20){ //Movimento se estiver na ultima coluna
 					while(t->jogadorA.peca1.x < 4 && qtdeCasas > 0){
 						t->jogadorA.peca1.x++;
 						qtdeCasas--;
 					}
 				}
-				if(t->jogadorA.peca1.x == 4){
+				if(t->jogadorA.peca1.x == 4){ //Movimento se estiver na ultima linha
 					while(t->jogadorA.peca1.y > 0 && qtdeCasas > 0){
 						t->jogadorA.peca1.y--;
 						qtdeCasas--;
 					}
 				}
-				if(t->jogadorA.peca1.y == 0){
+				if(t->jogadorA.peca1.y == 0){ //Movimento se estiver na primeira coluna
 					while(t->jogadorA.peca1.x > 1 && qtdeCasas > 0){
 						t->jogadorA.peca1.x--;
 						qtdeCasas--;
 					}
 				}
-				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6){
+				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6){ //Movimento se estiver no caminho dourado
 					while(t->jogadorA.peca1.y < 6 && qtdeCasas > 0){
 						t->jogadorA.peca1.y++;
 						qtdeCasas--;
 					}
 				}
-				if(t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x] == 1){
+				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6){
+					vez_do_bot = !vez_do_bot;
+				} 
+				if(t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x] == 1){ //Verificacoes de captura
 					if(t->jogadorB.peca1.x == t->jogadorA.peca1.x && t->jogadorB.peca1.y == t->jogadorA.peca1.y){
 						t->jogadorB.peca1.x = -1;
 						t->jogadorB.peca1.y = -1;						
@@ -145,7 +134,8 @@
 						t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x] = 0;
 					}
 				}
-				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x]++;
+
+				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x]++; //Alocando no novo espaco
 			}
 			if(numPeca == 2){
 				if(t->jogadorA.peca2.x == -1 && qtdeCasas == 6){
@@ -161,6 +151,10 @@
 				if(t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6){
 					return 0;
 				}
+				if(t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6){
+					return 0;
+				}
+
 				if(qtdeCasas == 6){
 					vez_do_bot = !vez_do_bot;
 				}
@@ -196,6 +190,9 @@
 						qtdeCasas--;
 					}
 				}
+				if(t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6){
+					vez_do_bot = !vez_do_bot;
+				} 
 				if(t->matriz[t->jogadorA.peca2.y][t->jogadorA.peca2.x] == 1){
 					if(t->jogadorB.peca1.x == t->jogadorA.peca2.x && t->jogadorB.peca1.y == t->jogadorA.peca2.y){
 						t->jogadorB.peca1.x = -1;
@@ -224,6 +221,7 @@
 			if(((t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14) || (t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y > 14 && t->jogadorB.peca1.y-qtdeCasas < 14)) && ((t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y == 14) || (t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y > 14 && t->jogadorB.peca2.y-qtdeCasas < 14))){
 				return 1;
 			}
+			srand(time(NULL));
 			numPeca = (rand() % 2)+1;
 			if(numPeca == 1){
 				if(t->jogadorB.peca1.x == -1 && qtdeCasas == 6){
@@ -237,6 +235,9 @@
 					return 0;
 				}
 				if(t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y > 14 && t->jogadorB.peca1.y-qtdeCasas < 14){
+					return 0;
+				}
+				if(t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14){
 					return 0;
 				}
 				if(qtdeCasas == 6){
@@ -275,6 +276,9 @@
 						qtdeCasas--;
 					}
 				}
+				if(t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14){
+					vez_do_bot = !vez_do_bot;
+				} 
 				if(t->matriz[t->jogadorB.peca1.y][t->jogadorB.peca1.x] == 1){
 					if(t->jogadorB.peca1.x == t->jogadorA.peca1.x && t->jogadorB.peca1.y == t->jogadorA.peca1.y){
 						t->jogadorA.peca1.x = -1;
@@ -301,6 +305,9 @@
 					return 0;
 				}
 				if(t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y > 14 && t->jogadorB.peca2.y-qtdeCasas < 14){
+					return 0;
+				}
+				if(t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y == 14){
 					return 0;
 				}
 				if(qtdeCasas == 6){
@@ -339,6 +346,9 @@
 						qtdeCasas--;
 					}
 				}
+				if(t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y == 14){
+					vez_do_bot = !vez_do_bot;
+				} 
 				if(t->matriz[t->jogadorB.peca2.y][t->jogadorB.peca2.x] == 1){
 					if(t->jogadorB.peca2.x == t->jogadorA.peca1.x && t->jogadorB.peca2.y == t->jogadorA.peca1.y){
 						t->jogadorA.peca1.x = -1;
@@ -478,15 +488,16 @@
 
 	}
 
+
 	void geraTabuleiro(tabuleiro *t) {
 
+		//Preenche o tabuleiro com 0 (nenhuma peca em todas as casas)
 	    int i, j;
 	    for (i = 0; i < 5; i++) {
 			for (j = 0; j < 21; j++) {
 		    	t->matriz[j][i] = 0;
 			}
 	    }
-	    //Se quiser pode gerar as armadilhas ja aqui
 	}
 
 	/**
@@ -504,50 +515,6 @@
 		}
 	    return saidaDado+1;
 	}
-
-/*	void geraArmadilha(peca pecaJogador, int numdado){
-		srand(time(NULL));
-		int numArmadilha = (rand() % 5)+1;
-
-		if (numArmadilha == 1) {
-			printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado/n Se você tirou 6, seu carro tem asas e conseguiu evitar o desvio");
-			sleep(2);
-			if(numdado != 6){
-				movePeca(&pecaJogador,numdado);
-			}
-			
-			
-		}
-		else if (numArmadilha == 2)
-		{
-			printf("Armadilha: Gasolina Acabando e o posto a frente cobra muito caro! /n Retorne 2 espaços para abastecer no posto anterior");
-			movePeca(&pecaJogador,-2);
-
-		}
-		else if (numArmadilha == 3)
-		{
-			printf("Armadilha: Blitz na Rodovia! /n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços");
-			sleep(2);
-			if(numdado %2 != 0){
-				movePeca(&pecaJogador,-5);
-			}
-			
-			
-		}
-		else if (numArmadilha = 4)
-		{
-			printf("Armadilha: Dia de Emplacamento! /n Pague o Emplacamento e volte a metade da quantidade de casas que você andou!");
-			sleep(2);
-			numdado = (numdado/2) * -1;
-			movePeca(&pecaJogador,numdado);
-		}
-		else if (numArmadilha = 5){
-			printf("Armadilha: Carona na abertura de ambulancia! /n Ande novamente o mesmo número de casas");
-			sleep(2);
-			movePeca(&pecaJogador, numdado);
-		}
-	}
-*/
 
 	void jogo() {
 		
@@ -605,19 +572,24 @@
 	    int dado;
 		char p[1000];
 		
-	    while (1) {
+		while (1) {
 			
 			system("clear"); //limpa a tela			
 			printaTabuleiro(&tabuleiro);
 			
 			if(!vez_do_bot){
 
-				printf("Sua vez : aperte digite qualquer coisa para rodar o dado ou desistir para sair:\n");		
+				printf("Sua vez : digite qualquer coisa para rodar o dado ou desistir para sair:\n");		
 				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
 				scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
+				if (strcmp(p, "desistir") == 0) { //desistir do jogo
+					printf("Você desistiu, consequentemente... Voce perdeu!\n");
+					break;
+				}
 				dado = rodaDado();
 				printf("Voce tirou no dado %d\n", dado);
-				while(1){
+				sleep(1);
+				while(1){ //Enquanto o movimento nao for valido, tentar jogar a peca
 					if (movePeca(&tabuleiro, dado)){
 						break;
 					}
@@ -625,15 +597,16 @@
 						printf("Movimento invalido\n");
 					}
 				}
-				if(tabuleiro.matriz[6][1] == 2){
+				if(tabuleiro.matriz[6][1] == 2){ //Posicao final do time A
 					printf("Parabens, voce ganhou!!\n");
 					break;
 				}
 			}
 			else{
-				system("clear"); //limpa a tela
-				printf("Vez do bot : o bot vai jogar o dado...\n");
 				sleep(1);
+				printf("Vez do bot : o bot vai jogar o dado...\n");
+				sleep(1); //Para dar tempo a açao do bot
+				printaTabuleiro(&tabuleiro);
 				dado = rodaDado();
 				printf("\nSaiu no dado %d\n", dado);
 				while(1){
@@ -641,19 +614,14 @@
 						break;
 					}
 				}
-				sleep(2);
-				if(tabuleiro.matriz[14][3] == 2){
+				sleep(1);
+				if(tabuleiro.matriz[14][3] == 2){ //Posicao final do time B
 					printf("Voce perdeu :(\n");
 					break;
 				}
 			}
-		
-			if (strcmp(p, "desistir") == 0) { //desistir do jogo
-				printf("Você desistiu, consequentemente... Voce perdeu!\n");
-				break;
-			}
 
-			vez_do_bot = !vez_do_bot;
+			vez_do_bot = !vez_do_bot; //Troca a vez
 	    }
 	}
 

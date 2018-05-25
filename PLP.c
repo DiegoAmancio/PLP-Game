@@ -12,7 +12,7 @@ int main() {
     FILE *fp;
     char str[5000];
     while (continuar) {
-        while (TRUE) {
+        while (1) {
             printf("1 - Jogar\n2 - Ajuda/Creditos\n3 - Regras\n4 - Sair\n");
             scanf("%i", &num);
             if (num >= 1 && num <= 4) {
@@ -48,7 +48,7 @@ int main() {
                 continue;
         }
 
-        while (TRUE) {
+        while (1) {
             printf("Deseja continuar? sim/nao\n");
             scanf("%s", cont);
             if (strcmp(cont, "nao") == 0) {
