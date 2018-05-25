@@ -8,43 +8,41 @@ int main() {
     int num;
     char cont[3];
     int sair;
+    int c;
     FILE *fp;
+    char str[5000];
     while (continuar) {
         while (TRUE) {
-            printf("1 - SinglePlayer\n2 - MultiPlayer\n3 - Ajuda/Creditos\n4 - Regras\n5 - Sair\n");
+            printf("1 - Jogar\n2 - Ajuda/Creditos\n3 - Regras\n4 - Sair\n");
             scanf("%i", &num);
-            if (num >= 1 && num <= 5) {
+            if (num >= 1 && num <= 4) {
                 break;
             } else {
-                printf("Entrada invalida, digite 1, 2, 3, 4 ou 5\n");
+                printf("Entrada invalida, digite 1, 2, 3 ou 4\n");
             }
         }
 
         switch (num) {
             case 1:
-                singlePlayer();
+                jogo();
                 break;
-            case 2 :
-                multiPlayer();
-                break;
-            case 3  :
+            case 2:
                 fp = fopen("help.txt","r");
-                printf("Digite '1' para voltar");
-                scanf("%i", &sair);
-                
-                if (sair==1) {
-                    fclose(fp);
-                    break;
+                if (fp) {
+                    while ((c = getc(fp)) != EOF)
+                        putchar(c);
                 }
-            case 4  :
+                fclose(fp);
+                break;
+            case 3:
                 fp = fopen("rules.txt", "r");
-                printf("Digite '1' para voltar");
-                scanf("%i", &sair);
-                if (sair == 1)
-                {
-                    fclose(fp);
-                    break;
+                if (fp) {
+                    while ((c = getc(fp)) != EOF)
+                        putchar(c);
                 }
+                fclose(fp);
+                break;
+
             default :
                 continuar = 0;
                 continue;

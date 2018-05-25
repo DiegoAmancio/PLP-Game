@@ -14,15 +14,18 @@
 
 
 			
-		1- Os jogadores se revezam no sentido horário.
-		2- Cada lance, o jogador decide qual peça mover, caso tenha mais de uma em campo.
-		3- Uma peça simplesmente se move no sentido horário direção ao redor da pista dada pelo número lançado.
-		4- Se nenhuma peça pode legalmente se mover de acordo com o número jogado, o jogo passa para o próximo jogador.
-		5- Um lance de 6 no dado dá direito outro turno.
-		6- Um lance de 6 no dado dá direito a colocar outra peça do banco no jogo caso tenha.
-		7- Caso sua peça caia na mesma casa onde já exista outra peça, a outra peça é enviada novamente ao banco.
+		1 - Os jogadores se revezam no sentido horario.
+		2 - Cada lance, o jogador decide qual peça mover, caso tenha mais de uma em campo.
+		3 - Uma peca simplesmente se move no sentido horario direcao ao redor da pista dada pelo numero lancado.
+		4 - Se nenhuma peca pode legalmente se mover de acordo com o numero jogado, o jogo passa para o proximo jogador.
+		5 - Um lance de 6 no dado da direito outro turno.
+		6 - Um lance de 6 no dado da direito a colocar outra peca do banco no jogo caso tenha.
+		7 - Caso sua peca caia na mesma casa onde ja exista outra peca, a outra peca e enviada novamente ao banco.
 				       
 
-					CONDIÇÃO DE VITÓRIA
+					CONDICAO DE VITÓRIA
 
-		1- O jogador que conseguir colocar suas duas peças na parte central do tabuleiro ganha a partida!
+		1 - O jogador que conseguir colocar suas duas pecas na parte central do tabuleiro ganha a partida!
+
+
+

@@ -67,55 +67,304 @@
 		int numPeca;
 		peca pecaAMover;
 		if(!vez_do_bot){
-			printf("Escolha uma peça pra mover: ");
+			
+			if(t->jogadorA.peca1.x == -1 && t->jogadorA.peca2.x == -1 && qtdeCasas != 6){
+				return 1;
+			}
+			if(t->jogadorA.peca1.x == -1 && qtdeCasas < 6 && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){
+				return 1;
+			}
+			if(t->jogadorA.peca2.x == -1 && qtdeCasas < 6 && ((t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6) || (t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6))){
+				return 1;
+			}
+			if(((t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6) || (t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6)) && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){
+				return 1;
+			}
+			printf("Escolha uma peca pra mover: ");
 			scanf("%d", &numPeca);
 			printf("\n");
+			
 			if(numPeca == 1){
 				if(t->jogadorA.peca1.x == -1 && qtdeCasas == 6){
 					t->jogadorA.peca1.x = 0;
 					t->jogadorA.peca1.y = 1;
-					t->matriz[0][1]++;
-					vez_do_bot = !vez_do_bot;					
+					t->matriz[1][0]++;
+					vez_do_bot = !vez_do_bot;	
+					qtdeCasas = 0;				
 				}
+				if(t->jogadorA.peca1.x == -1 && qtdeCasas < 6){
+					return 0;
+				}
+				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6){
+					return 0;
+				}
+				if(qtdeCasas == 6){
+					vez_do_bot = !vez_do_bot;
+				}
+
+				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x]--;
+				if(t->jogadorA.peca1.x == 0){
+					while(t->jogadorA.peca1.y < 20 && qtdeCasas > 0){
+						t->jogadorA.peca1.y++;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorA.peca1.y == 20){
+					while(t->jogadorA.peca1.x < 4 && qtdeCasas > 0){
+						t->jogadorA.peca1.x++;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorA.peca1.x == 4){
+					while(t->jogadorA.peca1.y > 0 && qtdeCasas > 0){
+						t->jogadorA.peca1.y--;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorA.peca1.y == 0){
+					while(t->jogadorA.peca1.x > 1 && qtdeCasas > 0){
+						t->jogadorA.peca1.x--;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6){
+					while(t->jogadorA.peca1.y < 6 && qtdeCasas > 0){
+						t->jogadorA.peca1.y++;
+						qtdeCasas--;
+					}
+				}
+				if(t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x] == 1){
+					if(t->jogadorB.peca1.x == t->jogadorA.peca1.x && t->jogadorB.peca1.y == t->jogadorA.peca1.y){
+						t->jogadorB.peca1.x = -1;
+						t->jogadorB.peca1.y = -1;						
+						t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x] = 0;
+					}
+					else if(t->jogadorB.peca2.x == t->jogadorA.peca1.x && t->jogadorB.peca2.y == t->jogadorA.peca1.y){
+						t->jogadorB.peca2.x = -1;
+						t->jogadorB.peca2.y = -1;	
+						t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x] = 0;
+					}
+				}
+				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x]++;
 			}
 			if(numPeca == 2){
 				if(t->jogadorA.peca2.x == -1 && qtdeCasas == 6){
 					t->jogadorA.peca2.x = 0;
 					t->jogadorA.peca2.y = 1;
-					t->matriz[0][1]++;
+					t->matriz[1][0]++;
+					vez_do_bot = !vez_do_bot;
+					qtdeCasas = 0;
+				}
+				if(t->jogadorA.peca2.x == -1 && qtdeCasas < 6){
+					return 0;
+				}
+				if(t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6){
+					return 0;
+				}
+				if(qtdeCasas == 6){
 					vez_do_bot = !vez_do_bot;
 				}
+
+				t->matriz[t->jogadorA.peca2.y][t->jogadorA.peca2.x]--;
+				if(t->jogadorA.peca2.x == 0){
+					while(t->jogadorA.peca2.y < 20 && qtdeCasas > 0){
+						t->jogadorA.peca2.y++;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorA.peca2.y == 20){
+					while(t->jogadorA.peca2.x < 4 && qtdeCasas > 0){
+						t->jogadorA.peca2.x++;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorA.peca2.x == 4){
+					while(t->jogadorA.peca2.y > 0 && qtdeCasas > 0){
+						t->jogadorA.peca2.y--;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorA.peca2.y == 0){
+					while(t->jogadorA.peca2.x > 1 && qtdeCasas > 0){
+						t->jogadorA.peca2.x--;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6){
+					while(t->jogadorA.peca2.y < 6 && qtdeCasas > 0){
+						t->jogadorA.peca2.y++;
+						qtdeCasas--;
+					}
+				}
+				if(t->matriz[t->jogadorA.peca2.y][t->jogadorA.peca2.x] == 1){
+					if(t->jogadorB.peca1.x == t->jogadorA.peca2.x && t->jogadorB.peca1.y == t->jogadorA.peca2.y){
+						t->jogadorB.peca1.x = -1;
+						t->jogadorB.peca1.y = -1;						
+						t->matriz[t->jogadorA.peca2.y][t->jogadorA.peca2.x] = 0;
+					}
+					else if(t->jogadorB.peca2.x == t->jogadorA.peca2.x && t->jogadorB.peca2.y == t->jogadorA.peca2.y){
+						t->jogadorB.peca2.x = -1;
+						t->jogadorB.peca2.y = -1;	
+						t->matriz[t->jogadorA.peca2.y][t->jogadorA.peca2.x] = 0;
+					}
+				}
+				t->matriz[t->jogadorA.peca2.y][t->jogadorA.peca2.x]++;
 			}
 		}
 		else{
+			if(t->jogadorB.peca1.x == -1 && t->jogadorB.peca2.x == -1 && qtdeCasas != 6){
+				return 1;
+			}
+			if(t->jogadorB.peca1.x == -1 && qtdeCasas < 6 && ((t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y == 14) || (t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y > 14 && t->jogadorB.peca2.y-qtdeCasas < 14))){
+				return 1;
+			}
+			if(t->jogadorB.peca2.x == -1 && qtdeCasas < 6 && ((t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14) || (t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y > 14 && t->jogadorB.peca1.y-qtdeCasas < 14))){
+				return 1;
+			}
+			if(((t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14) || (t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y > 14 && t->jogadorB.peca1.y-qtdeCasas < 14)) && ((t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y == 14) || (t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y > 14 && t->jogadorB.peca2.y-qtdeCasas < 14))){
+				return 1;
+			}
 			numPeca = (rand() % 2)+1;
 			if(numPeca == 1){
 				if(t->jogadorB.peca1.x == -1 && qtdeCasas == 6){
 					t->jogadorB.peca1.x = 4;
 					t->jogadorB.peca1.y = 19;
-					t->matriz[4][19]++;
+					t->matriz[19][4]++;
+					vez_do_bot = !vez_do_bot;	
+					qtdeCasas = 0;				
+				}
+				if(t->jogadorB.peca1.x == -1 && qtdeCasas < 6){
+					return 0;
+				}
+				if(t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y > 14 && t->jogadorB.peca1.y-qtdeCasas < 14){
+					return 0;
+				}
+				if(qtdeCasas == 6){
 					vez_do_bot = !vez_do_bot;
 				}
+				t->matriz[t->jogadorB.peca1.y][t->jogadorB.peca1.x]--;
+				if(t->jogadorB.peca1.x == 4){
+					while(t->jogadorB.peca1.y > 0 && qtdeCasas > 0){
+						t->jogadorB.peca1.y--;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorB.peca1.y == 0){
+					while(t->jogadorB.peca1.x > 0 && qtdeCasas > 0){
+						t->jogadorB.peca1.x--;
+						qtdeCasas--;
+					}
+				}
+
+				if(t->jogadorB.peca1.x == 0){
+					while(t->jogadorB.peca1.y < 20 && qtdeCasas > 0){
+						t->jogadorB.peca1.y++;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorB.peca1.y == 20){
+					while(t->jogadorB.peca1.x < 3 && qtdeCasas > 0){
+						t->jogadorB.peca1.x++;
+						qtdeCasas--;
+					}
+				}
+
+				if(t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y > 14){
+					while(t->jogadorB.peca1.y > 14 && qtdeCasas > 0){
+						t->jogadorB.peca1.y--;
+						qtdeCasas--;
+					}
+				}
+				if(t->matriz[t->jogadorB.peca1.y][t->jogadorB.peca1.x] == 1){
+					if(t->jogadorB.peca1.x == t->jogadorA.peca1.x && t->jogadorB.peca1.y == t->jogadorA.peca1.y){
+						t->jogadorA.peca1.x = -1;
+						t->jogadorA.peca1.y = -1;						
+						t->matriz[t->jogadorB.peca1.y][t->jogadorB.peca1.x] = 0;
+					}
+					else if(t->jogadorB.peca1.x == t->jogadorA.peca2.x && t->jogadorB.peca1.y == t->jogadorA.peca2.y){
+						t->jogadorA.peca2.x = -1;
+						t->jogadorA.peca2.y = -1;	
+						t->matriz[t->jogadorB.peca1.y][t->jogadorB.peca1.x] = 0;
+					}
+				}
+				t->matriz[t->jogadorB.peca1.y][t->jogadorB.peca1.x]++;
 			}
 			if(numPeca == 2){
 				if(t->jogadorB.peca2.x == -1 && qtdeCasas == 6){
 					t->jogadorB.peca2.x = 4;
 					t->jogadorB.peca2.y = 19;
-					t->matriz[4][19]++;
+					t->matriz[19][4]++;
+					vez_do_bot = !vez_do_bot;	
+					qtdeCasas = 0;				
+				}
+				if(t->jogadorB.peca2.x == -1 && qtdeCasas < 6){
+					return 0;
+				}
+				if(t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y > 14 && t->jogadorB.peca2.y-qtdeCasas < 14){
+					return 0;
+				}
+				if(qtdeCasas == 6){
 					vez_do_bot = !vez_do_bot;
 				}
+				t->matriz[t->jogadorB.peca2.y][t->jogadorB.peca2.x]--;
+				if(t->jogadorB.peca2.x == 4){
+					while(t->jogadorB.peca2.y > 0 && qtdeCasas > 0){
+						t->jogadorB.peca2.y--;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorB.peca2.y == 0){
+					while(t->jogadorB.peca2.x > 0 && qtdeCasas > 0){
+						t->jogadorB.peca2.x--;
+						qtdeCasas--;
+					}
+				}
+
+				if(t->jogadorB.peca2.x == 0){
+					while(t->jogadorB.peca2.y < 20 && qtdeCasas > 0){
+						t->jogadorB.peca2.y++;
+						qtdeCasas--;
+					}
+				}
+				if(t->jogadorB.peca2.y == 20){
+					while(t->jogadorB.peca2.x < 3 && qtdeCasas > 0){
+						t->jogadorB.peca2.x++;
+						qtdeCasas--;
+					}
+				}
+
+				if(t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y > 14){
+					while(t->jogadorB.peca2.y > 14 && qtdeCasas > 0){
+						t->jogadorB.peca2.y--;
+						qtdeCasas--;
+					}
+				}
+				if(t->matriz[t->jogadorB.peca2.y][t->jogadorB.peca2.x] == 1){
+					if(t->jogadorB.peca2.x == t->jogadorA.peca1.x && t->jogadorB.peca2.y == t->jogadorA.peca1.y){
+						t->jogadorA.peca1.x = -1;
+						t->jogadorA.peca1.y = -1;						
+						t->matriz[t->jogadorB.peca2.y][t->jogadorB.peca2.x] = 0;
+					}
+					else if(t->jogadorB.peca2.x == t->jogadorA.peca2.x && t->jogadorB.peca2.y == t->jogadorA.peca2.y){
+						t->jogadorA.peca2.x = -1;
+						t->jogadorA.peca2.y = -1;	
+						t->matriz[t->jogadorB.peca2.y][t->jogadorB.peca2.x] = 0;
+					}
+				}
+				t->matriz[t->jogadorB.peca2.y][t->jogadorB.peca2.x]++;
 			}
 		}
+		return 1;
 	}
 
 	void printaTabuleiro(tabuleiro *t) {
 
 	    int i, j;
 	    printf(" ______ \n");
-		t->jogadorA.peca1.x == -1? printf("|      |  peca1: base\n") : printf("|      |  peca1: x:%d y:%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y);
+		t->jogadorA.peca1.x == -1? printf("|      |  peca1: base\n") : printf("|      |  peca1: x:0%d y:%d%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y/10, t->jogadorA.peca1.y%10);
 		printf("|  %s  |\n", t->jogadorA.peca1.x == -1 ? t->jogadorA.peca1.representacao : "  ");
 		printf("|  %s  |\n", t->jogadorA.peca2.x == -1 ? t->jogadorA.peca2.representacao : "  ");
-		t->jogadorA.peca2.x == -1? printf("|______|  peca2: base\n") : printf("|______|  peca2: x:%d y:%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y);
+		t->jogadorA.peca2.x == -1? printf("|______|  peca2: base\n") : printf("|______|  peca2: x:0%d y:%d%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y/10, t->jogadorA.peca2.y%10);
 		
 		for(i = 0; i < 21; i++){
 			printf(" __");
@@ -130,7 +379,7 @@
 					printf("__|");
 				}
 				else{
-					t->matriz[0][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[0][j]);
+					t->matriz[j][0] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][0]);
 				}
 			}
 			printf("\n");
@@ -141,13 +390,13 @@
 			for(j = 0; j < 21; j++){
 				
 				if(i == 0 && j < 6){
-					t->matriz[1][j] == 0 ? printf("->|") : printf(" %d|" ,t->matriz[1][j]);
+					t->matriz[j][1] == 0 ? printf("->|") : printf(" %d|" ,t->matriz[j][1]);
 				}
 				else if(j == 19){
 					printf("  |");
 				}
 				else if(i == 0 && j ==20){
-					t->matriz[1][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[1][j]);
+					t->matriz[j][1] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][1]);
 				}
 				else if(i == 1 && (j < 6 || j == 20)){
 					printf("__|");
@@ -170,7 +419,7 @@
 					printf("__|");
 				}
 				else if(i == 0 && (j == 0 || j  >= 19)){
-					t->matriz[2][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[2][j]);
+					t->matriz[j][2] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][2]);
 				}
 				else if(i == 1 && j < 19 && j > 14){
 					printf("__ ");
@@ -187,13 +436,16 @@
 			for(j = 0; j < 21; j++){
 				
 				if(i == 0 && j > 14){
-					t->matriz[3][j] == 0 ? printf("<-|") : printf(" %d|" ,t->matriz[3][j]);
+					t->matriz[j][3] == 0 ? printf("<-|") : printf(" %d|" ,t->matriz[j][3]);
 				}
 				else if(i == 1 && (j == 0 || j >= 14)){
 					printf("__|");
 				}
-				else if(i == 0 && (j == 0 || j == 14)){
-					t->matriz[3][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[3][j]);
+				else if(i ==0 && j == 14){
+					printf("  |");
+				}
+				else if(i == 0 && j == 0){
+					t->matriz[j][3] == 0 ? printf("  |") : printf(" %d|", t->matriz[j][3]);
 				}
 				else if(i == 1){
 					printf("__ ");
@@ -213,16 +465,16 @@
 					printf("__|");
 				}
 				else{
-					t->matriz[4][j] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[4][j]);
+					t->matriz[j][4] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][4]);
 				}
 			}
 			printf("\n");
 		}		
 	    printf("                                                         ______ \n");
-		t->jogadorB.peca1.x == -1? printf("                                           peca1: base  |      |\n") : printf("                                        peca1: x:%d y:%d  |      |\n", t->jogadorB.peca1.x, t->jogadorB.peca1.y);	
+		t->jogadorB.peca1.x == -1? printf("                                           peca1: base  |      |\n") : printf("                                      peca1: x:0%d y:%d%d  |      |\n", t->jogadorB.peca1.x, t->jogadorB.peca1.y/10, t->jogadorB.peca1.y%10);	
 		printf("                                                        |  %s  |\n", t->jogadorB.peca1.x == -1 ? t->jogadorB.peca1.representacao : "  ");
 		printf("                                                        |  %s  |\n", t->jogadorB.peca2.x == -1 ? t->jogadorB.peca2.representacao : "  ");
-		t->jogadorB.peca1.x == -1? printf("                                           peca1: base  |______|\n\n") : printf("                                        peca1: x:%d y:%d  |______|\n\n", t->jogadorB.peca1.x, t->jogadorB.peca1.y);	
+		t->jogadorB.peca2.x == -1? printf("                                           peca2: base  |______|\n\n") : printf("                                      peca2: x:0%d y:%d%d  |______|\n\n", t->jogadorB.peca2.x, t->jogadorB.peca2.y/10, t->jogadorB.peca2.y%10);	
 
 	}
 
@@ -231,9 +483,9 @@
 	    int i, j;
 	    for (i = 0; i < 5; i++) {
 			for (j = 0; j < 21; j++) {
-		    	t->matriz[i][j] = 0; //Sim, realmente é [i][j], bizarro
+		    	t->matriz[j][i] = 0;
 			}
-	    } //Define tudo como 0, quando tiver alguem será 1
+	    }
 	    //Se quiser pode gerar as armadilhas ja aqui
 	}
 
@@ -297,7 +549,7 @@
 	}
 */
 
-	void singlePlayer() {
+	void jogo() {
 		
 		//Cria as peças
 	    peca peca1A;
@@ -357,26 +609,30 @@
 			
 			system("clear"); //limpa a tela			
 			printaTabuleiro(&tabuleiro);
-		
+			
 			if(!vez_do_bot){
 
 				printf("Sua vez : aperte digite qualquer coisa para rodar o dado ou desistir para sair:\n");		
 				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
 				scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
 				dado = rodaDado();
-				printf("Você tirou no dado %d\n", dado);
+				printf("Voce tirou no dado %d\n", dado);
 				while(1){
 					if (movePeca(&tabuleiro, dado)){
 						break;
 					}
 					else{
-						printf("Movimento invalido");
+						printf("Movimento invalido\n");
 					}
+				}
+				if(tabuleiro.matriz[6][1] == 2){
+					printf("Parabens, voce ganhou!!\n");
+					break;
 				}
 			}
 			else{
 				system("clear"); //limpa a tela
-				printf("vez do bot: o bot joga o dado...");
+				printf("Vez do bot : o bot vai jogar o dado...\n");
 				sleep(1);
 				dado = rodaDado();
 				printf("\nSaiu no dado %d\n", dado);
@@ -384,73 +640,20 @@
 					if (movePeca(&tabuleiro, dado)){
 						break;
 					}
-					else{
-						printf("Movimento invalido");
-					}
 				}
-				sleep(1);
+				sleep(2);
+				if(tabuleiro.matriz[14][3] == 2){
+					printf("Voce perdeu :(\n");
+					break;
+				}
 			}
 		
 			if (strcmp(p, "desistir") == 0) { //desistir do jogo
-				printf("Você desistiu, consequentemente... Você perdeu!");
+				printf("Você desistiu, consequentemente... Voce perdeu!\n");
 				break;
 			}
 
 			vez_do_bot = !vez_do_bot;
-	    }
-	}
-
-
-	void multiPlayer() {
-
-	    //Cria as peças
-	    peca peca1A;
-	    peca peca2A;
-	    peca peca1B;
-	    peca peca2B;
-
-	    //Cria os jogadores
-	    jogador jogadorA;
-	    jogador jogadorB;
-
-	    //Cria o tabuleiro
-	    tabuleiro tabuleiro;
-
-	    //Atribuições
-	    peca1A.casasAndadas = 0;
-	    peca1A.time = 'A';
-	    peca2A.casasAndadas = 0;
-	    peca2A.time = 'A';
-	    peca1B.casasAndadas = 0;
-	    peca1B.time = 'B';
-	    peca2B.casasAndadas = 0;
-	    peca2B.time = 'B';
-
-	    jogadorA.peca1 = peca1A;
-	    jogadorA.peca2 = peca2A;
-	    jogadorA.time = 'A';
-	    jogadorB.peca1 = peca1B;
-	    jogadorB.peca2 = peca2B;
-	    jogadorB.time = 'B';
-
-	    tabuleiro.jogadorA = jogadorA;
-	    tabuleiro.jogadorB = jogadorB;
-	    geraTabuleiro(&tabuleiro);
-
-	    //O jogo de verdade começará aqui
-	    char p[1000];
-	    while (TRUE) {
-
-		printaTabuleiro(&tabuleiro);
-
-
-		setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
-		scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
-
-		if (strcmp(p, "desistir") == 0) { //desistir do jogo
-		    break;
-		}
-		system("clear"); //limpa a tela
 	    }
 	}
 
