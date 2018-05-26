@@ -5,8 +5,46 @@
 	#include <unistd.h>
 	#include <string.h>
 	#include <stdlib.h>    
-	#include <time.h> 
+	#include <time.h>
+	
+	
+	
+#define foreground(color) FORE##color
+#define background(color) BACK##color
+#define style(style_) style_
 
+/** Foreground Colors **/
+#define FOREBLACK printf("\033[30m") 
+#define FORERED printf("\033[31m") 
+#define FOREGREEN printf("\033[32m") 
+#define FOREYELLOW printf("\033[33m") 
+#define FOREBLUE printf("\033[34m") 
+#define FOREMARGENTA printf("\033[35m") 
+#define FORECYAN printf("\033[36m") 
+#define FOREWHITE printf("\033[37m") 
+#define FORENORMAL_COLOR printf("\033[39m") 
+
+/** Background Colors **/
+#define BACKBLACK printf("\033[40m") 
+#define BACKRED printf("\033[41m") 
+#define BACKGREEN printf("\033[42m") 
+#define BACKYELLOW printf("\033[43m") 
+#define BACKBLUE printf("\033[44m") 
+#define BACKMAGENTA printf("\033[45m") 
+#define BACKCYAN printf("\033[46m") 
+#define BACKWHITE printf("\033[47m") 
+#define BACKNORMAL printf("\033[49m")
+
+/** Style **/
+#define BRIGHT printf("\033[1m")
+#define DIM printf("\033[2m")
+#define NORMAL printf("\033[22m")
+#define RESETALL printf("\033[0m")
+#define UNDERLINE printf("\033[4m")
+#define BLINKSLOW printf("\033[5m")
+#define BLINKRAPID printf("\033[6m")
+#define ITALIC printf("\033[3m")
+#define NEGATIVE printf("\033[7m")
 	int vez_do_bot = 0;
 
 	//Criando os tipos de struct
@@ -377,97 +415,181 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 	void printaTabuleiro(tabuleiro *t) {
 
 	    int i, j;
-	    printf(" ______ \n");
-		t->jogadorA.peca1.x == -1? printf("|      |  peca1: base\n") : printf("|      |  peca1: x:0%d y:%d%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y/10, t->jogadorA.peca1.y%10);
-		printf("|  %s  |\n", t->jogadorA.peca1.x == -1 ? t->jogadorA.peca1.representacao : "  ");
-		printf("|  %s  |\n", t->jogadorA.peca2.x == -1 ? t->jogadorA.peca2.representacao : "  ");
-		t->jogadorA.peca2.x == -1? printf("|______|  peca2: base\n") : printf("|______|  peca2: x:0%d y:%d%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y/10, t->jogadorA.peca2.y%10);
+	   
+	    background(GREEN);
+	    printf("        ");
+	    
+	    style(RESETALL);
+	   	
+		t->jogadorA.peca1.x == -1? printf("  peça1: base\n") : printf("  peça1: x:0%d y:%d%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y/10, t->jogadorA.peca1.y%10);
 		
-		for(i = 0; i < 21; i++){
-			printf(" __");
-		}
+		background(GREEN);
+		printf("   %s   \n", t->jogadorA.peca1.x == -1 ? t->jogadorA.peca1.representacao : "  ");
+		printf("   %s   \n", t->jogadorA.peca2.x == -1 ? t->jogadorA.peca2.representacao : "  ");
+		printf("        ");
+		style(RESETALL);
+		
+		t->jogadorA.peca2.x == -1? printf("  peça2: base\n") : printf("  peça2: x:0%d y:%d%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y/10, t->jogadorA.peca2.y%10);
+		
+		
 		printf("\n");
-		
+		background(WHITE);
 		for(i = 0; i < 2; i++){
+			foreground(BLACK);
 			printf("|");
 			for(j = 0; j < 21; j++){
 				
 				if(i == 1){
-					printf("__|");
+					if( j == 20){
+						printf("__|");
+					}else{
+						printf("  |");
+					}	
+					
 				}
 				else{
-					t->matriz[j][0] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][0]);
-				}
+				t->matriz[j][0] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][0]);
 			}
+		}
+			
 			printf("\n");
 		}
-		
+		style(RESETALL);
 		for(i = 0; i < 2; i++){
+			background(GREEN);
+			foreground(BLACK);
 			printf("|");
+			
 			for(j = 0; j < 21; j++){
-				
+				foreground(BLACK);
 				if(i == 0 && j < 6){
+					background(GREEN);
+					
 					t->matriz[j][1] == 0 ? printf("->|") : printf(" %d|" ,t->matriz[j][1]);
+					style(RESETALL);
 				}
 				else if(j == 19){
-					printf("  |");
+					printf("  ");
+					
+					background(WHITE);
+					printf("|");
 				}
 				else if(i == 0 && j ==20){
+					
 					t->matriz[j][1] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][1]);
 				}
 				else if(i == 1 && (j < 6 || j == 20)){
-					printf("__|");
+					if(j != 20){
+						background(GREEN);
+						printf("  |");
+					}else{
+						printf("__|");
+					}
+					
+					style(RESETALL);
+					
 				}
-				else if(i == 1 && !(j < 6 || j == 20)){
+				else {
+					background(BLACK);	
 					printf("   ");
+					
 				}
-				else{
-					printf("   ");
-				}
+				
 			}
 			printf("\n");
 		}
 		
 		for(i = 0; i < 2; i++){
-			
+			foreground(BLACK);
+			background(WHITE);
 			printf("|");
 			for(j = 0; j < 21; j++){
+				foreground(BLACK);
+				background(WHITE);
 				if((i == 1 && (j == 0||j >= 19))){
-					printf("__|");
+					if(j == 19){
+						background(BLACK);
+						printf("  ");	
+						background(WHITE);
+						printf("|");
+					}else{
+						printf("__|");
+					}
+					
+					
 				}
 				else if(i == 0 && (j == 0 || j  >= 19)){
+					
+					
+					background(WHITE);
 					t->matriz[j][2] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][2]);
+					
 				}
 				else if(i == 1 && j < 19 && j > 14){
-					printf("__ ");
+					
+					background(BLACK);	
+					printf("   ");
+					
 				}
 				else{
+					background(BLACK);	
 					printf("   ");
 				}
+					
 			}
+			
 			printf("\n");
+			
+			
 		}
+		style(RESETALL);
 		
 		for(i = 0; i < 2; i++){
+			foreground(BLACK);
+			background(WHITE);
 			printf("|");
 			for(j = 0; j < 21; j++){
-				
+				foreground(BLACK);
 				if(i == 0 && j > 14){
+					background(BLUE);
+					
 					t->matriz[j][3] == 0 ? printf("<-|") : printf(" %d|" ,t->matriz[j][3]);
+					style(RESETALL);
 				}
 				else if(i == 1 && (j == 0 || j >= 14)){
-					printf("__|");
+					if(j>14){
+						background(BLUE);
+					}
+					if(j == 0){
+						printf("__");
+						
+					}else{
+						
+						printf("  ");
+					}
+					background(BLUE);
+					if(j == 0){
+						background(WHITE);
+					}
+					printf("|");
+					style(RESETALL);
 				}
 				else if(i ==0 && j == 14){
-					printf("  |");
+					printf("  ");
+					background(BLUE);
+					printf("|");
 				}
 				else if(i == 0 && j == 0){
+					background(WHITE);
 					t->matriz[j][3] == 0 ? printf("  |") : printf(" %d|", t->matriz[j][3]);
+					style(RESETALL);
 				}
 				else if(i == 1){
-					printf("__ ");
+					background(BLACK);	
+					printf("   ");
 				}
 				else{
+					background(BLACK);	
 					printf("   ");
 				}
 			}
@@ -475,24 +597,39 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 		}
 		
 		for(i = 0; i < 2; i++){
+			foreground(BLACK);
+			background(WHITE);
 			printf("|");
 			for(j = 0; j < 21; j++){
 				
 				if(i%2 == 1){
-					printf("__|");
+					printf("  |");
 				}
 				else{
 					t->matriz[j][4] == 0 ? printf("  |") : printf(" %d|" ,t->matriz[j][4]);
 				}
 			}
 			printf("\n");
-		}		
-	    printf("                                                         ______ \n");
-		t->jogadorB.peca1.x == -1? printf("                                           peca1: base  |      |\n") : printf("                                      peca1: x:0%d y:%d%d  |      |\n", t->jogadorB.peca1.x, t->jogadorB.peca1.y/10, t->jogadorB.peca1.y%10);	
-		printf("                                                        |  %s  |\n", t->jogadorB.peca1.x == -1 ? t->jogadorB.peca1.representacao : "  ");
-		printf("                                                        |  %s  |\n", t->jogadorB.peca2.x == -1 ? t->jogadorB.peca2.representacao : "  ");
-		t->jogadorB.peca2.x == -1? printf("                                           peca2: base  |______|\n\n") : printf("                                      peca2: x:0%d y:%d%d  |______|\n\n", t->jogadorB.peca2.x, t->jogadorB.peca2.y/10, t->jogadorB.peca2.y%10);	
-
+		}
+		style(RESETALL);		
+	    printf("                                                          \n");
+	    
+		t->jogadorB.peca1.x == -1? printf("                                           peça1: base  ") : printf("                                      peça1: x:0%d y:%d%d  ", t->jogadorB.peca1.x, t->jogadorB.peca1.y/10, t->jogadorB.peca1.y%10);
+		background(BLUE);
+		printf("        \n");	
+		style(RESETALL);
+		printf("                                                        ");
+		background(BLUE);
+		printf("   %s   \n", t->jogadorB.peca1.x == -1 ? t->jogadorB.peca1.representacao : "  ");
+		style(RESETALL);
+		printf("                                                        ");
+		background(BLUE);
+		printf("   %s   \n", t->jogadorB.peca2.x == -1 ? t->jogadorB.peca2.representacao : "  ");
+		style(RESETALL);
+		t->jogadorB.peca2.x == -1? printf("                                           peça2: base  ") : printf("                                      peça2: x:0%d y:%d%d  ", t->jogadorB.peca2.x, t->jogadorB.peca2.y/10, t->jogadorB.peca2.y%10);	
+		background(BLUE);
+		printf("        \n\n");	
+		style(RESETALL);
 	}
 
 
@@ -585,8 +722,9 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 			printaTabuleiro(&tabuleiro);
 			
 			if(!vez_do_bot){
-
-				printf("Sua vez : digite qualquer coisa para rodar o dado ou desistir para sair:\n");		
+				
+				printf("Sua vez : digite qualquer coisa para rodar o dado ou desistir para sair:\n");
+					
 				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
 				scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
 				if (strcmp(p, "desistir") == 0) { //desistir do jogo
