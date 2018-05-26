@@ -53,14 +53,15 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 				return 1;
 			}
 			while(1){
-				printf("Escolha uma peca pra mover: ");
+				printf("Escolha uma peca pra mover 1 ou 2: ");
+				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
 				scanf("%d", &numPeca);
 				printf("\n");
 				if(numPeca == 1 || numPeca == 2){
 					break;
 				}
 				else{
-					printf("Peca Invalida\n");
+					printf("Peca Invalida \n escolha uma peça valida para o movimento\n");
 				}
 			}
 
@@ -75,12 +76,14 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 				}
 				//Verificacoes se a jogada e valida
 				if(t->jogadorA.peca1.x == -1 && qtdeCasas < 6){ //Peca na base e dado resultou em um numero menor do que 6
+					printf("Para a peça 1 sair da base é necessário tirar 6 no dado\n");
 					return 0;
 				}
 				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6){ //Peca no caminho, mas pode acabar passando da base
 					return 0;
 				}
 				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6){ //Peca ja chegou ao final
+					printf("peca 1 ja terminou o trajeto");
 					return 0;
 				}
 
@@ -89,6 +92,7 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 				}
 
 				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x]--; //Retira da posicao atual
+				//movimentos inicio:
 				if(t->jogadorA.peca1.x == 0){ //Movimento se estiver na primeira linha
 					while(t->jogadorA.peca1.y < 20 && qtdeCasas > 0){
 						t->jogadorA.peca1.y++;
@@ -119,6 +123,7 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 						qtdeCasas--;
 					}
 				}
+				//fim de movimentos
 				if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6){
 					vez_do_bot = !vez_do_bot;
 				} 
@@ -146,9 +151,11 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 					qtdeCasas = 0;
 				}
 				if(t->jogadorA.peca2.x == -1 && qtdeCasas < 6){
+					printf("Para a peça 2 sair da base é necessário tirar 6 no dado\n");
 					return 0;
 				}
 				if(t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6){
+					printf("peca 2 ja terminou o trajeto");
 					return 0;
 				}
 				if(t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6){
