@@ -71,7 +71,7 @@
 	    int matriz[21][5]; //Tabuleiro 21x5 com espaços em branco (21 + 21 + 5 + 5 dá 52 que é o num de casas que existem no ludo)
 	} tabuleiro;
 
-	
+
 int movePeca(tabuleiro *t, int qtdeCasas) {
 		
 		int numPeca; //Numero da peça a ser movida
@@ -411,8 +411,10 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 		}
 		return 1;
 	}
+	void voltePeca(tabuleiro *t,peca pecA,int qtnDeCasas){
 
-	int geraArmadilha(tabuleiro *tab, int numdado,int rodaArmadilha)
+	}
+	int geraArmadilha(tabuleiro *tab, int numdado,int rodaArmadilha,peca pecaPega)
 	{
 		srand(time(0));
 		int numArmadilha = rand() % 5;
