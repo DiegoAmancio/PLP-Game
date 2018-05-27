@@ -1,4 +1,6 @@
 ﻿#include "PLP.h"
+ 
+
 
 
 int main() {
@@ -13,6 +15,7 @@ int main() {
     char str[5000];
     while (continuar) {
         while (1) {
+			
             printf("1 - Jogar\n2 - Ajuda/Creditos\n3 - Regras\n4 - Sair\n");
             scanf("%i", &num);
             if (num >= 1 && num <= 4) {
