@@ -412,60 +412,50 @@ int movePeca(tabuleiro *t, int qtdeCasas) {
 		return 1;
 	}
 
-	void geraArmadilha(tabuleiro *tab, int numdado)
+	int geraArmadilha(tabuleiro *tab, int numdado,int rodaArmadilha)
 	{
 		srand(time(0));
 		int numArmadilha = rand() % 5;
-
-		if (numArmadilha == 0)
-		{
+		int saida = 1;
+		if (numArmadilha == 0){
 			numArmadilha++;
 		}
 
-		if (numArmadilha == 1)
-		{
+		if (numArmadilha == 1){
 			printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado/n Se você tirou 6, seu carro tem asas e conseguiu evitar o desvio");
 			sleep(2);
-			if (numdado = 6)
-			{
-				break;
-			}
-			else
-			{
+			if (numdado = 6){
+				saida = 1;
+			}else{
 				//adicionar o movepeca retorna o numero indicado pelo dado
 			}
-		}
-		else if (numArmadilha == 2)
-		{
+		}else if (numArmadilha == 2){
+			
 			printf("Armadilha: Gasolina Acabando e o posto a frente cobra muito caro! /n Retorne 2 espaços para abastecer no posto anterior");
 			//adicionar o movepeca dois espaços para tras
-		}
-		else if (numArmadilha == 3)
-		{
+		
+		}else if (numArmadilha == 3){
+			
 			printf("Armadilha: Blitz na Rodovia! /n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços");
 			sleep(2);
-			if (numdado % 2 == 0)
-			{
-				break;
-			}
-			else
-			{
+			
+			if (numdado % 2 == 0){
+				saida = 1;
+			}else{
 				//adicionar o movepeca 5 espaços para tras
 			}
-		}
-		else if (numArmadilha = 4)
-		{
+		}else if (numArmadilha = 4){
 			printf("Armadilha: Dia de Emplacamento! /n Pague o Emplacamento e volte a metade da quantidade de casas que você andou!");
 			sleep(2);
 			numdado = (numdado / 2) * -1;
 			//adicionar o movepeca com a metade do dado em negativo(transformação já feita acima)
+		}else if (numArmadilha = 5){
+			printf("Armadilha: Carona na abertura de ambulancia! /n Ande novamente o mesmo número de casas");
+			sleep(2);
+			//movePeca(tab,numdado * 2,0);
+			saida = 1;
 		}
-		else if (numArmadilha = 5)
-		{
-			printf("Armadilha: Carona na abertura de ambulancia! /n Ande novamente o mesmo número de casas")
-				sleep(2);
-		//adicionar o movepeca com dobro do numero do dado
-		}
+		return saida;
 		
 	}
 
