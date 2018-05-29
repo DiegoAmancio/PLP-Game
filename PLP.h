@@ -72,8 +72,85 @@
 		int armadilhas[21][5];
 	} tabuleiro;
 
-
+	int movePeca(tabuleiro *t, int qtdeCasas);
+	void voltePeca(tabuleiro *t, peca *p, int qtdeCasas);
+	int moveTimeA(tabuleiro *t, peca *p, int qtdeCasas);
+	int moveTimeB(tabuleiro *t, peca *p, int qtdeCasas);
+	void printaTabuleiro(tabuleiro *t);
+	void jogo();
+	void geraTabuleiro(tabuleiro *t);
 	
+	void voltePeca(tabuleiro *t, peca *p, int qtdeCasas){
+		
+		if(p->time == 'A'){
+
+			t->matriz[p->y][p->x]--;
+		
+			if(p->y == 0){ //Movimento se estiver na primeira coluna
+				while(p->x < 4 && qtdeCasas > 0){
+					p->x++;
+					qtdeCasas--;
+				}
+			}
+
+			if(p->x == 4){ //Movimento se estiver na ultima linha
+				while(p->y < 20 && qtdeCasas > 0){
+					p->y++;
+					qtdeCasas--;
+				}
+			}
+
+			if(p->y == 20){ //Movimento se estiver na ultima coluna
+				while(p->x > 0 && qtdeCasas > 0){
+					p->x--;
+					qtdeCasas--;
+				}
+			}
+			
+			if(p->x == 0){ //Movimento se estiver na primeira linha
+				while(p->y > 1 && qtdeCasas > 0){
+					p->y--;
+					qtdeCasas--;
+				}
+			}
+
+			t->matriz[p->y][p->x]++;
+		}
+		else{
+
+			t->matriz[p->y][p->x]--;
+			
+			if(p->y == 20){
+				while(p->x > 0 && qtdeCasas > 0){
+					p->x--;
+					qtdeCasas--;
+				}
+			}
+			if(p->x == 0){
+				while(p->y > 0 && qtdeCasas > 0){
+					p->y--;
+					qtdeCasas--;
+				}
+			}
+
+			if(p->y == 0){
+				while(p->x < 4 && qtdeCasas > 0){
+					p->x++;
+					qtdeCasas--;
+				}
+			}
+
+			if(p->x == 4){
+				while(p->y < 19 && qtdeCasas > 0){
+					p->y++;
+					qtdeCasas--;
+				}
+			}
+
+			t->matriz[p->y][p->x]++;
+		}
+	}
+
 	void geraArmadilha(tabuleiro *tab, peca *pecaPega, int numdado){
 		int numArmadilha = rand() % 5;
 		
@@ -356,77 +433,7 @@
 		return 1;
 	}
 
-	void voltePeca(tabuleiro *t, peca *p, int qtdeCasas){
-		
-		if(p->time == 'A'){
-
-			t->matriz[p->y][p->x]--;
-		
-			if(p->y == 0){ //Movimento se estiver na primeira coluna
-				while(p->x < 4 && qtdeCasas > 0){
-					p->x++;
-					qtdeCasas--;
-				}
-			}
-
-			if(p->x == 4){ //Movimento se estiver na ultima linha
-				while(p->y < 20 && qtdeCasas > 0){
-					p->y++;
-					qtdeCasas--;
-				}
-			}
-
-			if(p->y == 20){ //Movimento se estiver na ultima coluna
-				while(p->x > 0 && qtdeCasas > 0){
-					p->x--;
-					qtdeCasas--;
-				}
-			}
-			
-			if(p->x == 0){ //Movimento se estiver na primeira linha
-				while(p->y > 1 && qtdeCasas > 0){
-					p->y--;
-					qtdeCasas--;
-				}
-			}
-
-			t->matriz[p->y][p->x]++;
-		}
-		else{
-
-			t->matriz[p->y][p->x]--;
-			
-			if(p->y == 20){
-				while(p->x > 0 && qtdeCasas > 0){
-					p->x--;
-					qtdeCasas--;
-				}
-			}
-			if(p->x == 0){
-				while(p->y > 0 && qtdeCasas > 0){
-					p->y--;
-					qtdeCasas--;
-				}
-			}
-
-			if(p->y == 0){
-				while(p->x < 4 && qtdeCasas > 0){
-					p->x++;
-					qtdeCasas--;
-				}
-			}
-
-			if(p->x == 4){
-				while(p->y < 19 && qtdeCasas > 0){
-					p->y++;
-					qtdeCasas--;
-				}
-			}
-
-			t->matriz[p->y][p->x]++;
-		}
-	}
-
+	
 	void printaTabuleiro(tabuleiro *t) {
 
 	    int i, j;
