@@ -16,14 +16,16 @@ int main() {
     while (continuar) {
         while (1) {
 			
-            printf("1 - Jogar\n2 - Ajuda/Creditos\n3 - Regras\n4 - Sair\n");
-            scanf("%i", &num);
+            printf("1 - Jogar         \n2 - Ajuda/Creditos\n3 - Regras        \n4 - Sair          \n");
+		    scanf("%i", &num);
             if (num >= 1 && num <= 4) {
                 break;
             } else {
                 printf("Entrada invalida, digite 1, 2, 3 ou 4\n");
             }
+           
         }
+       
 
         switch (num) {
             case 1:
@@ -63,5 +65,6 @@ int main() {
                 printf("Entrada invalida, digite sim ou nao\n");
             }
         }
+        
     }
 }
