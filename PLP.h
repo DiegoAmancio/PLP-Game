@@ -6,45 +6,45 @@
 	#include <string.h>
 	#include <stdlib.h>    
 	#include <time.h>
-	
-	
-	
-#define foreground(color) FORE##color
-#define background(color) BACK##color
-#define style(style_) style_
+		
+		
+		
+	#define foreground(color) FORE##color
+	#define background(color) BACK##color
+	#define style(style_) style_
 
-/** Foreground Colors **/
-#define FOREBLACK printf("\033[30m") 
-#define FORERED printf("\033[31m") 
-#define FOREGREEN printf("\033[32m") 
-#define FOREYELLOW printf("\033[33m") 
-#define FOREBLUE printf("\033[34m") 
-#define FOREMARGENTA printf("\033[35m") 
-#define FORECYAN printf("\033[36m") 
-#define FOREWHITE printf("\033[37m") 
-#define FORENORMAL_COLOR printf("\033[39m") 
+	/** Foreground Colors **/
+	#define FOREBLACK printf("\033[30m") 
+	#define FORERED printf("\033[31m") 
+	#define FOREGREEN printf("\033[32m") 
+	#define FOREYELLOW printf("\033[33m") 
+	#define FOREBLUE printf("\033[34m") 
+	#define FOREMARGENTA printf("\033[35m") 
+	#define FORECYAN printf("\033[36m") 
+	#define FOREWHITE printf("\033[37m") 
+	#define FORENORMAL_COLOR printf("\033[39m") 
 
-/** Background Colors **/
-#define BACKBLACK printf("\033[40m") 
-#define BACKRED printf("\033[41m") 
-#define BACKGREEN printf("\033[42m") 
-#define BACKYELLOW printf("\033[43m") 
-#define BACKBLUE printf("\033[44m") 
-#define BACKMAGENTA printf("\033[45m") 
-#define BACKCYAN printf("\033[46m") 
-#define BACKWHITE printf("\033[47m") 
-#define BACKNORMAL printf("\033[49m")
+	/** Background Colors **/
+	#define BACKBLACK printf("\033[40m") 
+	#define BACKRED printf("\033[41m") 
+	#define BACKGREEN printf("\033[42m") 
+	#define BACKYELLOW printf("\033[43m") 
+	#define BACKBLUE printf("\033[44m") 
+	#define BACKMAGENTA printf("\033[45m") 
+	#define BACKCYAN printf("\033[46m") 
+	#define BACKWHITE printf("\033[47m") 
+	#define BACKNORMAL printf("\033[49m")
 
-/** Style **/
-#define BRIGHT printf("\033[1m")
-#define DIM printf("\033[2m")
-#define NORMAL printf("\033[22m")
-#define RESETALL printf("\033[0m")
-#define UNDERLINE printf("\033[4m")
-#define BLINKSLOW printf("\033[5m")
-#define BLINKRAPID printf("\033[6m")
-#define ITALIC printf("\033[3m")
-#define NEGATIVE printf("\033[7m")
+	/** Style **/
+	#define BRIGHT printf("\033[1m")
+	#define DIM printf("\033[2m")
+	#define NORMAL printf("\033[22m")
+	#define RESETALL printf("\033[0m")
+	#define UNDERLINE printf("\033[4m")
+	#define BLINKSLOW printf("\033[5m")
+	#define BLINKRAPID printf("\033[6m")
+	#define ITALIC printf("\033[3m")
+	#define NEGATIVE printf("\033[7m")
 	int vez_do_bot = 0;
 
 	//Criando os tipos de struct
@@ -74,49 +74,61 @@
 
 
 	
-	int geraArmadilha(tabuleiro *tab, peca *pecaPega, int numdado){
-
-		int numArmadilha = (rand() % 5)+1;
-		int saida = 1;
-
-		/*	
-		if (numArmadilha == 1){
-			printf("Armadilha: Desvio na avenida local! /n Volte o número de casas indicado pelo dado/n Se você tirou 6, seu carro tem asas e conseguiu evitar o desvio");
-			sleep(2);
-			if (numdado = 6){
-				saida = 1;
-			}else{
-				//adicionar o movepeca retorna o numero indicado pelo dado
-			}
-		}else if (numArmadilha == 2){
-			
-			printf("Armadilha: Gasolina Acabando e o posto a frente cobra muito caro! /n Retorne 2 espaços para abastecer no posto anterior");
-			//adicionar o movepeca dois espaços para tras
+	void geraArmadilha(tabuleiro *tab, peca *pecaPega, int numdado){
+		int numArmadilha = rand() % 5;
 		
-		}else if (numArmadilha == 3){
+		if (numArmadilha == 0){
 			
-			printf("Armadilha: Blitz na Rodovia! /n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços");
-			sleep(2);
+		if (numdado != 6){
+			printf("Armadilha: Desvio na avenida local! \n sua peça foi bloqueada por isso terá que esperar,vc perdeu essa jogada Se a peça antes da jogada estiver no tabuleiro\n");
+	
+			sleep(5);
+			voltePeca(tab,pecaPega,numdado);
 			
-			if (numdado % 2 == 0){
-				saida = 1;
-			}else{
-				//adicionar o movepeca 5 espaços para tras
-			}
-		}else if (numArmadilha = 4){
-			printf("Armadilha: Dia de Emplacamento! /n Pague o Emplacamento e volte a metade da quantidade de casas que você andou!");
-			sleep(2);
-			numdado = (numdado / 2) * -1;
-			//adicionar o movepeca com a metade do dado em negativo(transformação já feita acima)
-		}else if (numArmadilha = 5){
-			printf("Armadilha: Carona na abertura de ambulancia! /n Ande novamente o mesmo número de casas");
-			sleep(2);
-			//movePeca(tab,numdado * 2,0);
-			saida = 1;
+			
 		}
-
-		*/
-		return saida;
+		}else if (numArmadilha == 1){
+			
+			printf("Armadilha Greve dos caminhoneiros!!\n Gasolina Acabando e o posto a frente cobra muito caro! \n Retorne 2 espaços para abastecer no posto anterior\n");
+			printf("sua peça voltou 2 espaços");
+			sleep(5);
+			voltePeca(tab,pecaPega,2);
+			
+		
+		}else if (numArmadilha == 2){
+			printf("Armadilha: Blitz na Rodovia! \n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços\n");
+			if (numdado % 2 != 0){
+					printf("sua peça voltou 5 espaços");
+					sleep(5);
+					voltePeca(tab,pecaPega,5);
+					
+					
+			}
+		}else if (numArmadilha == 3){
+			printf("Armadilha: Dia de Emplacamento! \n Pague o Emplacamento e volte a metade da quantidade de casas que você andou até agora!\n");
+			//aqui klebs fazer identificar quantas casas a peça andou
+			voltePeca(tab,pecaPega,(pecaPega->casasAndadas) / 2);
+			printf("%d",pecaPega->casasAndadas);
+			sleep(5);
+			if(pecaPega->casasAndadas == 0){
+				printf("Como a sua peça não andou ainda no tabuleiro a armadilha não teve efeito\n");
+			}else{
+				printf("sua peça voltou %d espaços",(pecaPega->casasAndadas) / 2);
+			}
+			sleep(5);
+		}
+		
+		else if (numArmadilha = 5){
+			printf("armadilha Positiva :\n Deu Sorte: Carona na abertura de ambulancia! \n Sua peça se moveu de forma bônus mais %d espaços\n",numdado);
+		
+			sleep(5);
+			movePeca(tab,numdado);
+			
+		}
+		
+		
+		
+		
 		
 	}
 
@@ -196,6 +208,7 @@
 			}
 		}
 		t->matriz[p->y][p->x]++; //Alocando no novo espaco
+		//a armadilha ta rodando quando a peça vai sair da caixa
 		if(t->armadilhas[p->y][p->x]){
 			geraArmadilha(t, p, dado); //A armadilha vai ser aleatoria
 		}
@@ -629,11 +642,11 @@
 		background(BLUE);
 		printf("        \n");	
 		style(RESETALL);
-		printf("                                                        ");
+		printf("                                                       ");
 		background(BLUE);
 		printf("   %s   \n", t->jogadorB.peca1.x == -1 ? t->jogadorB.peca1.representacao : "  ");
 		style(RESETALL);
-		printf("                                                        ");
+		printf("                                                       ");
 		background(BLUE);
 		printf("   %s   \n", t->jogadorB.peca2.x == -1 ? t->jogadorB.peca2.representacao : "  ");
 		style(RESETALL);
