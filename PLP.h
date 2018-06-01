@@ -157,7 +157,7 @@
 		if (numArmadilha == 0){
 			
 		if (numdado != 6){
-			printf("Armadilha: Desvio na avenida local! \n sua peça foi bloqueada por isso terá que esperar,vc perdeu essa jogada Se a peça antes da jogada estiver no tabuleiro\n");
+			printf("Armadilha: Desvio na avenida local! \n sua peça foi bloqueada por isso terá que esperar,vc perdeu essa jogada se a peça antes da jogada estiver no tabuleiro\n");
 	
 			sleep(5);
 			voltePeca(tab,pecaPega,numdado);
@@ -175,7 +175,7 @@
 		}else if (numArmadilha == 2){
 			printf("Armadilha: Blitz na Rodovia! \n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços\n");
 			if (numdado % 2 != 0){
-					printf("sua peça voltou 5 espaços");
+					printf("sua peça voltou 5 espaços\n");
 					sleep(5);
 					voltePeca(tab,pecaPega,5);
 					
@@ -185,7 +185,7 @@
 			printf("Armadilha: Dia de Emplacamento! \n Pague o Emplacamento e volte a metade da quantidade de casas que você andou até agora!\n");
 			//aqui klebs fazer identificar quantas casas a peça andou
 			voltePeca(tab,pecaPega,(pecaPega->casasAndadas) / 2);
-			printf("%d",pecaPega->casasAndadas);
+			
 			sleep(5);
 			if(pecaPega->casasAndadas == 0){
 				printf("Como a sua peça não andou ainda no tabuleiro a armadilha não teve efeito\n");
@@ -230,7 +230,7 @@
 			return 0;
 		}
 		if(p->x == 1 && p->y == 6){ //Peca ja chegou ao final
-			printf("peca 1 ja terminou o trajeto");
+			printf("peca 1 ja terminou o trajeto\n");
 			return 0;
 		}
 		if(qtdeCasas == 6){ //Jogar novamente
@@ -512,7 +512,16 @@
 					
 				}
 				else {
-					background(BLACK);	
+					if(j >=6 && j < 10){
+						background(GREEN);	
+					}else if(j > 10 && j < 15){
+						background(BLUE);	
+					}else if( j == 10){
+						background(YELLOW);
+					}else{
+						background(BLACK);
+					}
+					
 					printf("   ");
 					
 				}
@@ -563,7 +572,15 @@
 					
 				}
 				else{
-					background(BLACK);	
+					if(j >=6 && j < 10){
+						background(GREEN);	
+					}else if(j > 10 && j < 15){
+						background(BLUE);	
+					}else if( j == 10){
+						background(YELLOW);
+					}else{
+						background(BLACK);
+					}
 					printf("   ");
 				}
 					
@@ -615,14 +632,20 @@
 					t->matriz[j][3] == 0 ? printf("  |") : printf(" %d|", t->matriz[j][3]);
 					style(RESETALL);
 				}
-				else if(i == 1){
-					background(BLACK);	
-					printf("   ");
-				}
 				else{
-					background(BLACK);	
+					if(j >=6 && j < 10){
+						background(GREEN);	
+					}else if(j > 10 && j < 15){
+						background(BLUE);	
+					}else if( j == 10){
+						background(YELLOW);
+					}else{
+						background(BLACK);
+					}	
 					printf("   ");
-				}
+			    }
+				
+					
 			}
 			printf("\n");
 		}
@@ -795,10 +818,11 @@
 			else{
 				sleep(1);
 				printf("Vez do bot : o bot vai jogar o dado...\n");
-				sleep(1); //Para dar tempo a açao do bot
-				printaTabuleiro(&tabuleiro);
+				sleep(3); //Para dar tempo a açao do bot
+				
 				dado = rodaDado();
 				printf("\nSaiu no dado %d\n", dado);
+				sleep(1);
 				while(1){
 					if (movePeca(&tabuleiro, dado)){
 						break;
