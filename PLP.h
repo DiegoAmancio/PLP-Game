@@ -45,8 +45,8 @@
 	#define BLINKRAPID printf("\033[6m")
 	#define ITALIC printf("\033[3m")
 	#define NEGATIVE printf("\033[7m")
-	int vez_do_bot = 0;
-
+	
+	
 	//Criando os tipos de struct
 	typedef struct {
 
@@ -71,7 +71,7 @@
 	    int matriz[21][5]; //Tabuleiro 21x5 com espaços em branco (21 + 21 + 5 + 5 dá 52 que é o num de casas que existem no ludo)
 		int armadilhas[21][5];
 	} tabuleiro;
-
+	int vez_do_timeB = 0;
 	int movePeca(tabuleiro *t, int qtdeCasas);
 	void voltePeca(tabuleiro *t, peca *p, int qtdeCasas);
 	int moveTimeA(tabuleiro *t, peca *p, int qtdeCasas);
@@ -216,7 +216,7 @@
 			p->x = 0;
 			p->y = 1;
 			t->matriz[1][0]++; //Atualizando o numero de pecas na posicao da matriz
-			vez_do_bot = !vez_do_bot; //Faz com que troque a vez, para na hora do jogo trocar de volta para o mesmo player
+			vez_do_timeB = !vez_do_timeB; //Faz com que troque a vez, para na hora do jogo trocar de volta para o mesmo player
 			qtdeCasas = 0; //Zera a quantidade de casas para andar
 			p->casasAndadas = 0;
 		}
@@ -234,7 +234,7 @@
 			return 0;
 		}
 		if(qtdeCasas == 6){ //Jogar novamente
-			vez_do_bot = !vez_do_bot;
+			vez_do_timeB = !vez_do_timeB;
 		}
 		t->matriz[p->y][p->x]--; //Retira da posicao atual
 		//movimentos inicio:
@@ -270,7 +270,7 @@
 		}
 		//fim de movimentos
 		if(p->x == 1 && p->y == 6){
-			vez_do_bot = !vez_do_bot;
+			vez_do_timeB = !vez_do_timeB;
 		} 
 		if(t->matriz[p->y][p->x] == 1){ //Verificacoes de captura
 			if(t->jogadorB.peca1.x == p->x && t->jogadorB.peca1.y == p->y){
@@ -298,7 +298,7 @@
 			p->x = 4;
 			p->y = 19;
 			t->matriz[19][4]++;
-			vez_do_bot = !vez_do_bot;	
+			vez_do_timeB = !vez_do_timeB;	
 			qtdeCasas = 0;				
 		}
 		int dado = qtdeCasas;
@@ -312,7 +312,7 @@
 			return 0;
 		}
 		if(qtdeCasas == 6){
-			vez_do_bot = !vez_do_bot;
+			vez_do_timeB = !vez_do_timeB;
 		}
 		t->matriz[p->y][p->x]--;
 		if(p->x == 4){
@@ -348,7 +348,7 @@
 			}
 		}
 		if(p->x == 3 && p->y == 14){
-			vez_do_bot = !vez_do_bot;
+			vez_do_timeB = !vez_do_timeB;
 		} 
 		if(t->matriz[p->y][p->x] == 1){
 			if(p->x == t->jogadorA.peca1.x && p->y == t->jogadorA.peca1.y){
@@ -372,7 +372,7 @@
 	int movePeca(tabuleiro *t, int qtdeCasas) {
 			
 		int numPeca; //Numero da peça a ser movida
-		if(!vez_do_bot){ //Verifica se a vez é do bot ou não
+		if(!vez_do_timeB){ //Verifica se a vez é do bot ou não
 				
 			//Verificações se o player pode escolher alguma peça, caso não possa fazer alguma jogada será retornado 1 para fazer o jogo seguir
 			if(t->jogadorA.peca1.x == -1 && t->jogadorA.peca2.x == -1 && qtdeCasas != 6){ //As duas peças na base
@@ -728,7 +728,7 @@
 	    return saidaDado;
 	}
 
-	void jogo() {
+	void jogo(int versusBot) {
 		
 		//Cria as peças
 	    peca peca1A;
@@ -780,27 +780,57 @@
 	    tabuleiro.jogadorB = jogadorB;
 		srand(time(NULL));
 	    geraTabuleiro(&tabuleiro);
-
+	
 	    //O jogo de verdade começará aqui
 	    int dado;
+	    
 		char p[1000];
 		while (1) {
 			
 			system("clear"); //limpa a tela			
 			printaTabuleiro(&tabuleiro);
+			dado = rodaDado();
 			
-			if(!vez_do_bot){
+				if(!versusBot){
+					if(!vez_do_timeB){
+						printf("Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
+					}else{
+						printf("Vez do Player 2 => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
+					}
+					
+				}else{
+					if(!vez_do_timeB){
+						printf("Sua vez => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
+					}else{
+						sleep(1);
+						printf("Vez do bot : o bot vai jogar o dado...\n");
+						sleep(3); //Para dar tempo a açao do bot
+					}
+					
+				}
 				
-				printf("Sua vez : digite qualquer coisa para rodar o dado ou desistir para sair:\n");
 					
 				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
 				scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
 				if (strcmp(p, "desistir") == 0) { //desistir do jogo
-					printf("Você desistiu, consequentemente... Voce perdeu!\n");
+					if(versusBot){
+						printf("Você desistiu, consequentemente... Voce perdeu!\n");
+					}else{
+						if(!vez_do_timeB){
+							printf("Player 1 desistiu\n");
+							printf("Player 2 ganhou\n");
+						}else{
+							printf("Player 2 desistiu\n");
+							printf("Player 1 ganhou\n");
+						}
+						
+						
+					}
+					
 					break;
 				}
-				dado = rodaDado();
-				printf("Voce tirou no dado %d\n", dado);
+				
+				printf("Saiu no dado %d\n", dado);
 				sleep(1);
 				while(1){ //Enquanto o movimento nao for valido, tentar jogar a peca
 					if (movePeca(&tabuleiro, dado)){
@@ -810,33 +840,36 @@
 						printf("Movimento invalido\n");
 					}
 				}
+			
 				if(tabuleiro.matriz[6][1] == 2){ //Posicao final do time A
-					printf("Parabens, voce ganhou!!\n");
+						if(!versusBot){
+							printf("Parabens, player 1 ganhou!!\n");
+						}else{
+							printf("Parabens, voce ganhou!!\n");
+							
+						}
 					break;
 				}
-			}
-			else{
-				sleep(1);
-				printf("Vez do bot : o bot vai jogar o dado...\n");
-				sleep(3); //Para dar tempo a açao do bot
+		
 				
-				dado = rodaDado();
-				printf("\nSaiu no dado %d\n", dado);
-				sleep(1);
-				while(1){
-					if (movePeca(&tabuleiro, dado)){
-						break;
-					}
-				}
-				sleep(1);
+				
 				if(tabuleiro.matriz[14][3] == 2){ //Posicao final do time B
-					printf("Voce perdeu :(\n");
+					if(versusBot){
+						printf("Parabens, player 2 ganhou!!\n");
+					}else{
+						printf("Voce perdeu :(\n");
+							
+					}
+					
+					
 					break;
 				}
-			}
-
-			vez_do_bot = !vez_do_bot; //Troca a vez
-	    }
+				
+			vez_do_timeB = !vez_do_timeB; //Troca a vez
+		
+		}
+		
 	}
+	
 
 #endif  /*PLP_H*/
