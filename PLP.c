@@ -16,9 +16,9 @@ int main() {
     while (continuar) {
         while (1) {
 			
-            printf("1 - Jogar         \n2 - Ajuda/Creditos\n3 - Regras        \n4 - Sair          \n");
+            printf("0 - Versus Player        \n1 - Versus Computador         \n2 - Ajuda/Creditos\n3 - Regras        \n4 - Sair          \n");
 		    scanf("%i", &num);
-            if (num >= 1 && num <= 4) {
+            if (num >= 0 && num <= 4) {
                 break;
             } else {
                 printf("Entrada invalida, digite 1, 2, 3 ou 4\n");
@@ -28,8 +28,11 @@ int main() {
        
 
         switch (num) {
+            case 0:
+				jogo(0);
+				break;
             case 1:
-                jogo();
+                jogo(1);
                 break;
             case 2:
                 fp = fopen("help.txt","r");
