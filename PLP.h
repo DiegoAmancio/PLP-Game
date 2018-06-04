@@ -203,7 +203,7 @@
 			
 		}
 		
-		
+	
 		
 		
 		
@@ -372,7 +372,7 @@
 	int movePeca(tabuleiro *t, int qtdeCasas) {
 			
 		int numPeca; //Numero da peça a ser movida
-		if(!vez_do_timeB){ //Verifica se a vez é do bot ou não
+		if(!vez_do_timeB){ 
 				
 			//Verificações se o player pode escolher alguma peça, caso não possa fazer alguma jogada será retornado 1 para fazer o jogo seguir
 			if(t->jogadorA.peca1.x == -1 && t->jogadorA.peca2.x == -1 && qtdeCasas != 6){ //As duas peças na base
@@ -783,42 +783,47 @@
 	
 	    //O jogo de verdade começará aqui
 	    int dado;
-	    
+	    int continua = 1;
 		char p[1000];
-		while (1) {
+		while (continua) {
 			
 			system("clear"); //limpa a tela			
 			printaTabuleiro(&tabuleiro);
 			dado = rodaDado();
 			
-				if(!versusBot){
-					if(!vez_do_timeB){
-						printf("Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
-					}else{
-						printf("Vez do Player 2 => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
-					}
-					
+			if(!versusBot){
+				if(!vez_do_timeB){
+					printf("Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
 				}else{
-					if(!vez_do_timeB){
-						printf("Sua vez => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
-					}else{
-						sleep(1);
-						printf("Vez do bot : o bot vai jogar o dado...\n");
-						sleep(3); //Para dar tempo a açao do bot
-					}
+					printf("Vez do Player 2 => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
 					
 				}
 				
-					
+			}else{
+				if(vez_do_timeB == 0){
+					printf("Sua vez => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
+				}else{
+					sleep(1);
+					printf("Vez do bot : o bot vai jogar o dado...\n");
+					sleep(3); //Para dar tempo a açao do bot
+				}
+				
+			}
+			
+			if(!(versusBot && vez_do_timeB)){	
+				
 				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
 				scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
+				
 				if (strcmp(p, "desistir") == 0) { //desistir do jogo
 					if(versusBot){
 						printf("Você desistiu, consequentemente... Voce perdeu!\n");
 					}else{
+					
 						if(!vez_do_timeB){
 							printf("Player 1 desistiu\n");
 							printf("Player 2 ganhou\n");
+							
 						}else{
 							printf("Player 2 desistiu\n");
 							printf("Player 1 ganhou\n");
@@ -829,43 +834,43 @@
 					
 					break;
 				}
-				
-				printf("Saiu no dado %d\n", dado);
-				sleep(1);
-				while(1){ //Enquanto o movimento nao for valido, tentar jogar a peca
-					if (movePeca(&tabuleiro, dado)){
-						break;
-					}
-					else{
-						printf("Movimento invalido\n");
-					}
-				}
-			
-				if(tabuleiro.matriz[6][1] == 2){ //Posicao final do time A
-						if(!versusBot){
-							printf("Parabens, player 1 ganhou!!\n");
-						}else{
-							printf("Parabens, voce ganhou!!\n");
-							
-						}
+			}
+			printf("Saiu no dado %d\n", dado);
+			sleep(1);
+			while(1){ //Enquanto o movimento nao for valido, tentar jogar a peca
+				if (movePeca(&tabuleiro, dado)){
 					break;
 				}
+				else{
+					printf("Movimento invalido\n");
+				}
+			}
 		
-				
-				
-				if(tabuleiro.matriz[14][3] == 2){ //Posicao final do time B
-					if(versusBot){
-						printf("Parabens, player 2 ganhou!!\n");
+			if(tabuleiro.matriz[6][1] == 2){ //Posicao final do time A
+					if(!versusBot){
+						printf("Parabens, player 1 ganhou!!\n");
 					}else{
-						printf("Voce perdeu :(\n");
-							
+						printf("Parabens, voce ganhou!!\n");
+						
 					}
-					
-					
-					break;
+				break;
+			}
+	
+			
+			
+			if(tabuleiro.matriz[14][3] == 2){ //Posicao final do time B
+				if(versusBot){
+					printf("Parabens, player 2 ganhou!!\n");
+				}else{
+					printf("Voce perdeu :(\n");
+						
 				}
 				
-			vez_do_timeB = !vez_do_timeB; //Troca a vez
+				
+				break;
+			}
+			
+		vez_do_timeB = !vez_do_timeB; //Troca a vez
 		
 		}
 		
