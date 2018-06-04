@@ -17,6 +17,7 @@ int main() {
         while (1) {
 			
             printf("0 - Versus Player        \n1 - Versus Computador         \n2 - Ajuda/Creditos\n3 - Regras        \n4 - Sair          \n");
+		    setbuf(stdin, NULL);
 		    scanf("%i", &num);
             if (num >= 0 && num <= 4) {
                 break;
@@ -56,8 +57,9 @@ int main() {
                 continue;
         }
 
-        while (1) {
+        while (continuar) {
             printf("Deseja continuar? sim/nao\n");
+            setbuf(stdin, NULL);
             scanf("%s", cont);
             if (strcmp(cont, "nao") == 0) {
                 continuar = 0;
