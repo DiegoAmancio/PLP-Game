@@ -494,15 +494,18 @@
 	    printf("        ");
 	    
 	    style(RESETALL);
-	   	if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6){
+		printf("  casa inicial para o time verde => x:00 y:01\n");
+		
+		background(GREEN);
+		printf("   %s   ", t->jogadorA.peca1.x == -1 ? "A1" : "  ");
+		style(RESETALL);
+		if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6){
 			printf("  peça1: final\n");
 		}
 		else{
 			t->jogadorA.peca1.x == -1? printf("  peça1: base\n") : printf("  peça1: x:0%d y:%d%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y/10, t->jogadorA.peca1.y%10);
 		}
-		
 		background(GREEN);
-		printf("   %s   \n", t->jogadorA.peca1.x == -1 ? "A1" : "  ");
 		printf("   %s   \n", t->jogadorA.peca2.x == -1 ? "A2" : "  ");
 		printf("        ");
 		style(RESETALL);
@@ -513,17 +516,33 @@
 		else{
 			t->jogadorA.peca2.x == -1? printf("  peça2: base\n") : printf("  peça2: x:0%d y:%d%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y/10, t->jogadorA.peca2.y%10);
 		}
+		printf("\n   ");
+		for(i = 0; i < 21; i++){
+			if(i < 10){
+				printf("0");
+			}
+			printf("%d ",i);
+			
+		}
+		
+		
 		printf("\n");
-		background(WHITE);
+		
 		for(i = 0; i < 2; i++){
+			style(RESETALL);
+			printf("00");
+			background(WHITE);
 			foreground(BLACK);
 			printf("|");
 			for(j = 0; j < 21; j++){
 				
 				if(i == 1){
+					
 					if( j == 20){
+						
 						printf("__|");
 					}else{
+						
 						printf("  |");
 					}	
 					
@@ -535,8 +554,12 @@
 			
 			printf("\n");
 		}
-		style(RESETALL);
+		
+		
 		for(i = 0; i < 2; i++){
+			style(RESETALL);
+			printf("01");
+			
 			background(GREEN);
 			foreground(BLACK);
 			printf("|");
@@ -590,6 +613,9 @@
 		}
 		
 		for(i = 0; i < 2; i++){
+			style(RESETALL);
+			printf("02");
+			
 			foreground(BLACK);
 			background(WHITE);
 			printf("|");
@@ -649,9 +675,10 @@
 			
 			
 		}
-		style(RESETALL);
 		
 		for(i = 0; i < 2; i++){
+			style(RESETALL);
+			printf("03");
 			foreground(BLACK);
 			background(WHITE);
 			printf("|");
@@ -710,6 +737,8 @@
 		}
 		
 		for(i = 0; i < 2; i++){
+			style(RESETALL);
+			printf("04");
 			foreground(BLACK);
 			background(WHITE);
 			printf("|");
@@ -725,23 +754,31 @@
 			printf("\n");
 		}
 		style(RESETALL);		
-	    printf("                                                          \n");
-	    if(t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14){
+		printf("   ");
+		for(i = 0; i < 21; i++){
+			if(i < 10){
+				printf("0");
+			}
+			printf("%d ",i);
+			
+		}
+		
+	    printf("                                                         \n");
+		
+
+		style(RESETALL);
+		 if(t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14){
 			printf("                                         peça1: final  ");
 		}
 		else{
 			t->jogadorB.peca1.x == -1? printf("                                          peça1: base  ") : printf("                                     peça1: x:0%d y:%d%d  ", t->jogadorB.peca1.x, t->jogadorB.peca1.y/10, t->jogadorB.peca1.y%10);
-		}
+		} 
 		background(BLUE);
-		printf("        \n");	
-		style(RESETALL);
+		printf("        \n");
+		style(RESETALL);	
 		printf("                                                       ");
 		background(BLUE);
 		printf("   %s   \n", t->jogadorB.peca1.x == -1 ? "B1" : "  ");
-		style(RESETALL);
-		printf("                                                       ");
-		background(BLUE);
-		printf("   %s   \n", t->jogadorB.peca2.x == -1 ? "B2" : "  ");
 		style(RESETALL);
 		if(t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y == 14){
 			printf("                                         peça2: final  ");
@@ -749,6 +786,10 @@
 		else{
 			t->jogadorB.peca2.x == -1? printf("                                          peça2: base  ") : printf("                                     peça2: x:0%d y:%d%d  ", t->jogadorB.peca2.x, t->jogadorB.peca2.y/10, t->jogadorB.peca2.y%10);	
 		}
+		background(BLUE);
+		printf("   %s   \n", t->jogadorB.peca2.x == -1 ? "B2" : "  ");
+		style(RESETALL);
+		printf("  	   casa inicial para o time verde => x:04 y:19 ");
 		background(BLUE);
 		printf("        \n\n");	
 		style(RESETALL);
