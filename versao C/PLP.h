@@ -201,7 +201,7 @@
 			sleep(5);
 		}
 		
-		else if (numArmadilha = 5){
+		else if (numArmadilha == 5){
 			printf("Armadilha Positiva :\n Deu Sorte: Carona na abertura de ambulancia!\nSua peça se moveu de forma bônus mais %d espaços\n",numdado);
 		
 			sleep(5);
