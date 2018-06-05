@@ -7,7 +7,6 @@
 	#include <stdlib.h>    
 	#include <time.h>
 	
-		
 	#define foreground(color) FORE##color
 	#define background(color) BACK##color
 	#define style(style_) style_
@@ -35,18 +34,8 @@
 	#define BACKNORMAL printf("\033[49m")
 
 	/** Style **/
-	#define BRIGHT printf("\033[1m")
-	#define DIM printf("\033[2m")
-	#define NORMAL printf("\033[22m")
 	#define RESETALL printf("\033[0m")
-	#define UNDERLINE printf("\033[4m")
-	#define BLINKSLOW printf("\033[5m")
-	#define BLINKRAPID printf("\033[6m")
-	#define ITALIC printf("\033[3m")
-	#define NEGATIVE printf("\033[7m")
 	
-	
-	//Criando os tipos de struct
 	typedef struct {
 		int x;
 		int y;
@@ -64,7 +53,7 @@
 	typedef struct {
 	    jogador jogadorA;
 	    jogador jogadorB;
-	    int matriz[21][5]; //Tabuleiro 21x5 com espaços em branco (21 + 21 + 5 + 5 dá 52 que é o num de casas que existem no ludo)
+	    int matriz[21][5];
 		int armadilhas[21][5];
 	} tabuleiro;
 	
@@ -78,34 +67,40 @@
 	void jogo();
 	void geraTabuleiro(tabuleiro *t);
 	
+	/**
+	 * volta uma peça no tabuleiro
+	 * @param t tabuleiro
+	 * @param p peça
+	 * @param qtdeCasas quantidade de casas que a peça irá voltar
+	 */
 	void voltePeca(tabuleiro *t, peca *p, int qtdeCasas){
 		
 		if(p->time == 'A'){
 
 			t->matriz[p->y][p->x]--;
 		
-			if(p->y == 0){ //Movimento se estiver na primeira coluna
+			if(p->y == 0){
 				while(p->x < 4 && qtdeCasas > 0){
 					p->x++;
 					qtdeCasas--;
 				}
 			}
 
-			if(p->x == 4){ //Movimento se estiver na ultima linha
+			if(p->x == 4){
 				while(p->y < 20 && qtdeCasas > 0){
 					p->y++;
 					qtdeCasas--;
 				}
 			}
 
-			if(p->y == 20){ //Movimento se estiver na ultima coluna
+			if(p->y == 20){ 
 				while(p->x > 0 && qtdeCasas > 0){
 					p->x--;
 					qtdeCasas--;
 				}
 			}
 			
-			if(p->x == 0){ //Movimento se estiver na primeira linha
+			if(p->x == 0){ 
 				while(p->y > 1 && qtdeCasas > 0){
 					p->y--;
 					qtdeCasas--;
@@ -148,7 +143,13 @@
 			t->matriz[p->y][p->x]++;
 		}
 	}
-
+	/**
+	 * gera e roda a armadilha da vez
+	 * @param tab tabuleiro
+	 * @param pecaPega peça
+	 * @param numdado numero que saio no dado na jogada
+	 * @param versusBot determina se o bot esta jogando
+	 */
 	void geraArmadilha(tabuleiro *tab, peca *pecaPega, int numdado,int versusBot){
 		int numArmadilha = rand() % 5;
 		
@@ -181,7 +182,7 @@
 			}
 		}else if (numArmadilha == 3){
 			printf("Armadilha: Dia de Emplacamento! \n Pague o Emplacamento e volte a metade da quantidade de casas que você andou até agora!\n");
-			//aqui klebs fazer identificar quantas casas a peça andou
+			
 			voltePeca(tab,pecaPega,(pecaPega->casasAndadas) / 2);
 			
 			sleep(5);
@@ -202,71 +203,78 @@
 		}
 	
 	}
-
+	/**
+	 * tenta mover uma peça do time A
+	 * @param t tabuleiro
+	 * @param p peça
+	 * @param qtdeCasas quantidade de casas que a peça irá avançar
+	 * @param numeroPeca determina se a peça é 1 ou 2
+	 * 
+	 * @return retorna se o movimento foi valido ou não
+	 */
 	int moveTimeA(tabuleiro *t, peca *p, int qtdeCasas,int numeroPeca){
 		
 
-		if(p->x == -1 && qtdeCasas == 6){ //Se tirar 6, pode sair da base
+		if(p->x == -1 && qtdeCasas == 6){ 
 			p->x = 0;
 			p->y = 1;
-			t->matriz[1][0]++; //Atualizando o numero de pecas na posicao da matriz
-			vez_do_timeB = !vez_do_timeB; //Faz com que troque a vez, para na hora do jogo trocar de volta para o mesmo player
-			qtdeCasas = 0; //Zera a quantidade de casas para andar
+			t->matriz[1][0]++; 
+			vez_do_timeB = !vez_do_timeB; 
+			qtdeCasas = 0; 
 			p->casasAndadas = 0;
 		}
 		int dado = qtdeCasas;
-		//Verificacoes se a jogada e valida
-		if(p->x == -1 && qtdeCasas < 6){ //Peca na base e dado resultou em um numero menor do que 6
+		
+		if(p->x == -1 && qtdeCasas < 6){
 			printf("Para a peça %d sair da base é necessário tirar 6 no dado\n",numeroPeca);
 			return 0;
 		}
-		if(p->x == 1 && p->y < 6 && p->y+qtdeCasas > 6){ //Peca no caminho, mas pode acabar passando da base
-			return 0;
+		if(p->x == 1 && p->y < 6 && p->y+qtdeCasas > 6){ 
 		}
-		if(p->x == 1 && p->y == 6){ //Peca ja chegou ao final
+		if(p->x == 1 && p->y == 6){ 
 			printf("Peca %d ja terminou o trajeto\n",numeroPeca);
 			return 0;
 		}
-		if(qtdeCasas == 6){ //Jogar novamente
+		if(qtdeCasas == 6){
 			vez_do_timeB = !vez_do_timeB;
 		}
-		t->matriz[p->y][p->x]--; //Retira da posicao atual
-		//movimentos inicio:
-		if(p->x == 0){ //Movimento se estiver na primeira linha
+		t->matriz[p->y][p->x]--; 
+		
+		if(p->x == 0){ 
 			while(p->y < 20 && qtdeCasas > 0){
 				p->y++;
 				qtdeCasas--;
 			}
 		}
-		if(p->y == 20){ //Movimento se estiver na ultima coluna
+		if(p->y == 20){ 
 			while(p->x < 4 && qtdeCasas > 0){
 				p->x++;
 				qtdeCasas--;
 			}
 		}
-		if(p->x == 4){ //Movimento se estiver na ultima linha
+		if(p->x == 4){ 
 			while(p->y > 0 && qtdeCasas > 0){
 				p->y--;
 				qtdeCasas--;
 			}
 		}
-		if(p->y == 0){ //Movimento se estiver na primeira coluna
+		if(p->y == 0){
 			while(p->x > 1 && qtdeCasas > 0){
 				p->x--;
 				qtdeCasas--;
 			}
 		}
-		if(p->x == 1 && p->y < 6){ //Movimento se estiver no caminho dourado
+		if(p->x == 1 && p->y < 6){
 			while(p->y < 6 && qtdeCasas > 0){
 				p->y++;
 				qtdeCasas--;
 			}
 		}
-		//fim de movimentos
+		
 		if(p->x == 1 && p->y == 6){
 			vez_do_timeB = !vez_do_timeB;
 		} 
-		if(t->matriz[p->y][p->x] == 1){ //Verificacoes de captura
+		if(t->matriz[p->y][p->x] == 1){ 
 			if(t->jogadorB.peca1.x == p->x && t->jogadorB.peca1.y == p->y){
 				t->jogadorB.peca1.x = -1;
 				t->jogadorB.peca1.y = -1;						
@@ -278,15 +286,22 @@
 				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x] = 0;
 			}
 		}
-		t->matriz[p->y][p->x]++; //Alocando no novo espaco
-		//a armadilha ta rodando quando a peça vai sair da caixa
+		t->matriz[p->y][p->x]++; 
 		if(t->armadilhas[p->y][p->x]){
-			geraArmadilha(t, p, dado,0); //A armadilha vai ser aleatoria
+			geraArmadilha(t, p, dado,0);
 		}
 		return 1;
 	}
 
-
+	/**
+	 * move uma peça do time B
+	 * @param t tabuleiro
+	 * @param p peça
+	 * @param qtdeCasas quantidade de casas que a peça irá avançar
+	 * @param numeroPeca determina se a peça é 1 ou 2
+	 * 
+	 *@return retorna se o movimento foi valido ou não
+	 */
 	int moveTimeB(tabuleiro *t, peca *p, int qtdeCasas,int versusBot,int numeroPeca){
 		if(p->x == -1 && qtdeCasas == 6){
 			p->x = 4;
@@ -365,19 +380,24 @@
 		}
 		t->matriz[p->y][p->x]++;
 		if(t->armadilhas[p->y][p->x]){
-			geraArmadilha(t, p, dado,versusBot); //A armadilha vai ser aleatoria
+			geraArmadilha(t, p, dado,versusBot);
 		}
 		return 1;
 	}
-
+	/**
+	 * move uma peça 
+	 * @param t tabuleiro
+	 * @param qtdeCasas quantidade de casas que a peça irá avançar
+	 * @param versusBot determina se o bot esta jogando ou nãp
+	 * 
+	 * @return retorna se o movimento foi valido ou não
+	 */
 	int movePeca(tabuleiro *t, int qtdeCasas,int versusBot) {
 			
-		int numPeca; //Numero da peça a ser movida
+		int numPeca; 
 		
 		if(vez_do_timeB == 0){ 
-				
-			//Verificações se o player pode escolher alguma peça, caso não possa fazer alguma jogada será retornado 1 para fazer o jogo seguir
-			if(t->jogadorA.peca1.x == -1 && t->jogadorA.peca2.x == -1 && qtdeCasas != 6){ //As duas peças na base
+			if(t->jogadorA.peca1.x == -1 && t->jogadorA.peca2.x == -1 && qtdeCasas != 6){ 
 				return 1;
 			}
 			if(t->jogadorA.peca1.x == -1 && qtdeCasas < 6 && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){ //Peca 1 na base e Peca 2 no caminho
@@ -388,12 +408,8 @@
 			}
 			if(((t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6) || (t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6)) && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){ //As duas peças no caminho sem pode se mover
 				return 1;
-			}
-			
-
-			
-		}
-		else{
+			}		
+		}else{
 			if(t->jogadorB.peca1.x == -1 && t->jogadorB.peca2.x == -1 && qtdeCasas != 6){
 				return 1;
 			}
@@ -414,7 +430,7 @@
 		if(versusBot == 0 || (vez_do_timeB == 0)){
 			while(1){
 					printf("Escolha uma peça pra mover 1 ou 2: ");
-					setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
+					setbuf(stdin, NULL); 
 					scanf("%d", &numPeca);
 					printf("\n");
 					if(numPeca == 1 || numPeca == 2){
@@ -444,7 +460,10 @@
 		return 1;
 	}
 
-	
+	/**
+	 * imprime o tabuleiro
+	 * @param t tabuleiro
+	 */
 	void printaTabuleiro(tabuleiro *t) {
 
 	    int i, j;
@@ -463,7 +482,6 @@
 		style(RESETALL);
 		
 		t->jogadorA.peca2.x == -1? printf("  peça2: base\n") : printf("  peça2: x:0%d y:%d%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y/10, t->jogadorA.peca2.y%10);
-		
 		
 		printf("\n");
 		background(WHITE);
@@ -697,10 +715,12 @@
 		style(RESETALL);
 	}
 
-
+	/**
+	 * Preenche o tabuleiro com 0(determina que não tem peça na casa) em todas as casas e gera o local da armadilha da jogada
+	 * @param t tabuleiro
+	 */
 	void geraTabuleiro(tabuleiro *t) {
 
-		//Preenche o tabuleiro com 0 (nenhuma peca em todas as casas)
 	    int i, j;
 		int x, y;
 	    for (i = 0; i < 5; i++) {
@@ -708,7 +728,7 @@
 		    	t->matriz[j][i] = 0;
 			}
 	    }
-		//Gera os locais da armadilha
+		
 		for(i = 0; i < 5; i++){
 			x = rand() % 5;
 			if(x == 0 || x == 4){
@@ -738,23 +758,25 @@
 	    int saidaDado = (rand() % 6)+1;
 	    return saidaDado;
 	}
-
+	/**
+	 * executa o jogo solo ou multiplayer
+	 * @param versusBot determina se o bot esta jogando
+	 */
 	void jogo(int versusBot) {
 		
-		//Cria as peças
 	    peca peca1A;
 	    peca peca2A;
 	    peca peca1B;
 	    peca peca2B;
 
-	    //Cria os jogadores
+	   
 	    jogador jogadorA;
 	    jogador jogadorB;
 
-	    //Cria o tabuleiro
+	    
 	    tabuleiro tabuleiro;
 
-	    //Atribuições
+	
 	    peca1A.casasAndadas = 0;
 	    peca1A.time = 'A';
 		peca1A.representacao[0] = 'A';
@@ -792,13 +814,12 @@
 		srand(time(NULL));
 	    geraTabuleiro(&tabuleiro);
 	
-	    //O jogo de verdade começará aqui
 	    int dado;
 	    int continua = 1;
 		char p[1000];
 		while (continua) {
 			
-			system("clear"); //limpa a tela			
+			system("clear"); 
 			printaTabuleiro(&tabuleiro);
 			dado = rodaDado();
 			
@@ -816,17 +837,17 @@
 				}else{
 					sleep(1);
 					printf("Vez do bot : o bot vai jogar o dado...\n");
-					sleep(3); //Para dar tempo a açao do bot
+					sleep(3); 
 				}
 				
 			}
 			
 			if((versusBot && vez_do_timeB == 0) || (versusBot == 0)){	
 				
-				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
-				scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
+				setbuf(stdin, NULL); 
+				scanf("%[^\n]s", p); 
 				
-				if (strcmp(p, "desistir") == 0) { //desistir do jogo
+				if (strcmp(p, "desistir") == 0) { 
 					if(versusBot){
 						printf("Você desistiu, consequentemente... Voce perdeu!\n");
 					}else{
@@ -846,9 +867,11 @@
 					break;
 				}
 			}
+			
 			printf("Saiu no dado %d\n", dado);
 			sleep(1);
-			while(1){ //Enquanto o movimento nao for valido, tentar jogar a peca
+			
+			while(1){ 
 				if (movePeca(&tabuleiro, dado,versusBot)){
 					break;
 				}
@@ -857,7 +880,7 @@
 				}
 			}
 		
-			if(tabuleiro.matriz[6][1] == 2){ //Posicao final do time A
+			if(tabuleiro.matriz[6][1] == 2){ 
 					if(!versusBot){
 						printf("Parabens, player 1 ganhou!!\n");
 					}else{
@@ -867,9 +890,8 @@
 				break;
 			}
 	
-			
-			
-			if(tabuleiro.matriz[14][3] == 2){ //Posicao final do time B
+
+			if(tabuleiro.matriz[14][3] == 2){
 				if(versusBot){
 					printf("Parabens, player 2 ganhou!!\n");
 				}else{
@@ -881,7 +903,7 @@
 				break;
 			}
 			
-			vez_do_timeB = !vez_do_timeB; //Troca a vez
+			vez_do_timeB = !vez_do_timeB;
 		
 		}
 		
