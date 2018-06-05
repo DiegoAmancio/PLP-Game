@@ -17,7 +17,6 @@ int main() {
         while (1) {
 			
             printf("0 - Versus Player        \n1 - Versus Computador         \n2 - Ajuda/Creditos\n3 - Regras        \n4 - Sair          \n");
-		    setbuf(stdin, NULL);
 		    scanf("%i", &num);
             if (num >= 0 && num <= 4) {
                 break;
