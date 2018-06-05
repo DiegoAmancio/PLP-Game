@@ -6,8 +6,7 @@
 	#include <string.h>
 	#include <stdlib.h>    
 	#include <time.h>
-		
-		
+	
 		
 	#define foreground(color) FORE##color
 	#define background(color) BACK##color
@@ -49,7 +48,6 @@
 	
 	//Criando os tipos de struct
 	typedef struct {
-
 		int x;
 		int y;
 		int casasAndadas;
@@ -58,24 +56,24 @@
 	} peca;
 
 	typedef struct {
-
 	    peca peca1;
 	    peca peca2;
 	    char time;
 	} jogador;
 
 	typedef struct {
-
 	    jogador jogadorA;
 	    jogador jogadorB;
 	    int matriz[21][5]; //Tabuleiro 21x5 com espaços em branco (21 + 21 + 5 + 5 dá 52 que é o num de casas que existem no ludo)
 		int armadilhas[21][5];
 	} tabuleiro;
+	
 	int vez_do_timeB = 0;
-	int movePeca(tabuleiro *t, int qtdeCasas);
+	
+	int movePeca(tabuleiro *t, int qtdeCasas,int versusBot);
 	void voltePeca(tabuleiro *t, peca *p, int qtdeCasas);
-	int moveTimeA(tabuleiro *t, peca *p, int qtdeCasas);
-	int moveTimeB(tabuleiro *t, peca *p, int qtdeCasas);
+	int moveTimeA(tabuleiro *t, peca *p, int qtdeCasas,int numeroPeca);
+	int moveTimeB(tabuleiro *t, peca *p, int qtdeCasas,int versusBot,int numeroPeca);
 	void printaTabuleiro(tabuleiro *t);
 	void jogo();
 	void geraTabuleiro(tabuleiro *t);
@@ -151,7 +149,7 @@
 		}
 	}
 
-	void geraArmadilha(tabuleiro *tab, peca *pecaPega, int numdado){
+	void geraArmadilha(tabuleiro *tab, peca *pecaPega, int numdado,int versusBot){
 		int numArmadilha = rand() % 5;
 		
 		if (numArmadilha == 0){
@@ -167,7 +165,7 @@
 		}else if (numArmadilha == 1){
 			
 			printf("Armadilha Greve dos caminhoneiros!!\n Gasolina Acabando e o posto a frente cobra muito caro! \n Retorne 2 espaços para abastecer no posto anterior\n");
-			printf("sua peça voltou 2 espaços");
+			printf("Sua peça voltou 2 espaços");
 			sleep(5);
 			voltePeca(tab,pecaPega,2);
 			
@@ -190,26 +188,22 @@
 			if(pecaPega->casasAndadas == 0){
 				printf("Como a sua peça não andou ainda no tabuleiro a armadilha não teve efeito\n");
 			}else{
-				printf("sua peça voltou %d espaços",(pecaPega->casasAndadas) / 2);
+				printf("Sua peça voltou %d espaços",(pecaPega->casasAndadas) / 2);
 			}
 			sleep(5);
 		}
 		
 		else if (numArmadilha = 5){
-			printf("armadilha Positiva :\n Deu Sorte: Carona na abertura de ambulancia! \n Sua peça se moveu de forma bônus mais %d espaços\n",numdado);
+			printf("Armadilha Positiva :\n Deu Sorte: Carona na abertura de ambulancia!\nSua peça se moveu de forma bônus mais %d espaços\n",numdado);
 		
 			sleep(5);
-			movePeca(tab,numdado);
+			movePeca(tab,numdado,versusBot);
 			
 		}
-		
 	
-		
-		
-		
 	}
 
-	int moveTimeA(tabuleiro *t, peca *p, int qtdeCasas){
+	int moveTimeA(tabuleiro *t, peca *p, int qtdeCasas,int numeroPeca){
 		
 
 		if(p->x == -1 && qtdeCasas == 6){ //Se tirar 6, pode sair da base
@@ -223,14 +217,14 @@
 		int dado = qtdeCasas;
 		//Verificacoes se a jogada e valida
 		if(p->x == -1 && qtdeCasas < 6){ //Peca na base e dado resultou em um numero menor do que 6
-			printf("Para a peça 1 sair da base é necessário tirar 6 no dado\n");
+			printf("Para a peça %d sair da base é necessário tirar 6 no dado\n",numeroPeca);
 			return 0;
 		}
 		if(p->x == 1 && p->y < 6 && p->y+qtdeCasas > 6){ //Peca no caminho, mas pode acabar passando da base
 			return 0;
 		}
 		if(p->x == 1 && p->y == 6){ //Peca ja chegou ao final
-			printf("peca 1 ja terminou o trajeto\n");
+			printf("Peca %d ja terminou o trajeto\n",numeroPeca);
 			return 0;
 		}
 		if(qtdeCasas == 6){ //Jogar novamente
@@ -287,13 +281,13 @@
 		t->matriz[p->y][p->x]++; //Alocando no novo espaco
 		//a armadilha ta rodando quando a peça vai sair da caixa
 		if(t->armadilhas[p->y][p->x]){
-			geraArmadilha(t, p, dado); //A armadilha vai ser aleatoria
+			geraArmadilha(t, p, dado,0); //A armadilha vai ser aleatoria
 		}
 		return 1;
 	}
 
 
-	int moveTimeB(tabuleiro *t, peca *p, int qtdeCasas){
+	int moveTimeB(tabuleiro *t, peca *p, int qtdeCasas,int versusBot,int numeroPeca){
 		if(p->x == -1 && qtdeCasas == 6){
 			p->x = 4;
 			p->y = 19;
@@ -302,13 +296,20 @@
 			qtdeCasas = 0;				
 		}
 		int dado = qtdeCasas;
+		
 		if(p->x == -1 && qtdeCasas < 6){
+			if(versusBot == 0 ){
+				printf("Para a peça %d sair da base é necessário tirar 6 no dado\n",numeroPeca);
+			}
 			return 0;
 		}
 		if(p->x == 3 && p->y > 14 && p->y-qtdeCasas < 14){
 			return 0;
 		}
 		if(p->x == 3 && p->y == 14){
+			if(versusBot == 0 ){
+				printf("Peca %d ja terminou o trajeto\n",numeroPeca);
+			}
 			return 0;
 		}
 		if(qtdeCasas == 6){
@@ -364,15 +365,16 @@
 		}
 		t->matriz[p->y][p->x]++;
 		if(t->armadilhas[p->y][p->x]){
-			geraArmadilha(t, p, dado); //A armadilha vai ser aleatoria
+			geraArmadilha(t, p, dado,versusBot); //A armadilha vai ser aleatoria
 		}
 		return 1;
 	}
 
-	int movePeca(tabuleiro *t, int qtdeCasas) {
+	int movePeca(tabuleiro *t, int qtdeCasas,int versusBot) {
 			
 		int numPeca; //Numero da peça a ser movida
-		if(!vez_do_timeB){ 
+		
+		if(vez_do_timeB == 0){ 
 				
 			//Verificações se o player pode escolher alguma peça, caso não possa fazer alguma jogada será retornado 1 para fazer o jogo seguir
 			if(t->jogadorA.peca1.x == -1 && t->jogadorA.peca2.x == -1 && qtdeCasas != 6){ //As duas peças na base
@@ -387,26 +389,9 @@
 			if(((t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6) || (t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y < 6 && t->jogadorA.peca1.y+qtdeCasas > 6)) && ((t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6) || (t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y < 6 && t->jogadorA.peca2.y+qtdeCasas > 6))){ //As duas peças no caminho sem pode se mover
 				return 1;
 			}
-			while(1){
-				printf("Escolha uma peca pra mover 1 ou 2: ");
-				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
-				scanf("%d", &numPeca);
-				printf("\n");
-				if(numPeca == 1 || numPeca == 2){
-					break;
-				}
-				else{
-					printf("Peca Invalida \n escolha uma peça valida para o movimento\n");
-				}
-			}
+			
 
-				
-			if(numPeca == 1){
-				return moveTimeA(t, &(t->jogadorA.peca1), qtdeCasas);
-			}
-			if(numPeca == 2){
-				return moveTimeA(t, &(t->jogadorA.peca2), qtdeCasas);
-			}
+			
 		}
 		else{
 			if(t->jogadorB.peca1.x == -1 && t->jogadorB.peca2.x == -1 && qtdeCasas != 6){
@@ -421,13 +406,39 @@
 			if(((t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14) || (t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y > 14 && t->jogadorB.peca1.y-qtdeCasas < 14)) && ((t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y == 14) || (t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y > 14 && t->jogadorB.peca2.y-qtdeCasas < 14))){
 				return 1;
 			}
-
-			numPeca = (rand() % 2)+1;	
+			if(versusBot == 1){
+				numPeca = (rand() % 2)+1;
+			}	
+			
+		}
+		if(versusBot == 0 || (vez_do_timeB == 0)){
+			while(1){
+					printf("Escolha uma peça pra mover 1 ou 2: ");
+					setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
+					scanf("%d", &numPeca);
+					printf("\n");
+					if(numPeca == 1 || numPeca == 2){
+						break;
+					}
+					else{
+						printf("Peça Invalida \n escolha uma peça valida para o movimento\n");
+					}
+				}
+		}
+		if(vez_do_timeB == 0){
+				
 			if(numPeca == 1){
-				return moveTimeB(t, &(t->jogadorB.peca1), qtdeCasas);
+				return moveTimeA(t, &(t->jogadorA.peca1), qtdeCasas,1);
 			}
 			if(numPeca == 2){
-				return moveTimeB(t, &(t->jogadorB.peca2), qtdeCasas);
+				return moveTimeA(t, &(t->jogadorA.peca2), qtdeCasas,2);
+			}
+		}else{
+			if(numPeca == 1){
+				return moveTimeB(t, &(t->jogadorB.peca1), qtdeCasas, versusBot,1);
+			}
+			if(numPeca == 2){
+				return moveTimeB(t, &(t->jogadorB.peca2), qtdeCasas, versusBot,2);
 			}
 		}
 		return 1;
@@ -810,7 +821,7 @@
 				
 			}
 			
-			if(!(versusBot && vez_do_timeB)){	
+			if((versusBot && vez_do_timeB == 0) || (versusBot == 0)){	
 				
 				setbuf(stdin, NULL); //limpa todo o lixo que tava pendente no scanf
 				scanf("%[^\n]s", p); //digitar qualquer coisa para rodar o dado
@@ -838,7 +849,7 @@
 			printf("Saiu no dado %d\n", dado);
 			sleep(1);
 			while(1){ //Enquanto o movimento nao for valido, tentar jogar a peca
-				if (movePeca(&tabuleiro, dado)){
+				if (movePeca(&tabuleiro, dado,versusBot)){
 					break;
 				}
 				else{
@@ -870,7 +881,7 @@
 				break;
 			}
 			
-		vez_do_timeB = !vez_do_timeB; //Troca a vez
+			vez_do_timeB = !vez_do_timeB; //Troca a vez
 		
 		}
 		
