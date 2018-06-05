@@ -65,7 +65,6 @@
 	int moveTimeB(tabuleiro *t, peca *p, int qtdeCasas,int versusBot,int numeroPeca);
 	void printaTabuleiro(tabuleiro *t);
 	void jogo();
-	void geraTabuleiro(tabuleiro *t);
 	
 	/**
 	 * volta uma peça no tabuleiro
@@ -83,6 +82,7 @@
 				while(p->x < 4 && qtdeCasas > 0){
 					p->x++;
 					qtdeCasas--;
+					p->casasAndadas--;
 				}
 			}
 
@@ -90,6 +90,7 @@
 				while(p->y < 20 && qtdeCasas > 0){
 					p->y++;
 					qtdeCasas--;
+					p->casasAndadas--;
 				}
 			}
 
@@ -97,6 +98,7 @@
 				while(p->x > 0 && qtdeCasas > 0){
 					p->x--;
 					qtdeCasas--;
+					p->casasAndadas--;
 				}
 			}
 			
@@ -104,6 +106,7 @@
 				while(p->y > 1 && qtdeCasas > 0){
 					p->y--;
 					qtdeCasas--;
+					p->casasAndadas--;
 				}
 			}
 
@@ -117,12 +120,14 @@
 				while(p->x > 0 && qtdeCasas > 0){
 					p->x--;
 					qtdeCasas--;
+					p->casasAndadas--;
 				}
 			}
 			if(p->x == 0){
 				while(p->y > 0 && qtdeCasas > 0){
 					p->y--;
 					qtdeCasas--;
+					p->casasAndadas--;
 				}
 			}
 
@@ -130,6 +135,7 @@
 				while(p->x < 4 && qtdeCasas > 0){
 					p->x++;
 					qtdeCasas--;
+					p->casasAndadas--;
 				}
 			}
 
@@ -137,6 +143,7 @@
 				while(p->y < 19 && qtdeCasas > 0){
 					p->y++;
 					qtdeCasas--;
+					p->casasAndadas--;
 				}
 			}
 
@@ -151,9 +158,9 @@
 	 * @param versusBot determina se o bot esta jogando
 	 */
 	void geraArmadilha(tabuleiro *tab, peca *pecaPega, int numdado,int versusBot){
-		int numArmadilha = rand() % 5;
+		int numArmadilha = (rand() % 5)+1;
 		
-		if (numArmadilha == 0){
+		if (numArmadilha == 1){
 			
 		if (numdado != 6){
 			printf("Armadilha: Desvio na avenida local! \n sua peça foi bloqueada por isso terá que esperar,vc perdeu essa jogada se a peça antes da jogada estiver no tabuleiro\n");
@@ -163,7 +170,7 @@
 			
 			
 		}
-		}else if (numArmadilha == 1){
+		}else if (numArmadilha == 2){
 			
 			printf("Armadilha Greve dos caminhoneiros!!\n Gasolina Acabando e o posto a frente cobra muito caro! \n Retorne 2 espaços para abastecer no posto anterior\n");
 			printf("Sua peça voltou 2 espaços");
@@ -171,7 +178,7 @@
 			voltePeca(tab,pecaPega,2);
 			
 		
-		}else if (numArmadilha == 2){
+		}else if (numArmadilha == 3){
 			printf("Armadilha: Blitz na Rodovia! \n Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços\n");
 			if (numdado % 2 != 0){
 					printf("sua peça voltou 5 espaços\n");
@@ -180,7 +187,7 @@
 					
 					
 			}
-		}else if (numArmadilha == 3){
+		}else if (numArmadilha == 4){
 			printf("Armadilha: Dia de Emplacamento! \n Pague o Emplacamento e volte a metade da quantidade de casas que você andou até agora!\n");
 			
 			voltePeca(tab,pecaPega,(pecaPega->casasAndadas) / 2);
@@ -244,30 +251,35 @@
 			while(p->y < 20 && qtdeCasas > 0){
 				p->y++;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		if(p->y == 20){ 
 			while(p->x < 4 && qtdeCasas > 0){
 				p->x++;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		if(p->x == 4){ 
 			while(p->y > 0 && qtdeCasas > 0){
 				p->y--;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		if(p->y == 0){
 			while(p->x > 1 && qtdeCasas > 0){
 				p->x--;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		if(p->x == 1 && p->y < 6){
 			while(p->y < 6 && qtdeCasas > 0){
 				p->y++;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		
@@ -278,11 +290,13 @@
 			if(t->jogadorB.peca1.x == p->x && t->jogadorB.peca1.y == p->y){
 				t->jogadorB.peca1.x = -1;
 				t->jogadorB.peca1.y = -1;						
+				t->jogadorB.peca1.casasAndadas = 0;
 				t->matriz[p->y][p->x] = 0;
 			}
 			else if(t->jogadorB.peca2.x == p->x && t->jogadorB.peca2.y == p->y){
 				t->jogadorB.peca2.x = -1;
 				t->jogadorB.peca2.y = -1;	
+				t->jogadorB.peca2.casasAndadas = 0;
 				t->matriz[t->jogadorA.peca1.y][t->jogadorA.peca1.x] = 0;
 			}
 		}
@@ -303,6 +317,8 @@
 	 *@return retorna se o movimento foi valido ou não
 	 */
 	int moveTimeB(tabuleiro *t, peca *p, int qtdeCasas,int versusBot,int numeroPeca){
+
+		int dado = qtdeCasas;
 		if(p->x == -1 && qtdeCasas == 6){
 			p->x = 4;
 			p->y = 19;
@@ -310,7 +326,6 @@
 			vez_do_timeB = !vez_do_timeB;	
 			qtdeCasas = 0;				
 		}
-		int dado = qtdeCasas;
 		
 		if(p->x == -1 && qtdeCasas < 6){
 			if(versusBot == 0 ){
@@ -335,12 +350,14 @@
 			while(p->y > 0 && qtdeCasas > 0){
 				p->y--;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		if(p->y == 0){
 			while(p->x > 0 && qtdeCasas > 0){
 				p->x--;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 
@@ -348,12 +365,14 @@
 			while(p->y < 20 && qtdeCasas > 0){
 				p->y++;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		if(p->y == 20){
 			while(p->x < 3 && qtdeCasas > 0){
 				p->x++;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		
@@ -361,6 +380,7 @@
 			while(p->y > 14 && qtdeCasas > 0){
 				p->y--;
 				qtdeCasas--;
+				p->casasAndadas++;
 			}
 		}
 		if(p->x == 3 && p->y == 14){
@@ -369,12 +389,14 @@
 		if(t->matriz[p->y][p->x] == 1){
 			if(p->x == t->jogadorA.peca1.x && p->y == t->jogadorA.peca1.y){
 				t->jogadorA.peca1.x = -1;
-				t->jogadorA.peca1.y = -1;						
+				t->jogadorA.peca1.y = -1;			
+				t->jogadorA.peca1.casasAndadas = 0;							
 				t->matriz[p->y][p->x] = 0;
 			}
 			else if(p->x == t->jogadorA.peca2.x && p->y == t->jogadorA.peca2.y){
 				t->jogadorA.peca2.x = -1;
 				t->jogadorA.peca2.y = -1;	
+				t->jogadorA.peca2.casasAndadas = 0;
 				t->matriz[p->y][p->x] = 0;
 			}
 		}
@@ -472,17 +494,25 @@
 	    printf("        ");
 	    
 	    style(RESETALL);
-	   	
-		t->jogadorA.peca1.x == -1? printf("  peça1: base\n") : printf("  peça1: x:0%d y:%d%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y/10, t->jogadorA.peca1.y%10);
+	   	if(t->jogadorA.peca1.x == 1 && t->jogadorA.peca1.y == 6){
+			printf("  peça1: final\n");
+		}
+		else{
+			t->jogadorA.peca1.x == -1? printf("  peça1: base\n") : printf("  peça1: x:0%d y:%d%d\n", t->jogadorA.peca1.x, t->jogadorA.peca1.y/10, t->jogadorA.peca1.y%10);
+		}
 		
 		background(GREEN);
-		printf("   %s   \n", t->jogadorA.peca1.x == -1 ? t->jogadorA.peca1.representacao : "  ");
-		printf("   %s   \n", t->jogadorA.peca2.x == -1 ? t->jogadorA.peca2.representacao : "  ");
+		printf("   %s   \n", t->jogadorA.peca1.x == -1 ? "A1" : "  ");
+		printf("   %s   \n", t->jogadorA.peca2.x == -1 ? "A2" : "  ");
 		printf("        ");
 		style(RESETALL);
 		
-		t->jogadorA.peca2.x == -1? printf("  peça2: base\n") : printf("  peça2: x:0%d y:%d%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y/10, t->jogadorA.peca2.y%10);
-		
+	   	if(t->jogadorA.peca2.x == 1 && t->jogadorA.peca2.y == 6){
+			printf("  peça2: final\n");
+		}
+		else{
+			t->jogadorA.peca2.x == -1? printf("  peça2: base\n") : printf("  peça2: x:0%d y:%d%d\n", t->jogadorA.peca2.x, t->jogadorA.peca2.y/10, t->jogadorA.peca2.y%10);
+		}
 		printf("\n");
 		background(WHITE);
 		for(i = 0; i < 2; i++){
@@ -696,20 +726,29 @@
 		}
 		style(RESETALL);		
 	    printf("                                                          \n");
-	    
-		t->jogadorB.peca1.x == -1? printf("                                          peça1: base  ") : printf("                                     peça1: x:0%d y:%d%d  ", t->jogadorB.peca1.x, t->jogadorB.peca1.y/10, t->jogadorB.peca1.y%10);
+	    if(t->jogadorB.peca1.x == 3 && t->jogadorB.peca1.y == 14){
+			printf("                                         peça1: final  ");
+		}
+		else{
+			t->jogadorB.peca1.x == -1? printf("                                          peça1: base  ") : printf("                                     peça1: x:0%d y:%d%d  ", t->jogadorB.peca1.x, t->jogadorB.peca1.y/10, t->jogadorB.peca1.y%10);
+		}
 		background(BLUE);
 		printf("        \n");	
 		style(RESETALL);
 		printf("                                                       ");
 		background(BLUE);
-		printf("   %s   \n", t->jogadorB.peca1.x == -1 ? t->jogadorB.peca1.representacao : "  ");
+		printf("   %s   \n", t->jogadorB.peca1.x == -1 ? "B1" : "  ");
 		style(RESETALL);
 		printf("                                                       ");
 		background(BLUE);
-		printf("   %s   \n", t->jogadorB.peca2.x == -1 ? t->jogadorB.peca2.representacao : "  ");
+		printf("   %s   \n", t->jogadorB.peca2.x == -1 ? "B2" : "  ");
 		style(RESETALL);
-		t->jogadorB.peca2.x == -1? printf("                                          peça2: base  ") : printf("                                     peça2: x:0%d y:%d%d  ", t->jogadorB.peca2.x, t->jogadorB.peca2.y/10, t->jogadorB.peca2.y%10);	
+		if(t->jogadorB.peca2.x == 3 && t->jogadorB.peca2.y == 14){
+			printf("                                         peça2: final  ");
+		}
+		else{
+			t->jogadorB.peca2.x == -1? printf("                                          peça2: base  ") : printf("                                     peça2: x:0%d y:%d%d  ", t->jogadorB.peca2.x, t->jogadorB.peca2.y/10, t->jogadorB.peca2.y%10);	
+		}
 		background(BLUE);
 		printf("        \n\n");	
 		style(RESETALL);
@@ -726,6 +765,7 @@
 	    for (i = 0; i < 5; i++) {
 			for (j = 0; j < 21; j++) {
 		    	t->matriz[j][i] = 0;
+				t->armadilhas[j][i] = 0;
 			}
 	    }
 		

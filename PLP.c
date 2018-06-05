@@ -16,9 +16,9 @@ int main() {
     while (continuar) {
         while (1) {
 			
-            printf("0 - Versus Player        \n1 - Versus Computador         \n2 - Ajuda/Creditos\n3 - Regras        \n4 - Sair          \n");
+            printf("1 - Versus Player        \n2 - Versus Computador         \n3 - Ajuda/Creditos\n4 - Regras        \n5 - Sair          \n");
 		    scanf("%i", &num);
-            if (num >= 0 && num <= 4) {
+            if (num >= 1 && num <= 5) {
                 break;
             } else {
                 printf("Entrada invalida, digite 1, 2, 3 ou 4\n");
@@ -28,13 +28,13 @@ int main() {
        
 
         switch (num) {
-            case 0:
+            case 1:
 				jogo(0);
 				break;
-            case 1:
+            case 2:
                 jogo(1);
                 break;
-            case 2:
+            case 3:
                 fp = fopen("help.txt","r");
                 if (fp) {
                     while ((c = getc(fp)) != EOF)
@@ -42,7 +42,7 @@ int main() {
                 }
                 fclose(fp);
                 break;
-            case 3:
+            case 4:
                 fp = fopen("rules.txt", "r");
                 if (fp) {
                     while ((c = getc(fp)) != EOF)
@@ -51,7 +51,7 @@ int main() {
                 fclose(fp);
                 break;
 
-            default :
+            default:
                 continuar = 0;
                 continue;
         }
