@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Ludo
+Comment=Executa o jogo
+Exec=/home/diego/Downloads/PLP-Game/ludo
+Icon=konsole
+Terminal=true
+Type=Application
+Name[pt_BR]=Ludo-Linux
+Comment[pt_BR]=executa o jogo
