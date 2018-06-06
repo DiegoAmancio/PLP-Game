@@ -1,6 +1,6 @@
 # Jogo de Ludo - PLP
 
-[Versão em C](tree/master/versao%20C) |
+[Versão em C](https://github.com/DiegoAmancio/PLP-Game/tree/master/versao%20C) |
 [Versão em Haskell](#) |
 [Versão em Prolog](#)
 
