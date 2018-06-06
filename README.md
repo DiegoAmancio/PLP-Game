@@ -29,7 +29,7 @@ uma em campo.
 
 ## Compilando
 
-Apos o download do repositorio e estando no diretorio da versao C executar o comando `gcc PLP.c -o ludo`
+Após o download do repositorio e estando no diretorio da versao C executar o comando `gcc PLP.c -o ludo`
 
 ## Executando
 
