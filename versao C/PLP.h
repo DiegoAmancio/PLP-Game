@@ -57,7 +57,7 @@
 		int armadilhas[21][5];
 	} tabuleiro;
 	
-	int vez_do_timeB = 0;
+	int vez_do_timeB;
 	
 	int movePeca(tabuleiro *t, int qtdeCasas,int versusBot);
 	void voltePeca(tabuleiro *t, peca *p, int qtdeCasas);
@@ -452,10 +452,16 @@
 		if(versusBot == 0 || (vez_do_timeB == 0)){
 			while(1){
 					printf("Escolha uma peça pra mover 1 ou 2: ");
-					setbuf(stdin, NULL); 
-					scanf("%d", &numPeca);
+					setbuf(stdin, NULL);
+					char entrada[256]; 
+					scanf("%[^\n]s", entrada);
 					printf("\n");
-					if(numPeca == 1 || numPeca == 2){
+					if(strcmp(entrada, "1") == 0){
+						numPeca = 1;
+						break;
+					}
+					if(strcmp(entrada, "2") == 0){
+						numPeca = 2;					
 						break;
 					}
 					else{
@@ -892,12 +898,17 @@
 
 	    tabuleiro.jogadorA = jogadorA;
 	    tabuleiro.jogadorB = jogadorB;
-		srand(time(NULL));
+	    srand(time(NULL));
 	    geraTabuleiro(&tabuleiro);
 	
 	    int dado;
 	    int continua = 1;
-		char p[1000];
+	    char p[256];
+            int i;
+	    vez_do_timeB = 0;
+	    for(i = 0; i < 256; i++){
+		p[i] = '\0';
+		}
 		while (continua) {
 			
 			system("clear"); 
