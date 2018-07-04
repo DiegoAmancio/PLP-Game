@@ -56,10 +56,9 @@ vezPlayer ::  Bool -> Bool -> IO()
 vezPlayer versusBot timeB = do
    --dado
     --jogapeca
-    g <- newStdGen
-    randomR (1, 10) g
+    
     if  (not versusBot)  then inicioPlayer versusBot (not timeB)
-    else vezBot (randomR (1, 10) g)--dado
+    else vezBot 2--fazer dado
     
 
 
