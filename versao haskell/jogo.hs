@@ -7,8 +7,8 @@ menuInicial = do
     putStrLn "1 - Versus Player        \n2 - Versus Computador         \n3 - Ajuda/Creditos\n4 - Regras        \n5 - Sair          \n"
     
     input <- getLine
-    if input == "1" then inicioPlayer False False--jogo2p
-    else if input == "2" then main --jogoVsBot
+    if input == "1" then inicioPlayer False False
+    else if input == "2" then inicioPlayer True False
     else if input == "3" then ajuda
     else if input == "4" then regras
     else putStrLn "jogo encerrado"
@@ -41,10 +41,10 @@ inicioPlayer versusBot timeB = do
                         putStrLn (vez versusBot timeB)
                         desistiu <- getLine
                         
-                        if desistiu == "desistir" then parouOuVolta versusBot timeB else continuando versusBot timeB
+                        if desistiu == "desistir" then parouOuVolta versusBot timeB else vezPlayer versusBot timeB
 
-inicioBot :: Int -> IO()
-inicioBot dado = do 
+vezBot :: Int -> IO()
+vezBot dado = do 
     putStrLn (vez True True)
     --jogapeca
     threadDelay 2000000
@@ -52,16 +52,14 @@ inicioBot dado = do
 
 
 
-
-random :: Int -> IO Int
-random n = randomRIO (1, n :: Int)                    
-
-continuando ::  Bool -> Bool -> IO()
-continuando versusBot timeB = 
+vezPlayer ::  Bool -> Bool -> IO()
+vezPlayer versusBot timeB = do
    --dado
     --jogapeca
+    g <- newStdGen
+    randomR (1, 10) g
     if  (not versusBot)  then inicioPlayer versusBot (not timeB)
-    else inicioBot 2 --dado
+    else vezBot (randomR (1, 10) g)--dado
     
 
 
