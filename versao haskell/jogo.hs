@@ -5,7 +5,6 @@ import Control.Concurrent
 menuInicial :: IO ()
 menuInicial = do 
     putStrLn "1 - Versus Player        \n2 - Versus Computador         \n3 - Ajuda/Creditos\n4 - Regras        \n5 - Sair          \n"
-    
     input <- getLine
     if input == "1" then inicioPlayer False False
     else if input == "2" then inicioPlayer True False
@@ -32,15 +31,26 @@ vez versusBot timeB | versusBot  &&  not timeB  = 	"Sua vez  => digite qualquer 
                     | not versusBot && not timeB  = "Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
                     | versusBot && timeB = "Vez do bot : o bot vai jogar o dado...\n"
                     | otherwise =  "Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
-jogo :: Bool -> Bool -> IO()
-jogo versusBot timeB =
-    inicioPlayer versusBot timeB
+
+data Peca = Peca { x :: Int
+                 , y :: Int
+                 , casas :: Int
+                 , equipe :: String
+                 , num :: Int} deriving Show
+
+data Jogador = Jogador { peca1 :: Peca
+                       , peca2 :: Peca
+                       , time :: String} deriving Show
+
+data Tabuleiro = Tabuleiro { jogadorA :: Jogador
+                           , jogadorB :: Jogador
+                           , matriz :: [[Int]]
+                           , armadilhas :: [[Int]]} deriving Show
 
 inicioPlayer :: Bool -> Bool -> IO ()
 inicioPlayer versusBot timeB = do  
                         putStrLn (vez versusBot timeB)
                         desistiu <- getLine
-                        
                         if desistiu == "desistir" then parouOuVolta versusBot timeB else vezPlayer versusBot timeB
 
 vezBot :: Int -> IO()
@@ -65,6 +75,7 @@ vezPlayer versusBot timeB = do
 parouOuVolta :: Bool -> Bool  -> IO()
 parouOuVolta versusBot timeB =  do
     putStrLn (desistir versusBot timeB)
+    putStrLn "Se quiser voltar para o menu digite sim,qualuqer outra coisa digitada encerrado jogo\n"
     reiniciar <- getLine
     if reiniciar == "sim" then menuInicial else putStrLn "jogo encerrado"                      
                         
