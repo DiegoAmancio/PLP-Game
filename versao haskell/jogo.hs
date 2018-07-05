@@ -43,6 +43,9 @@ geraArmadilhas = [[]]
 geraTabuleiro :: Jogador -> Jogador -> [[Int]]
 geraTabuleiro jog1 jog2 = [contaLinha jog1 jog2 0 0 [], contaLinha jog1 jog2 1 0 [], contaLinha jog1 jog2 2 0 [], contaLinha jog1 jog2 3 0 [], contaLinha jog1 jog2 4 0 []]
 
+atualizaTabuleiro :: Tabuleiro -> Tabuleiro
+atualizaTabuleiro tab = Tabuleiro (jogadorA tab) (jogadorB tab) (geraTabuleiro (jogadorA tab) (jogadorB tab)) (armadilhas tab)
+
 inicia :: IO()
 inicia = do
     let peca1A = Peca (-1) (-1) 0 "A" 1
