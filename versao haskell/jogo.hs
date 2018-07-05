@@ -45,46 +45,46 @@ geraTabuleiro jog1 jog2 = [contaLinha jog1 jog2 0 0 [], contaLinha jog1 jog2 1 0
 
 atualizaTabuleiro :: Tabuleiro -> Tabuleiro
 atualizaTabuleiro tab = Tabuleiro (jogadorA tab) (jogadorB tab) (geraTabuleiro (jogadorA tab) (jogadorB tab)) (armadilhas tab)
---putStrLn (show ((lista !! 1) !!1) ++ "__|" ++ "dd")
+
 linhaTabuleiro :: Int -> Int -> [Int] -> String
 linhaTabuleiro 0 21 _ = ""
 linhaTabuleiro _ 21 _ = "|"
-linhaTabuleiro x y lista|x == 0 = " __" ++ linhaTabuleiro x (y + 1) lista 
-                        |x == 1 && (lista !! y) == 0 = "|  " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 1 = "|" ++ (show (lista !! y)) ++ " " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 2 = "|__" ++ linhaTabuleiro x (y + 1) lista
-                        |x == 3 && y < 6 && (lista !! y) == 0 = "|->" ++ linhaTabuleiro x (y + 1) lista
-                        |x == 3 && y < 6 && (lista !! y) > 0 = "|" ++ (show (lista !! y)) ++ " " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 3 && (y == 6 || y == 11 || y == 15)  = "|  " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 3 && y > 5 && y < 19 = "   " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 3 && y == 19 = "   " ++ linhaTabuleiro (x-2) (y + 1) lista
-                        |x == 4  && y < 6= "|__" ++ linhaTabuleiro x (y + 1) lista
-                        |x == 4 && (y == 6 || y == 11 || y == 15)  = "|  " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 4  && y == 19 =  "   " ++ linhaTabuleiro (x-2) (y + 1) lista
-                        |x == 4 && y > 5 && y < 20 = "   " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 5 && (y == 6 || y == 11 || y == 15) = "|  " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 5 && y > 1 && y < 20 = "   " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 5 && (y == 0 || y ==20)  && (lista !! y) == 0 = "|  " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 5 && y == 1 = "|  "++ linhaTabuleiro x (y + 1) lista
-                        |x == 5  = "|" ++ (show (lista !! y)) ++ " " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 6 && (y == 6 || y == 11 )  = "|  " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 6 && y == 15= "|__"++ linhaTabuleiro x (y + 1) lista
-                        |x == 6 && y > 1 && y < 15= "   "++ linhaTabuleiro x (y + 1) lista
-                        |x == 6 && y > 13 && y < 20= " __"++ linhaTabuleiro x (y + 1) lista
-                        |x == 6 && (y == 0 || y == 20 ) = "|__" ++ linhaTabuleiro x (y + 1) lista
-                        |x == 6 && y == 1 = "|  "++ linhaTabuleiro x (y + 1) lista
-                        |x == 7 && (y == 6 || y == 11)  = "|  " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 7 && y == 1 = "|  "++ linhaTabuleiro x (y + 1) lista
-                        |x == 7 && y > 0 && y < 15 = "   "++ linhaTabuleiro x (y + 1) lista
-                        |x == 7 && y > 14 && y < 22 && (lista !! y) == 0 = "|<-"++ linhaTabuleiro x (y + 1) lista
-                        |x == 7 &&  (lista !! y) == 0  = "|" ++ (show (lista !! y)) ++ " " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 7   = "|" ++ (show (lista !! y)) ++ " " ++ linhaTabuleiro x (y + 1) lista
-                        |x == 8 && (y == 6 || y == 11)  = "|__" ++ linhaTabuleiro x (y + 1) lista
-                        |x == 8 && y > 1 && y < 15 && not (y == 6) = " __"++ linhaTabuleiro x (y + 1) lista
-                        |x == 8 = "|__" ++ linhaTabuleiro x (y + 1) lista
+linhaTabuleiro numeroCaso index lista|numeroCaso == 0 = " __" ++ linhaTabuleiro numeroCaso (index + 1) lista 
+                        |numeroCaso == 1 && (lista !! index) == 0 = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 1 = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 2 = "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 3 && index < 6 && (lista !! index) == 0 = "|->" ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 3 && index < 6 && (lista !! index) > 0 = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 3 && (index == 6 || index == 11 || index == 15)  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 3 && index > 5 && index < 19 = "   " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 3 && index == 19 = "   " ++ linhaTabuleiro (numeroCaso-2) (index + 1) lista
+                        |numeroCaso == 4  && index < 6= "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 4 && (index == 6 || index == 11 || index == 15)  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 4  && index == 19 =  "   " ++ linhaTabuleiro (numeroCaso-2) (index + 1) lista
+                        |numeroCaso == 4 && index > 5 && index < 20 = "   " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 5 && (index == 6 || index == 11 || index == 15) = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 5 && index > 1 && index < 20 = "   " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 5 && (index == 0 || index ==20)  && (lista !! index) == 0 = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 5 && index == 1 = "|  "++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 5  = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 6 && (index == 6 || index == 11 )  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 6 && index == 15= "|__"++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 6 && index > 1 && index < 15= "   "++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 6 && index > 13 && index < 20= " __"++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 6 && (index == 0 || index == 20 ) = "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 6 && index == 1 = "|  "++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 7 && (index == 6 || index == 11)  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 7 && index == 1 = "|  "++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 7 && index > 0 && index < 15 = "   "++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 7 && index > 14 && index < 22 && (lista !! index) == 0 = "|<-"++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 7 &&  (lista !! index) == 0  = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 7   = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 8 && (index == 6 || index == 11)  = "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 8 && index > 1 && index < 15 && not (index == 6) = " __"++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 8 = "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
               
-printaTab :: [[Int]] -> [Int] -> IO()
-printaTab lista lista2= do
+printaTab :: [[Int]] -> IO()
+printaTab lista = do
    
     putStrLn (linhaTabuleiro 0 0 (lista !! 0))
     putStrLn (linhaTabuleiro 1 0 (lista !! 0))
@@ -97,6 +97,14 @@ printaTab lista lista2= do
     putStrLn (linhaTabuleiro 8 0 (lista !! 3))
     putStrLn (linhaTabuleiro 1 0 (lista !! 4))
     putStrLn (linhaTabuleiro 2 0 (lista !! 4))
+
+printCaixinha ::Bool -> Peca -> String
+printCaixinha superior peca|x peca == -1 ="   "++ equipe peca ++ (show (num peca)) ++"   " ++ "x : " ++ (show(x peca)) ++ "y : " ++ (show(y peca)) 
+                  |superior && x peca > -1 && y peca < 10 =  "       " ++ "x : "++ (show(x peca)) ++ "y : 0"++(show(y peca))
+                  |superior && x peca > -1 && x peca < 10 && y peca < 10 =  "       " ++ "x : 0"++(show(x peca)) ++ "y : 0"++(show(y peca))
+                  |superior && x peca > -1 && x peca < 10 && y peca > 9 =  "       " ++ "x : 0"++(show(x peca)) ++ "y : "++(show(y peca))
+                  |superior && x peca > -1 && x peca > 9 && y peca > 9 =  "       " ++ "x : "++(show(x peca)) ++ "y : "++(show(y peca))
+
 inicia :: IO()
 inicia = do
     let peca1A = Peca (-1) (-1) 0 "A" 1
@@ -218,7 +226,12 @@ ajuda = do
     putStr arquivoStr  
     hClose arquivo
     menuInicial 
+    
+
 main = do
+    let lista =  [[1,0,0,0,0,0,6,7,8,9,9,9,9,9,9,0,0,0,0,0,2], [1,0,0,0,0,0,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+    
+    printaTab lista 
     menuInicial
     
     
