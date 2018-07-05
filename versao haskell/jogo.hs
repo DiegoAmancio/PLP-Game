@@ -19,8 +19,8 @@ data Tabuleiro = Tabuleiro { jogadorA :: Jogador
                            , armadilhas :: [[Int]]} deriving Show
 
 temPeca :: Peca -> Int -> Int -> Int
-temPeca peca x y
-    | ((x peca) == x && (y peca) == y) = 1
+temPeca peca a b
+    | x peca == a && y peca == b = 1
     | otherwise = 0
 
 contaJogador :: Jogador -> Int -> Int -> Int
@@ -32,43 +32,45 @@ contaLocal jog1 jog2 x y = contaJogador jog1 x y + contaJogador jog2 x y
 
 contaLinha :: Jogador -> Jogador -> Int -> Int -> [Int] -> [Int]
 contaLinha jog1 jog2 x y list
-    | y == 20 = (list:(contaLocal (jog1) (jog2) (x) (y)))
-    | otherwise = contaLinha (jog1) (jog2) (x) (y+1) (list:contaLocal jog1 jog2 x y)
+    | y == 20 = list++(contaLocal (jog1) (jog2) (x) (y):[])
+    | otherwise = contaLinha (jog1) (jog2) (x) (y+1) (list++(contaLocal jog1 jog2 x y:[]))
 
-colocaArmadilha :: Int -> Int -> [[Int]] -> [[Int]]
+--colocaArmadilha :: Int -> Int -> [[Int]] -> [[Int]]
 
 geraArmadilhas :: [[Int]]
-
+geraArmadilhas = [[]]
 
 geraTabuleiro :: Jogador -> Jogador -> [[Int]]
-geraTabuleiro jog1 jog2 = [contaLinha jog1 jog2 0 0, contaLinha jog1 jog2 1 0, contaLinha jog1 jog2 2 0, contaLinha jog1 jog2 3 0, contaLinha jog1 jog2 4 0]
+geraTabuleiro jog1 jog2 = [contaLinha jog1 jog2 0 0 [], contaLinha jog1 jog2 1 0 [], contaLinha jog1 jog2 2 0 [], contaLinha jog1 jog2 3 0 [], contaLinha jog1 jog2 4 0 []]
 
 inicia :: IO()
-    let peca1A = Peca {x = -1, y = -1, casas = 0, equipe = "A", num = 1}
-    let peca2A = Peca {x = -1, y = -1, casas = 0, equipe = "A", num = 2}
-    let peca1B = Peca {x = -1, y = -1, casas = 0, equipe = "B", num = 1}
-    let peca2B = Peca {x = -1, y = -1, casas = 0, equipe = "B", num = 2}
-    let jogador1 = Jogador {peca1 = peca1A, peca2 = peca2A, time = "A"}
-    let jogador2 = Jogador {peca1 = peca1B, peca2 = peca2B, time = "B"}
-    let tabuleiro = Tabuleiro {jogadorA = jogador1, jogadorB = jogador2, matriz = geraTabuleiro jogador1 jogador2, armadilhas = geraArmadilhas}
+inicia = do
+    let peca1A = Peca (-1) (-1) 0 "A" 1
+    let peca2A = Peca (-1) (-1) 0 "A" 2
+    let peca1B = Peca (-1) (-1) 0 "B" 1
+    let peca2B = Peca (-1) (-1) 0 "B" 2
+    let jogador1 = Jogador peca1A peca2A "A"
+    let jogador2 = Jogador peca1B peca2B "B"
+    let tabuleiro = Tabuleiro jogador1 jogador2 (geraTabuleiro jogador1 jogador2) geraArmadilhas
+    if(1 == 1) then putStr "OK" else putStr "OK";
 
 movePecaA :: Peca -> Int -> Peca
 movePecaA peca 0 = peca
 movePecaA peca dado
-    | x peca == 0 && y peca < 20 = movePecaA (Peca {x peca, (y peca)+1, (casas peca)+1, equipe peca, num peca}) (dado-1)
-    | x peca < 4 && y peca == 20 = movePecaA (Peca {(x peca)+1, y peca, (casas peca)+1, equipe peca, num peca}) (dado-1)
-    | x peca == 4 && y peca > 0 = movePecaA (Peca {x peca, (y peca)-1, (casas peca)+1, equipe peca, num peca}) (dado-1)
-    | x peca > 1 && y peca == 0 = movePecaA (Peca {(x peca)-1, y peca, (casas peca)+1, equipe peca, num peca}) (dado-1)
-    | otherwise = movePecaA (Peca {x peca, (y peca)+1, (casas peca)+1, equipe peca, num peca}) (dado-1)
+    | x peca == 0 && y peca < 20 = movePecaA (Peca (x peca) (y peca+1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca < 4 && y peca == 20 = movePecaA (Peca (x peca+1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca == 4 && y peca > 0 = movePecaA (Peca (x peca) (y peca-1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca > 1 && y peca == 0 = movePecaA (Peca (x peca-1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | otherwise = movePecaA (Peca (x peca) (y peca+1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
 
 movePecaB :: Peca -> Int -> Peca
 movePecaB peca 0 = peca
 movePecaB peca dado
-    | x peca == 4 && y peca > 0 = movePecaA (Peca {x peca, (y peca)-1, (casas peca)+1, equipe peca, num peca}) (dado-1)
-    | x peca > 0 && y peca == 0 = movePecaA (Peca {(x peca)-1, y peca, (casas peca)+1, equipe peca, num peca}) (dado-1)
-    | x peca == 0 && y peca < 20 = movePecaA (Peca {x peca, (y peca)+1, (casas peca)+1, equipe peca, num peca}) (dado-1)
-    | x peca < 3 && y peca == 20 = movePecaA (Peca {(x peca)+1, y peca, (casas peca)+1, equipe peca, num peca}) (dado-1)
-    | otherwise = movePecaA (Peca {(x peca)+1, y peca, (casas peca)+1, equipe peca, num peca}) (dado-1)
+    | x peca == 4 && y peca > 0 = movePecaA (Peca (x peca) (y peca-1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca > 0 && y peca == 0 = movePecaA (Peca (x peca-1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca == 0 && y peca < 20 = movePecaA (Peca (x peca) (y peca+1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca < 3 && y peca == 20 = movePecaA (Peca (x peca+1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | otherwise = movePecaA (Peca (x peca+1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
 
 movePeca :: Peca -> Int -> Peca
 movePeca peca dado
@@ -100,10 +102,11 @@ ganhou versusBot timeB
            
 
 vez :: Bool -> Bool -> String
-vez versusBot timeB | versusBot  &&  not timeB  = 	"Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
-                    | not versusBot && not timeB  = "Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
-                    | versusBot && timeB = "Vez do bot : o bot vai jogar o dado...\n"
-                    | otherwise =  "Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
+vez versusBot timeB 
+    | versusBot  &&  not timeB  = "Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
+    | not versusBot && not timeB  = "Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
+    | versusBot && timeB = "Vez do bot : o bot vai jogar o dado...\n"
+    | otherwise =  "Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
 
 
 inicioPlayer :: Bool -> Bool -> IO ()
