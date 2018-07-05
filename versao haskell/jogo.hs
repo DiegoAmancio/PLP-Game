@@ -1,6 +1,8 @@
 import System.IO
 import System.Random
 import Control.Concurrent
+
+
 data Peca = Peca { x :: Int
                  , y :: Int
                  , casas :: Int
@@ -15,6 +17,68 @@ data Tabuleiro = Tabuleiro { jogadorA :: Jogador
                            , jogadorB :: Jogador
                            , matriz :: [[Int]]
                            , armadilhas :: [[Int]]} deriving Show
+
+temPeca :: Peca -> Int -> Int -> Int
+temPeca peca a b
+    | x peca == a && y peca == b = 1
+    | otherwise = 0
+
+contaJogador :: Jogador -> Int -> Int -> Int
+contaJogador jog x y = temPeca (peca1 jog) (x) (y) + temPeca (peca2 jog) (x) (y)
+
+
+contaLocal :: Jogador -> Jogador -> Int -> Int -> Int
+contaLocal jog1 jog2 x y = contaJogador jog1 x y + contaJogador jog2 x y
+
+contaLinha :: Jogador -> Jogador -> Int -> Int -> [Int] -> [Int]
+contaLinha jog1 jog2 x y list
+    | y == 20 = list++(contaLocal (jog1) (jog2) (x) (y):[])
+    | otherwise = contaLinha (jog1) (jog2) (x) (y+1) (list++(contaLocal jog1 jog2 x y:[]))
+
+--colocaArmadilha :: Int -> Int -> [[Int]] -> [[Int]]
+
+geraArmadilhas :: [[Int]]
+geraArmadilhas = [[]]
+
+geraTabuleiro :: Jogador -> Jogador -> [[Int]]
+geraTabuleiro jog1 jog2 = [contaLinha jog1 jog2 0 0 [], contaLinha jog1 jog2 1 0 [], contaLinha jog1 jog2 2 0 [], contaLinha jog1 jog2 3 0 [], contaLinha jog1 jog2 4 0 []]
+
+atualizaTabuleiro :: Tabuleiro -> Tabuleiro
+atualizaTabuleiro tab = Tabuleiro (jogadorA tab) (jogadorB tab) (geraTabuleiro (jogadorA tab) (jogadorB tab)) (armadilhas tab)
+
+inicia :: IO()
+inicia = do
+    let peca1A = Peca (-1) (-1) 0 "A" 1
+    let peca2A = Peca (-1) (-1) 0 "A" 2
+    let peca1B = Peca (-1) (-1) 0 "B" 1
+    let peca2B = Peca (-1) (-1) 0 "B" 2
+    let jogador1 = Jogador peca1A peca2A "A"
+    let jogador2 = Jogador peca1B peca2B "B"
+    let tabuleiro = Tabuleiro jogador1 jogador2 (geraTabuleiro jogador1 jogador2) geraArmadilhas
+    if(1 == 1) then putStr "OK" else putStr "OK";
+
+movePecaA :: Peca -> Int -> Peca
+movePecaA peca 0 = peca
+movePecaA peca dado
+    | x peca == 0 && y peca < 20 = movePecaA (Peca (x peca) (y peca+1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca < 4 && y peca == 20 = movePecaA (Peca (x peca+1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca == 4 && y peca > 0 = movePecaA (Peca (x peca) (y peca-1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca > 1 && y peca == 0 = movePecaA (Peca (x peca-1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | otherwise = movePecaA (Peca (x peca) (y peca+1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+
+movePecaB :: Peca -> Int -> Peca
+movePecaB peca 0 = peca
+movePecaB peca dado
+    | x peca == 4 && y peca > 0 = movePecaA (Peca (x peca) (y peca-1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca > 0 && y peca == 0 = movePecaA (Peca (x peca-1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca == 0 && y peca < 20 = movePecaA (Peca (x peca) (y peca+1) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | x peca < 3 && y peca == 20 = movePecaA (Peca (x peca+1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+    | otherwise = movePecaA (Peca (x peca+1) (y peca) (casas peca+1) (equipe peca) (num peca)) (dado-1)
+
+movePeca :: Peca -> Int -> Peca
+movePeca peca dado
+    | equipe peca == "A" = movePecaA peca dado
+    | otherwise = movePecaB peca dado
 
 menuInicial :: IO ()
 menuInicial = do 
@@ -41,11 +105,11 @@ ganhou versusBot timeB
            
 
 vez :: Bool -> Bool -> String
-vez versusBot timeB | versusBot  &&  not timeB  = 	"Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
-                    | not versusBot && not timeB  = "Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
-                    | versusBot && timeB = "Vez do bot : o bot vai jogar o dado...\n"
-                    | otherwise =  "Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
-
+vez versusBot timeB 
+    | versusBot  &&  not timeB  = "Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
+    | not versusBot && not timeB  = "Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
+    | versusBot && timeB = "Vez do bot : o bot vai jogar o dado...\n"
+    | otherwise =  "Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
 
 
 inicioPlayer :: Bool -> Bool -> IO ()
@@ -68,21 +132,9 @@ vezPlayer versusBot timeB = do
    --dado
     --jogapeca
     
-    if  (not versusBot) then inicioPlayer versusBot (not timeB)
+    if  (not versusBot)  then inicioPlayer versusBot (not timeB)
     else vezBot 2--fazer dado
     
-bloco1 :: Int -> [Int] -> String
-bloco1 0 [] = ""
-bloco1 _ [] = "|"
-bloco1 a (x:xs) |a == 0 = " __" ++ bloco1 a xs
-                |a == 1 = "|  " ++ bloco1 a xs
-                |a == 2 = "|__" ++ bloco1 a xs
-printTab ::  IO()
-printTab  = do
-    putStrLn (show (bloco1 0 [1..21]))
-    putStrLn (show (bloco1 1 [1..21]))
-    putStrLn (show (bloco1 2 [1..21]))
-   
 
 
 parouOuVolta :: Bool -> Bool  -> IO()
@@ -91,11 +143,13 @@ parouOuVolta versusBot timeB =  do
     putStrLn "Se quiser voltar para o menu digite sim,qualuqer outra coisa digitada encerrado jogo\n"
     reiniciar <- getLine
     if reiniciar == "sim" then menuInicial else putStrLn "jogo encerrado"                      
+                        
+
 
 
 regras :: IO ()
 regras = do 
-    arquivo <- openFile   "rules.txt" ReadMode  
+    arquivo <- openFile "rules.txt" ReadMode  
     arquivoStr <- hGetContents arquivo  
     putStr arquivoStr  
     hClose arquivo
@@ -110,5 +164,5 @@ ajuda = do
     hClose arquivo
     menuInicial 
 main = do
-    printTab 
+    menuInicial
     
