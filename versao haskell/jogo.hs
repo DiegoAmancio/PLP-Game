@@ -1,6 +1,20 @@
 import System.IO
 import System.Random
 import Control.Concurrent
+data Peca = Peca { x :: Int
+                 , y :: Int
+                 , casas :: Int
+                 , equipe :: String
+                 , num :: Int} deriving Show
+
+data Jogador = Jogador { peca1 :: Peca
+                       , peca2 :: Peca
+                       , time :: String} deriving Show
+
+data Tabuleiro = Tabuleiro { jogadorA :: Jogador
+                           , jogadorB :: Jogador
+                           , matriz :: [[Int]]
+                           , armadilhas :: [[Int]]} deriving Show
 
 menuInicial :: IO ()
 menuInicial = do 
@@ -32,20 +46,7 @@ vez versusBot timeB | versusBot  &&  not timeB  = 	"Sua vez  => digite qualquer 
                     | versusBot && timeB = "Vez do bot : o bot vai jogar o dado...\n"
                     | otherwise =  "Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
 
-data Peca = Peca { x :: Int
-                 , y :: Int
-                 , casas :: Int
-                 , equipe :: String
-                 , num :: Int} deriving Show
 
-data Jogador = Jogador { peca1 :: Peca
-                       , peca2 :: Peca
-                       , time :: String} deriving Show
-
-data Tabuleiro = Tabuleiro { jogadorA :: Jogador
-                           , jogadorB :: Jogador
-                           , matriz :: [[Int]]
-                           , armadilhas :: [[Int]]} deriving Show
 
 inicioPlayer :: Bool -> Bool -> IO ()
 inicioPlayer versusBot timeB = do  
@@ -67,9 +68,21 @@ vezPlayer versusBot timeB = do
    --dado
     --jogapeca
     
-    if  (not versusBot)  then inicioPlayer versusBot (not timeB)
+    if  (not versusBot) then inicioPlayer versusBot (not timeB)
     else vezBot 2--fazer dado
     
+bloco1 :: Int -> [Int] -> String
+bloco1 0 [] = ""
+bloco1 _ [] = "|"
+bloco1 a (x:xs) |a == 0 = " __" ++ bloco1 a xs
+                |a == 1 = "|  " ++ bloco1 a xs
+                |a == 2 = "|__" ++ bloco1 a xs
+printTab ::  IO()
+printTab  = do
+    putStrLn (show (bloco1 0 [1..21]))
+    putStrLn (show (bloco1 1 [1..21]))
+    putStrLn (show (bloco1 2 [1..21]))
+   
 
 
 parouOuVolta :: Bool -> Bool  -> IO()
@@ -78,13 +91,11 @@ parouOuVolta versusBot timeB =  do
     putStrLn "Se quiser voltar para o menu digite sim,qualuqer outra coisa digitada encerrado jogo\n"
     reiniciar <- getLine
     if reiniciar == "sim" then menuInicial else putStrLn "jogo encerrado"                      
-                        
-
 
 
 regras :: IO ()
 regras = do 
-    arquivo <- openFile "rules.txt" ReadMode  
+    arquivo <- openFile   "rules.txt" ReadMode  
     arquivoStr <- hGetContents arquivo  
     putStr arquivoStr  
     hClose arquivo
@@ -99,5 +110,5 @@ ajuda = do
     hClose arquivo
     menuInicial 
 main = do
-    menuInicial
+    printTab 
     
