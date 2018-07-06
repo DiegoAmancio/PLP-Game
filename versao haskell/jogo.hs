@@ -3,7 +3,7 @@ import System.Random
 import Control.Concurrent
 
 --Caso tenha problemas com System.Random execute os seguintes comandos:
---sudo apt-get install cabal-instal
+--sudo apt-get install cabal-install
 --cabal update
 --cabal install random
 
@@ -130,17 +130,17 @@ printaTab lista jogador1 jogador2 = do
 verificaJogadaA :: Tabuleiro -> Int -> Bool
 verificaJogadaA tab dado
     | (x (peca1 (jogadorA tab)) == -1) && (x (peca2 (jogadorA tab)) == -1) && dado /= 6 = False
-    | (x (peca1 (jogadorA tab)) == -1) && (x (peca2 (jogadorA tab)) == 1) && ((y (peca2 (jogadorA tab)))+dado > 6) && dado /= 6 = False
-    | (x (peca1 (jogadorA tab)) == 1) && ((y (peca1 (jogadorA tab)))+dado > 6) && (x (peca2 (jogadorA tab)) == -1) && dado /= 6 = False
-    | (x (peca1 (jogadorA tab)) == 1) && ((y (peca1 (jogadorA tab)))+dado > 6) && (x (peca2 (jogadorA tab)) == 1) && ((y (peca2 (jogadorA tab)))+dado > 6) = False
+    | (x (peca1 (jogadorA tab)) == -1) && (x (peca2 (jogadorA tab)) == 1) && (y (peca2 (jogadorA tab)) /= 20) && ((y (peca2 (jogadorA tab)))+dado > 6) && dado /= 6 = False
+    | (x (peca1 (jogadorA tab)) == 1) && ((y (peca1 (jogadorA tab)))+dado > 6) && (y (peca1 (jogadorA tab)) /= 20) && (x (peca2 (jogadorA tab)) == -1) && dado /= 6 = False
+    | (x (peca1 (jogadorA tab)) == 1) && ((y (peca1 (jogadorA tab)))+dado > 6) && (y (peca1 (jogadorA tab)) /= 20) && (x (peca2 (jogadorA tab)) == 1) && (y (peca2 (jogadorA tab)) /= 20) && ((y (peca2 (jogadorA tab)))+dado > 6) = False
     | otherwise = True
 
 verificaJogadaB :: Tabuleiro ->  Int -> Bool
 verificaJogadaB tab dado
         | (x (peca1 (jogadorB tab)) == -1) && (x (peca2 (jogadorB tab)) == -1) && dado /= 6 = False
-        | (x (peca1 (jogadorB tab)) == -1) && (x (peca2 (jogadorB tab)) == 3) && ((y (peca2 (jogadorB tab)))-dado < 14) && dado /= 6 = False
-        | (x (peca1 (jogadorB tab)) == 3) && (((y (peca1 (jogadorB tab)))-dado) < 14) && (x (peca2 (jogadorB tab)) == -1) && dado /= 6 = False
-        | (x (peca1 (jogadorB tab)) == 3) && ((y (peca1 (jogadorB tab)))-dado < 14) && (x (peca2 (jogadorB tab)) == 3) && ((y (peca2 (jogadorB tab)))-dado < 14) = False
+        | (x (peca1 (jogadorB tab)) == -1) && (x (peca2 (jogadorB tab)) == 3) && (y (peca2 (jogadorB tab)) /= 0) && ((y (peca2 (jogadorB tab)))-dado < 14) && dado /= 6 = False
+        | (x (peca1 (jogadorB tab)) == 3) && (y (peca1 (jogadorB tab)) /= 0) && (((y (peca1 (jogadorB tab)))-dado) < 14) && (x (peca2 (jogadorB tab)) == -1) && dado /= 6 = False
+        | (x (peca1 (jogadorB tab)) == 3) && (y (peca1 (jogadorB tab)) /= 0) && ((y (peca1 (jogadorB tab)))-dado < 14) && (x (peca2 (jogadorB tab)) == 3) && (y (peca2 (jogadorB tab)) /= 0) && ((y (peca2 (jogadorB tab)))-dado < 14) = False
         | otherwise = True
     
 verificaJogada :: Tabuleiro -> Bool -> Int -> Bool
@@ -178,7 +178,7 @@ jogaAux tab timeB dado = do
                 let novoJogador = Jogador (novaPeca) (peca2 (jogadorA tab)) (time (jogadorA tab))
                 let adversario = verificaCome (novaPeca) (novoJogador) (jogadorB tab) 
                 let novoTab = Tabuleiro (novoJogador) (adversario) (geraTabuleiro (novoJogador) (jogadorB tab))
-                if ((x novaPeca) == 1) && (y novaPeca) == 6 then if (x (peca1 novoJogador) == 1) && (y (peca1 novoJogador) == 6) then venceu "1" else joga (novoTab) (timeB)
+                if ((x novaPeca) == 1) && (y novaPeca) == 6 then if (x (peca2 novoJogador) == 1) && (y (peca2 novoJogador) == 6) then venceu "1" else joga (novoTab) (timeB)
                 else if (dado == 6) then joga (novoTab) (timeB) else joga (novoTab) (not timeB)
             else do
                 putStr "Peca invalida\n"
@@ -201,7 +201,7 @@ jogaAux tab timeB dado = do
                 let novoJogador = Jogador (peca1 (jogadorA tab)) (novaPeca) (time (jogadorA tab))
                 let adversario = verificaCome (novaPeca) (novoJogador) (jogadorB tab) 
                 let novoTab = Tabuleiro (novoJogador) (adversario) (geraTabuleiro (novoJogador) (jogadorB tab))
-                if (x novaPeca == 1) && (y novaPeca == 6) then if (x (peca2 novoJogador) == 1) && (y (peca2 novoJogador) == 6) then venceu "1" else joga (novoTab) (timeB)
+                if (x novaPeca == 1) && (y novaPeca == 6) then if (x (peca1 novoJogador) == 1) && (y (peca1 novoJogador) == 6) then venceu "1" else joga (novoTab) (timeB)
                 else if (dado == 6) then joga (novoTab) (timeB) else joga (novoTab) (not timeB)
             else do
                 putStr "Peca invalida\n"
