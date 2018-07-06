@@ -49,38 +49,53 @@ geraTabuleiro :: Jogador -> Jogador -> [[Int]]
 geraTabuleiro jog1 jog2 = [contaLinha jog1 jog2 0 0 [], contaLinha jog1 jog2 1 0 [], contaLinha jog1 jog2 2 0 [], contaLinha jog1 jog2 3 0 [], contaLinha jog1 jog2 4 0 []]
 
 linhaTabuleiro :: Int -> Int -> [Int] -> String
+linhaTabuleiro (-1) 21 _ = ""
 linhaTabuleiro 0 21 _ = ""
 linhaTabuleiro _ 21 _ = "|"
-linhaTabuleiro numeroCaso index lista|numeroCaso == 0 = " __" ++ linhaTabuleiro numeroCaso (index + 1) lista 
+
+linhaTabuleiro numeroCaso index lista
+                        |numeroCaso == -1 && index == -1 = "  " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == -1 && index < 10 = " 0" ++ (show index)  ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == -1  = " " ++ (show index)  ++ linhaTabuleiro numeroCaso (index + 1) lista  
+                        |numeroCaso == 0 && index == -1= "  " ++ linhaTabuleiro numeroCaso (index + 1) lista 
+                        |numeroCaso == 0 = " __" ++ linhaTabuleiro numeroCaso (index + 1) lista 
+                        |numeroCaso == 1 && index == -1 = "00" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 1 && (lista !! index) == 0 = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 1 = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 2 && index == -1 = "00" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 2 = "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 3 && index == -1 = "01" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 3 && index < 6 && (lista !! index) == 0 = "|->" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 3 && index < 6 && (lista !! index) > 0 = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 3 && (index == 6 || index == 11 || index == 15)  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 3 && index > 5 && index < 19 = "   " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 3 && index == 19 = "   " ++ linhaTabuleiro (numeroCaso-2) (index + 1) lista
+                        |numeroCaso == 4 && index == -1 = "01" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 4  && index < 6= "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 4 && (index == 6 || index == 11 || index == 15)  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 4  && index == 19 =  "   " ++ linhaTabuleiro (numeroCaso-2) (index + 1) lista
                         |numeroCaso == 4 && index > 5 && index < 20 = "   " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 5 && index == -1 = "02" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 5 && (index == 6 || index == 11 || index == 15) = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 5 && index > 1 && index < 20 = "   " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 5 && (index == 0 || index ==20)  && (lista !! index) == 0 = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 5 && index == 1 = "|  "++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 5  = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 6 && index == -1 = "02" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 6 && (index == 6 || index == 11 )  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 6 && index == 15= "|__"++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 6 && index > 1 && index < 15= "   "++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 6 && index > 13 && index < 20= " __"++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 6 && (index == 0 || index == 20 ) = "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 6 && index == 1 = "|  "++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 7 && index == -1 = "03" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 7 && (index == 6 || index == 11)  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 7 && index == 1 = "|  "++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 7 && index > 0 && index < 15 = "   "++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 7 && index > 14 && index < 22 && (lista !! index) == 0 = "|<-"++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 7 &&  (lista !! index) == 0  = "|  " ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 7   = "|" ++ (show (lista !! index)) ++ " " ++ linhaTabuleiro numeroCaso (index + 1) lista
+                        |numeroCaso == 8 && index == -1 = "03" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 8 && (index == 6 || index == 11)  = "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 8 && index > 1 && index < 15 && not (index == 6) = " __"++ linhaTabuleiro numeroCaso (index + 1) lista
                         |numeroCaso == 8 = "|__" ++ linhaTabuleiro numeroCaso (index + 1) lista
@@ -91,17 +106,20 @@ printaTab lista jogador1 jogador2 = do
     putStrLn "|      |"
     if (x(peca1 jogador1)) == -1 then putStrLn "|  A1  | A1: base" else putStrLn ("|      | A1: x: " ++ show (x (peca1 jogador1)) ++ "; y: " ++ show (y (peca1 jogador1)))
     if (x(peca2 jogador1)) == -1 then putStrLn "|  A2  | A2: base" else putStrLn ("|      | A2: x: " ++ show (x (peca2 jogador1)) ++ "; y: " ++ show (y (peca2 jogador1)))
-    putStrLn "|______|"
-    putStrLn (linhaTabuleiro 0 0 (lista !! 0))
-    putStrLn (linhaTabuleiro 1 0 (lista !! 0))
-    putStrLn (linhaTabuleiro 2 0 (lista !! 0))
-    putStrLn (linhaTabuleiro 3 0 (lista !! 1))
-    putStrLn (linhaTabuleiro 4 0 (lista !! 1))
-    putStrLn (linhaTabuleiro 5 0 (lista !! 2))
-    putStrLn (linhaTabuleiro 6 0 (lista !! 2))
-    putStrLn (linhaTabuleiro 7 0 (lista !! 3))
-    putStrLn (linhaTabuleiro 8 0 (lista !! 3))
+    putStrLn "|______|\n"
+    putStrLn (linhaTabuleiro (-1) (-1) (lista !! 0))
+    putStrLn (linhaTabuleiro 0 (-1) (lista !! 0))
+    putStrLn (linhaTabuleiro 1 (-1) (lista !! 0))
+    putStrLn (linhaTabuleiro 2 (-1) (lista !! 0))
+    putStrLn (linhaTabuleiro 3 (-1) (lista !! 1))
+    putStrLn (linhaTabuleiro 4 (-1) (lista !! 1))
+    putStrLn (linhaTabuleiro 5 (-1) (lista !! 2))
+    putStrLn (linhaTabuleiro 6 (-1) (lista !! 2))
+    putStrLn (linhaTabuleiro 7 (-1) (lista !! 3))
+    putStrLn (linhaTabuleiro 8 (-1) (lista !! 3))
+    putStr "04"
     putStrLn (linhaTabuleiro 1 0 (lista !! 4))
+    putStr "04"
     putStrLn (linhaTabuleiro 2 0 (lista !! 4))
     putStrLn " ______ "
     putStrLn "|      |"
@@ -150,7 +168,7 @@ verificaCome peca jog1 jog2
 
 jogaAux :: Tabuleiro -> Bool -> Int -> IO()
 jogaAux tab timeB dado = do
-    putStr "Escolha a peca\n"
+    putStr "Escolha a peca: 1 ou 2\n"
     input <- getLine
     let numPeca = (read input :: Int)
     if(numPeca == 1) then do
@@ -353,10 +371,6 @@ venceu time = do
     putStrLn ("O jogador " ++ time ++ " venceu!!")
     menuInicial
 
-podeMover :: Int -> Peca -> String
-podeMover dado peca |x peca == -1 && y peca == -1 && dado < 6 = "é necessario tirar 6 no dado para a peça sair da base"
-                    |x peca == 1 && (6-dado) > 0 = "para peça chegar no final é necessario tirar o numero restante de casas para o final" 
-                    |otherwise = "ok"
 menuInicial :: IO ()
 menuInicial = do 
     putStrLn "1 - Versus Player        \n2 - Versus Computador         \n3 - Ajuda/Creditos\n4 - Regras        \n5 - Sair          \n"
@@ -390,35 +404,10 @@ vez versusBot timeB
     | otherwise =  "Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n"
 
 
-inicioPlayer :: Bool -> Bool -> IO ()
-inicioPlayer versusBot timeB = do  
-                        putStrLn (vez versusBot timeB)
-                        desistiu <- getLine
-                        if desistiu == "desistir" then parouOuVolta versusBot timeB else vezPlayer versusBot timeB
-
-vezBot :: Int -> IO()
-vezBot dado = do 
-    putStrLn (vez True True)
-    --jogapeca
-    threadDelay 2000000
-    inicioPlayer True False
-
-
-
-vezPlayer ::  Bool -> Bool -> IO()
-vezPlayer versusBot timeB = do
-   --dado
-    --jogapeca
-    
-    if  (not versusBot)  then inicioPlayer versusBot (not timeB)
-    else vezBot 2--fazer dado
-    
-
-
 parouOuVolta :: Bool -> Bool  -> IO()
 parouOuVolta versusBot timeB =  do
     putStrLn (desistir versusBot timeB)
-    putStrLn "Se quiser voltar para o menu digite sim,qualuqer outra coisa digitada encerrado jogo\n"
+    putStrLn "Se quiser voltar para o menu digite sim,qualquer outra coisa digitada encerrado jogo\n"
     reiniciar <- getLine
     if reiniciar == "sim" then menuInicial else putStrLn "jogo encerrado"                      
                         
