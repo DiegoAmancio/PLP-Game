@@ -1,7 +1,7 @@
 # Jogo de Ludo - PLP
 
 [Versão em C](https://github.com/DiegoAmancio/PLP-Game/tree/master/versao%20C) |
-[Versão em Haskell](#) |
+[Versão em Haskell](https://github.com/DiegoAmancio/PLP-Game/tree/master/versao%20haskell) |
 [Versão em Prolog](#)
 
 Jogo de ludo do projeto de PLP
