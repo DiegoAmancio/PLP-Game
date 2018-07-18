@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: Spring Boot Tutorial
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: diegoap
+Implementation-Vendor-Id: br.com.ufcg
+Build-Jdk: 1.8.0_131
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/springboot-tutorial
+Created-By: Maven Integration for Eclipse
+
