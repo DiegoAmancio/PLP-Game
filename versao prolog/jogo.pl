@@ -17,6 +17,10 @@ get_jogadorA(tabuleiro(JogadorA,_,_),JogadorA).
 get_jogadorB(tabuleiro(_,JogadorB,_),JogadorB).
 get_matriz(tabuleiro(_,_,Matriz),Matriz).
 
+concat([],L,L).
+concat(L,[],L).
+concat([X|L1],L2,[X,L3]) :- concat(L1,L2,L3).
+
 pecaAqui(Pec, X, Y, Ret) :-
 	get_casas(Pec,Casas),
 	get_num(Pec,Num),
@@ -35,16 +39,21 @@ contaLocal(Jog1, Jog2, X, Y, Ret) :-
 	contaJogador(Jog2, X, Y, Jogador2),
 	Ret is Jogador1 + Jogador2.
 
-contaLinha(Jog1, Jog2, X, Y, Ret) :-
-    Ret = [0].
+contaLinha(_, _, _, 21, List, List) :- !.  
+contaLinha(Jog1, Jog2, X, Y, List, Ret) :-
+    contaLocal(Jog1, Jog2, X, Y, Local),
+    NovoInd is Y+1,
+    append(List,[Local],NovaLista),   
+	contaLinha(Jog1, Jog2, X, NovoInd, NovaLista, Aux),
+    Ret = Aux.
 
 gera_matriz(Jog1, Jog2, X) :-
-    contaLinha(Jog1, Jog2, 0, 0, X1),
-    contaLinha(Jog1, Jog2, 1, 0, X2),
-    contaLinha(Jog1, Jog2, 2, 0, X3),
-    contaLinha(Jog1, Jog2, 3, 0, X4),
-    contaLinha(Jog1, Jog2, 4, 0, X5),
-	X = [X1,X2,X3,X4,X5].
+    contaLinha(Jog1, Jog2, 0, 0, [0], X1),
+    contaLinha(Jog1, Jog2, 1, 0, [0], X2),
+    contaLinha(Jog1, Jog2, 2, 0, [0], X3),
+    contaLinha(Jog1, Jog2, 3, 0, [0], X4),
+    contaLinha(Jog1, Jog2, 4, 0, [0], X5),
+	X = [X1, X2, X3, X4, X5].
 
 jogo(X):-
     repeat,
