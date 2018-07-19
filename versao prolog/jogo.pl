@@ -60,6 +60,24 @@ jogo(X):-
 	write(Tabuleiro),nl,
     halt(0).
 
+linhaTabuleiro(_,21,-1,Resposta):-write(Resposta),nl.
+linhaTabuleiro(_,21,_,Resposta):-string_concat(Resposta,"|",Saida),write(Saida),nl.
+
+linhaTabuleiro(_,Index,-1,Resposta):-string_concat(Resposta,"__ ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,-1,Saida).
+
+linhaTabuleiro(_,-1,0,Resposta):-string_concat(Resposta,"00", Saida),linhaTabuleiro(_,0,0,Saida).   
+linhaTabuleiro([H|T],Index,0,Resposta):-write(H),validaPecaPrint(H,A),string_concat(Resposta,A, Saida),IndexP is Index + 1,linhaTabuleiro(T,IndexP,0,Saida).    
+
+linhaTabuleiro(_,-1,1,Resposta):-string_concat(Resposta,"00", Saida),linhaTabuleiro(_,0,1,Saida).
+linhaTabuleiro(_,Index,1,Resposta):-string_concat(Resposta,"|__", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,1,Saida).
+
+validaPecaPrint(Numero,Saida):-number_string(Numero, ToString),string_concat("|",ToString,Concat),string_concat(Concat," ",Saida).
+printTabuleiro():- write("   "),
+    linhaTabuleiro([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],0,-1,""),
+    linhaTabuleiro([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],-1,0,""),
+    linhaTabuleiro([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],-1,1,"").
+    
+
 readHelp():-
     repeat,
     halt(0).
@@ -74,5 +92,6 @@ main:-
     read_line_to_codes(user_input, X1),
     string_to_atom(X1, X2),
     atom_number(X2, X),
+    printTabuleiro,
     (X == 1 -> jogo(0); X == 2 -> jogo(1); X == 3 -> readHelp(); X == 4 -> readRules()),
     halt(0).
