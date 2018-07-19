@@ -17,17 +17,23 @@ get_jogadorA(tabuleiro(JogadorA,_,_),JogadorA).
 get_jogadorB(tabuleiro(_,JogadorB,_),JogadorB).
 get_matriz(tabuleiro(_,_,Matriz),Matriz).
 
+pecaAqui(Pec, X, Y, Ret) :-
+	get_casas(Pec,Casas),
+	get_num(Pec,Num),
+	make_peca(X,Y,Casas,Num,Peca),
+    (Pec == Peca -> Ret is 1; Ret is 0).
+
 contaJogador(Jog, X, Y, Ret) :-
     get_peca1(Jog, Peca1),
     get_peca2(Jog, Peca2),
-    get_x(Peca1, Peca1X),
-    get_x(Peca2, Peca2X),
-    get_y(Peca1, Peca1Y),
-    get_y(Peca2, Peca2Y).
-/*    (Peca1X == X /\ Peca1Y == Y /\ Peca2X == X /\ Peca2Y == Y -> Ret = [2];
-    (Peca1X == X /\ Peca1Y == Y) \/ (Peca2X == X /\ Peca2Y == Y) -> Ret = [1];
-    Ret = [0] ).
-    */
+    pecaAqui(Peca1, X, Y, Peca1Aqui),
+    pecaAqui(Peca2, X, Y, Peca2Aqui),
+    Ret is Peca1Aqui + Peca2Aqui.	
+
+contaLocal(Jog1, Jog2, X, Y, Ret) :-
+	contaJogador(Jog1, X, Y, Jogador1),
+	contaJogador(Jog2, X, Y, Jogador2),
+	Ret is Jogador1 + Jogador2.
 
 contaLinha(Jog1, Jog2, X, Y, Ret) :-
     Ret = [0].
@@ -51,8 +57,6 @@ jogo(X):-
 	make_jogador(Peca1B,Peca2B,"B",JogadorB),
 	gera_matriz(JogadorA, JogadorB, Tab),
 	make_tabuleiro(JogadorA,JogadorB,Tab,Tabuleiro),
-    contaJogador(JogadorA, -1, -1, Num),
-    write(Num),nl,
 	write(Tabuleiro),nl,
     halt(0).
 
