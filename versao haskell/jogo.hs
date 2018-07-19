@@ -1,6 +1,6 @@
 import System.IO
 import System.Random
-import Control.Concurrent
+import  Control.Concurrent
 
 --Caso tenha problemas com System.Random execute os seguintes comandos:
 --sudo apt-get install cabal-install
