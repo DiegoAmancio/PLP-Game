@@ -58,6 +58,7 @@ jogo(X):-
 	gera_matriz(JogadorA, JogadorB, Tab),
 	make_tabuleiro(JogadorA,JogadorB,Tab,Tabuleiro),
 	write(Tabuleiro),nl,
+	%write(printTabuleiro()),nl,
     halt(0).
 
 linhaTabuleiro(_,22,-1,Resposta):-write(Resposta),nl.
@@ -114,6 +115,9 @@ validaPecaPrint(Numero,2,Saida):-(Numero > 0 -> (number_string(Numero, ToString)
 validaPecaPrint(Numero,_,Saida):-(Numero > 0 -> number_string(Numero, ToString);string_concat(""," ",ToString)),string_concat("|",ToString,Concat),string_concat(Concat," ",Saida).
 
 printTabuleiro():- 
+    write(" ______ "),nl,
+    write("|      |"),nl,
+    write("|______|"),nl,
     write("   "),   
     linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],0,-1,""),
     linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],-1,0,""),
@@ -125,12 +129,14 @@ printTabuleiro():-
     linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,0,7,8,9,0,1],-1,6,""),
     linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,0,7,8,9,0,1],-1,7,""),
     linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],-1,0,""),
-    linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,1,1],-1,1,"").
+    linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,1,1],-1,1,""),
+    write(" ______ "),nl,
+    write("|      |"),nl,
+    %if (x(peca1 jogador2)) == -1 then putStrLn "|  B1  | B1: base" else putStrLn ("|      | B1: x: " ++ show (x (peca1 jogador2)) ++ "; y: " ++ show (y (peca1 jogador2)))
+    %if (x(peca2 jogador2)) == -1 then putStrLn "|  B2  | B2: base" else putStrLn ("|      | B2: x: " ++ show (x (peca2 jogador2)) ++ "; y: " ++ show (y (peca2 jogador2)))
+    write("|______|").
 
 
-
-main:-
-    printTabuleiro().
     
 readHelp():-
     repeat,
@@ -146,6 +152,5 @@ main:-
     read_line_to_codes(user_input, X1),
     string_to_atom(X1, X2),
     atom_number(X2, X),
-    printTabuleiro,
     (X == 1 -> jogo(0); X == 2 -> jogo(1); X == 3 -> readHelp(); X == 4 -> readRules()),
     halt(0).
