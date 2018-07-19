@@ -60,24 +60,42 @@ jogo(X):-
 	write(Tabuleiro),nl,
     halt(0).
 
-linhaTabuleiro(_,21,-1,Resposta):-write(Resposta),nl.
-linhaTabuleiro(_,21,_,Resposta):-string_concat(Resposta,"|",Saida),write(Saida),nl.
+linhaTabuleiro(_,22,-1,Resposta):-write(Resposta),nl.
+linhaTabuleiro(_,22,_,Resposta):-string_concat(Resposta,"|",Saida),write(Saida),nl.
 
 linhaTabuleiro(_,Index,-1,Resposta):-string_concat(Resposta,"__ ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,-1,Saida).
 
-linhaTabuleiro(_,-1,0,Resposta):-string_concat(Resposta,"00", Saida),linhaTabuleiro(_,0,0,Saida).   
-linhaTabuleiro([H|T],Index,0,Resposta):-write(H),validaPecaPrint(H,A),string_concat(Resposta,A, Saida),IndexP is Index + 1,linhaTabuleiro(T,IndexP,0,Saida).    
+linhaTabuleiro([H|T],-1,0,Resposta):-string_concat(Resposta,"00", Saida),linhaTabuleiro([H|T],0,0,Saida).   
+linhaTabuleiro([H|T],Index,0,Resposta):-validaPecaPrint(H,0,A),string_concat(Resposta,A, Saida),IndexP is Index + 1,linhaTabuleiro(T,IndexP,0,Saida).    
 
 linhaTabuleiro(_,-1,1,Resposta):-string_concat(Resposta,"00", Saida),linhaTabuleiro(_,0,1,Saida).
 linhaTabuleiro(_,Index,1,Resposta):-string_concat(Resposta,"|__", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,1,Saida).
 
-validaPecaPrint(Numero,Saida):-number_string(Numero, ToString),string_concat("|",ToString,Concat),string_concat(Concat," ",Saida).
-printTabuleiro():- write("   "),
-    linhaTabuleiro([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],0,-1,""),
-    linhaTabuleiro([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],-1,0,""),
-    linhaTabuleiro([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],-1,1,"").
-    
+linhaTabuleiro([H|T],-1,2,Resposta):-string_concat(Resposta,"01", Saida),linhaTabuleiro([H|T],0,2,Saida).
+linhaTabuleiro([H|T],Index,2,Resposta):-Index < 6,validaPecaPrint(H,2,A),string_concat(Resposta,A, Saida),IndexP is Index + 1,linhaTabuleiro(T,IndexP,2,Saida).    
+linhaTabuleiro([H|T],Index,2,Resposta):-(Index == 6 ; Index == 11 ; Index == 15),string_concat(Resposta,"|  ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,2,Saida).
+linhaTabuleiro([H|T],Index,2,Resposta):-(Index > 5 , Index < 19),string_concat(Resposta,"   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,2,Saida).
+linhaTabuleiro([H|T],Index,2,Resposta):-Index < 20,string_concat(Resposta,"   ", Saida),CasoMenos is 2 - 2,IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,CasoMenos,Saida).
 
+linhaTabuleiro([H|T],-1,3,Resposta):-string_concat(Resposta,"01", Saida),linhaTabuleiro([H|T],0,3,Saida).
+linhaTabuleiro([H|T],Index,3,Resposta):-Index < 6,string_concat(Resposta,"|__", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,3,Saida).    
+linhaTabuleiro([H|T],Index,3,Resposta):-(Index == 4 ; Index == 11 ; Index == 15),string_concat(Resposta,"|  ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,3,Saida).
+linhaTabuleiro([H|T],Index,3,Resposta):-Index == 19,string_concat(Resposta,"   ", Saida),CasoMenos is 3 - 2,IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,CasoMenos,Saida).
+linhaTabuleiro([H|T],Index,3,Resposta):-(Index == 6 ; Index == 11 ; Index == 15),string_concat(Resposta,"|  ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,3,Saida).
+linhaTabuleiro([H|T],Index,3,Resposta):-(Index >  5 ; Index < 20),string_concat(Resposta,"   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,3,Saida).
+linhaTabuleiro(_,Index,3,Resposta):-string_concat(Resposta,"|__", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,3,Saida).
+
+
+validaPecaPrint(Numero,0,Saida):-(Numero > 0 -> number_string(Numero, ToString);string_concat(""," ",ToString)),string_concat("|",ToString,Concat),string_concat(Concat," ",Saida).
+validaPecaPrint(Numero,2,Saida):-(Numero > 0 -> (number_string(Numero, ToString));string_concat("","->",ToString)),(Numero > 0 -> string_concat(ToString," ",Saida1);string_concat("",ToString,Saida1)),string_concat("|",Saida1,Saida).
+
+printTabuleiro():- 
+    write("   "),
+    linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],0,-1,""),
+    linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],-1,0,""),
+    linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,1,1],-1,1,""),
+    linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],-1,2,""),
+    linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],-1,3,"").
 readHelp():-
     repeat,
     halt(0).
