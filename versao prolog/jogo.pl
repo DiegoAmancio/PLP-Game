@@ -60,10 +60,12 @@ jogo(X):-
 	write(Tabuleiro),nl,
 	%write(printTabuleiro()),nl,
     halt(0).
-
+linhaTabuleiro(_,22,-2,Resposta):-write(Resposta),nl.
 linhaTabuleiro(_,22,-1,Resposta):-write(Resposta),nl.
 linhaTabuleiro(_,22,_,Resposta):-string_concat(Resposta,"|",Saida),write(Saida),nl.
 
+linhaTabuleiro(_,Index,-2,Resposta):-number_string(Index,ToString1),toStringCaso2(ToString1,Index,ToString2),string_concat(ToString2," ",ToString),string_concat(Resposta,ToString, Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,-2,Saida).
+toStringCaso2(String,Index,Saida):- (Index < 10 -> string_concat("0",String,Saida);string_concat(String,"",Saida)).
 linhaTabuleiro(_,Index,-1,Resposta):-string_concat(Resposta,"__ ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,-1,Saida).
 
 linhaTabuleiro([H|T],-1,0,Resposta):-string_concat(Resposta,"00", Saida),linhaTabuleiro([H|T],0,0,Saida).   
@@ -118,6 +120,8 @@ printTabuleiro():-
     write(" ______ "),nl,
     write("|      |"),nl,
     write("|______|"),nl,
+    write("   "),
+    linhaTabuleiro(1,0,-2,""),
     write("   "),   
     linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],0,-1,""),
     linhaTabuleiro([0,1,2,0,1,1,1,1,8,9,1,1,1,1,1,1,1,7,8,9,0,1],-1,0,""),
@@ -134,9 +138,7 @@ printTabuleiro():-
     write("|      |"),nl,
     %if (x(peca1 jogador2)) == -1 then putStrLn "|  B1  | B1: base" else putStrLn ("|      | B1: x: " ++ show (x (peca1 jogador2)) ++ "; y: " ++ show (y (peca1 jogador2)))
     %if (x(peca2 jogador2)) == -1 then putStrLn "|  B2  | B2: base" else putStrLn ("|      | B2: x: " ++ show (x (peca2 jogador2)) ++ "; y: " ++ show (y (peca2 jogador2)))
-    write("|______|").
-
-
+    write("|______|"),nl.
     
 readHelp():-
     repeat,
