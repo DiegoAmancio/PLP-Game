@@ -185,25 +185,23 @@ read_file(Stream,[X|L]) :-
     \+ at_end_of_stream(Stream),
     read(Stream,X),
     read_file(Stream,L).
-printando([T]):- nl.
+printando([T]):- T == 'end_of_file',nl.
 printando([H|T]):- write(H),nl,printando(T).
 readHelp():-
-    repeat,
     open('help.txt', read, Str),
     read_file(Str,Lines),
     close(Str),
     printando(Lines),
     main.
-    halt(0).
+  
 
 readRules():-
-    repeat,
     open('rules.txt', read, Str),
     read_file(Str,Lines),
     close(Str),
     printando(Lines),
     main.
-    halt(0).
+    
 
 main:-
     repeat,
