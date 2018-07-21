@@ -71,7 +71,7 @@ inicia(X):-
     write("saiu "),write(Dado),write(" no dado"),nl,
 	write(Tabuleiro),nl,
 	printTabuleiro(Tabuleiro).
-    
+
 
 toStringCaso2(String,Index,Saida):- (Index < 10 -> string_concat("0",String,Saida);string_concat(String,"",Saida)).
     
@@ -175,13 +175,31 @@ printTabuleiro(Tabuleiro):-
 dado(X):-
     random(1,7,X).
 
+read_file(Stream,[]) :-
+    at_end_of_stream(Stream).
 
+read_file(Stream,[X|L]) :-
+    \+ at_end_of_stream(Stream),
+    read(Stream,X),
+    read_file(Stream,L).
+printando([T]):- nl.
+printando([H|T]):- write(H),nl,printando(T).
 readHelp():-
     repeat,
+    open('help.txt', read, Str),
+    read_file(Str,Lines),
+    close(Str),
+    printando(Lines),
+    main.
     halt(0).
 
 readRules():-
     repeat,
+    open('rules.txt', read, Str),
+    read_file(Str,Lines),
+    close(Str),
+    printando(Lines),
+    main.
     halt(0).
 
 main:-
@@ -190,5 +208,5 @@ main:-
     read_line_to_codes(user_input, X1),
     string_to_atom(X1, X2),
     atom_number(X2, X),
-    (X == 1 -> inicia(0); X == 2 -> inicia(1); X == 3 -> inicia(); X == 4 -> inicia()),
+    (X == 1 -> inicia(0); X == 2 -> inicia(1); X == 3 -> readHelp(); X == 4 -> readRules()),
     halt(0).
