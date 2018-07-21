@@ -121,13 +121,13 @@ linhaTabuleiro([H|T],Index,6,Resposta):-Index > 1, Index < 15,string_concat(Resp
 linhaTabuleiro([H|T],Index,6,Resposta):-Index > 14, Index < 21,validaPecaPrint(H,6,A),string_concat(Resposta,A, Saida),IndexP is Index + 1 + H -H,linhaTabuleiro(T,IndexP,6,Saida).    
 linhaTabuleiro([H|T],Index,6,Resposta):-validaPecaPrint(H,1,A),string_concat(Resposta,A, Saida),IndexP is Index + 1,linhaTabuleiro(T,IndexP,6,Saida).    
    
-linhaTabuleiro(_,-1,7,Resposta):-string_concat(Resposta,"03", Saida),linhaTabuleiro([H|T],0,7,Saida).
+linhaTabuleiro(_,-1,7,Resposta):-string_concat(Resposta,"03", Saida),linhaTabuleiro(_,0,7,Saida).
 linhaTabuleiro(_,Index,7,Resposta):-(Index == 6;Index == 11),string_concat(Resposta,"|__", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,7,Saida).
 linhaTabuleiro(_,Index,7,Resposta):-Index > 1, Index < 15,string_concat(Resposta," __", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,7,Saida).
 linhaTabuleiro(_,Index,7,Resposta):-string_concat(Resposta,"|__", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,7,Saida).
 
 linhaTabuleiro([H|T],-1,8,Resposta):-string_concat(Resposta,"04", Saida),linhaTabuleiro([H|T],0,0,Saida).
-linhaTabuleiro(_,-1,8,Resposta):-string_concat(Resposta,"04", Saida),linhaTabuleiro([H|T],0,1,Saida).
+linhaTabuleiro(_,-1,8,Resposta):-string_concat(Resposta,"04", Saida),linhaTabuleiro(_,0,1,Saida).
 
 validaPecaPrint(Numero,6,Saida):-(Numero > 0 -> (number_string(Numero, ToString));string_concat("","<-",ToString)),(Numero > 0 -> string_concat(ToString," ",Saida1);string_concat("",ToString,Saida1)),string_concat("|",Saida1,Saida).
 validaPecaPrint(Numero,2,Saida):-(Numero > 0 -> (number_string(Numero, ToString));string_concat("","->",ToString)),(Numero > 0 -> string_concat(ToString," ",Saida1);string_concat("",ToString,Saida1)),string_concat("|",Saida1,Saida).
