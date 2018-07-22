@@ -57,14 +57,113 @@ gera_matriz(Jog1, Jog2, X) :-
     contaLinha(Jog1, Jog2, 4, 0, [], X5),
 	X = [X1, X2, X3, X4, X5].
 
-inicia(X):-
-    (X == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
+casos(-1,_,1).
+casos(0,_,2).
+casos(4,_,3).
+casos(_,20,4).
+casos(_,0,5).
+casos(_,Y,Caso):-
+    (Y == 6 -> Caso is 7;
+    Y == 14 -> Caso is 7;
+    Caso is 6).
+
+
+movePecaA(Peca,0,Peca).
+movePecaA(Peca, Dado, NovaPeca):-
+    get_x(Peca,X),
+    get_y(Peca,Y),
+    get_casas(Peca, Casas),
+    get_num(Peca, Num),
+    casos(X,Y,Caso),
+    MaisX is X+1,
+    MaisY is Y+1,
+    MenosX is X-1,
+    MenosY is Y-1,
+    NovaCasa is Casas+1,
+    (Caso == 1 -> make_peca(0,1,0,Num,PecaAtt), NovoDado is 0; 
+    Caso == 2 -> make_peca(X,MaisY,NovaCasa, Num,PecaAtt), NovoDado is Dado - 1;
+    Caso == 4 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    Caso == 3 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    Caso == 5 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    Caso == 6 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
+    movePecaA(PecaAtt,NovoDado,NovaPeca).
+
+movePecaB(Peca,0,Peca).
+movePecaB(Peca, Dado, NovaPeca):-
+    get_x(Peca,X),
+    get_y(Peca,Y),
+    get_casas(Peca, Casas),
+    get_num(Peca, Num),
+    casos(X,Y,Caso),
+    MaisX is X+1,
+    MaisY is Y+1,
+    MenosX is X-1,
+    MenosY is Y-1,
+    NovaCasa is Casas+1,
+    (Caso == 1 -> make_peca(4,19,0,Num,PecaAtt), NovoDado is 0; 
+    Caso == 3 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    Caso == 5 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    Caso == 2 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    Caso == 4 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    Caso == 6 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
+    movePecaA(PecaAtt,NovoDado,NovaPeca).
+
+movePeca(Peca, Dado, "A", NovaPeca) :- movePecaA(Peca,Dado,NovaPeca).
+movePeca(Peca,Dado,"B", NovaPeca) :- movePecaB(Peca,Dado,NovaPeca).
+
+verifica(-1,_,6,_,1).
+verifica(-1,_,_,_,0).
+verifica(3,16,_,_,0).
+verifica(1,6,_,_,0).
+verifica(X,Y,Dado,Time,Ret) :- 
+    (X == 1 , Y+Dado > 6 , Time == "A" -> Ret is 0;
+    X == 3, Y-Dado < 14, Time == "B" -> Ret is 0;
+    Ret is 1).
+    
+verificaJogadaPeca(Peca, Dado, Time, Ret) :-
+    get_x(Peca,X),
+    get_y(Peca,Y),
+    verifica(X,Y,Dado,Time,Ret).
+
+verificaJogadaJogador(Jog, Dado, Ret) :-
+    get_peca1(Jog, Peca1),
+    get_peca2(Jog, Peca2),
+    get_time(Jog, Time),
+    verificaJogadaPeca(Peca1, Dado, Time, Ret1),
+    verificaJogadaPeca(Peca2,Dado, Time, Ret2),
+    Ret is Ret1 + Ret2.
+
+encerrou(Bot, TimeVencedor) :- !.
+    %Faz aqui tambem
+
+jogo(Bot, Vez, Tabuleiro) :-
+    %Delay minimo
+    %Clear
+    (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
+        get_jogadorB(Tabuleiro, Jogador)),
+    %Print vez igual ao de haskell recebendo modo de jogo e de quem é a vez
+    dado(Dado). 
+
+
+
+
+inicia(Bot):-
+    (Bot == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
 	make_peca(-1,-1,0,1,Peca1A),
 	make_peca(-1,-1,0,2,Peca2A),
 	make_peca(-1,-1,0,1,Peca1B),
 	make_peca(-1,-1,0,2,Peca2B),
+ /*   verificaJogadaPeca(Peca1A,6,"A",Check),
+    write(Check),nl,
+    movePeca(Peca1A, 6, "A",Peca1A1),
+    movePeca(Peca1A1,5,"A",Peca1A2),
+    movePeca(Peca1A2,2,"A",Peca1A3), */
 	make_jogador(Peca1A,Peca2A,"A",JogadorA),
 	make_jogador(Peca1B,Peca2B,"B",JogadorB),
+    verificaJogadaJogador(JogadorA,5,Check),
+    write(Check),nl,
 	gera_matriz(JogadorA, JogadorB, Tab),
 	make_tabuleiro(JogadorA,JogadorB,Tab,Tabuleiro),
     dado(Dado),
@@ -147,7 +246,7 @@ printaCaixa(Tabuleiro, Jog):-
     write("|      |"),nl,
     (X1 == -1 -> write("|  "),write(Time),write("1  | "),write(Time),write("1: base"),nl; 
     write("|      | "), write(Time), write("1: x: "), write(X1), write("; y: "), write(Y1),nl), 
-    (X1 == -1 -> write("|  "),write(Time),write("1  | "),write(Time),write("1: base"),nl;
+    (X2 == -1 -> write("|  "),write(Time),write("2  | "),write(Time),write("2: base"),nl;
     write("|      | "), write(Time), write("2: x: "), write(X2), write("; y: "), write(Y2),nl),
     write("|______|"),nl.
 
@@ -174,7 +273,10 @@ printTabuleiro(Tabuleiro):-
     linhaTabuleiro(L5,-1,8,""),
     linhaTabuleiro([],-1,8,""),
     printaCaixa(Tabuleiro,2).
-    
+
+pecaBot(X) :-
+    random(1,3,X).
+  
 dado(X):-
     random(1,7,X).
 
