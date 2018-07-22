@@ -134,7 +134,7 @@ geraArmadilha(Dado,Peca):-
 	Retorne 2 espaços para abastecer no posto anterior\n"),
 	write("Sua peça voltou 2 espaços"),
 	sleep(5),
-	voltaPeca(pecaPega,2);	
+	voltaPeca(Peca,2);	
 	X == 3 ->write("Armadilha: Blitz na Rodovia! \n 
 	Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços\n"),
 	(Dado mod 2 > 0 -> write("sua peça voltou 5 espaços\n")),
@@ -420,7 +420,7 @@ read_file(Stream,[X|L]) :-
     read(Stream,X),
     read_file(Stream,L).
 printando([T]):- T == 'end_of_file',nl.
-printando([H|T]):- write(H),nl,printando(T).
+printando([H|T]):-write(H),nl,printando(T).
 readHelp():-
     open('help.txt', read, Str),
     read_file(Str,Lines),
@@ -428,7 +428,12 @@ readHelp():-
     printando(Lines),
     main.
   
-
+menu():-
+open('apresentacao.txt', read, Str),
+    read_file(Str,Lines),
+    close(Str),
+    printando(Lines).
+    
 readRules():-
     open('rules.txt', read, Str),
     read_file(Str,Lines),
@@ -441,7 +446,7 @@ sair():-
 
 main:-
     repeat,
-    write("1 - Versus Player        \n2 - Versus Computador         \n3 - Ajuda/Creditos\n4 - Regras        \n5 - Sair          \n"),nl,
+     menu(),
     get_single_char(X),
     (X == 49 -> inicia(0); X == 50 -> inicia(1); X == 51 -> readHelp(); X == 52 -> readRules(); X == 53 -> sair()),
     halt(0).
