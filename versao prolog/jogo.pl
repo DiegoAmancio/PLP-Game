@@ -123,6 +123,37 @@ verificaJogadaJogador(Jog, Dado, Ret) :-
     verificaJogadaPeca(Peca1, Dado, Time, Ret1),
     verificaJogadaPeca(Peca2,Dado, Time, Ret2),
     Ret is Ret1 + Ret2.
+voltePeca(Dado,Peca):- write(2).
+geraArmadilha(Dado,Peca):-
+	random(1,6,X),
+	(X == 1,Dado < 6 ->write("Armadilha: Desvio na avenida local! \n 
+	sua peça foi bloqueada por isso terá que esperar,
+	vc perdeu essa jogada se a peça antes da jogada estiver no tabuleiro\n"),
+	sleep(5),voltaPeca(Peca,Dado);
+	X == 2 ->write("Armadilha Greve dos caminhoneiros!!\n Gasolina Acabando e o posto a frente cobra muito caro! \n 
+	Retorne 2 espaços para abastecer no posto anterior\n"),
+	write("Sua peça voltou 2 espaços"),
+	sleep(5),
+	voltaPeca(pecaPega,2);	
+	X == 3 ->write("Armadilha: Blitz na Rodovia! \n 
+	Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços\n"),
+	(Dado mod 2 > 0 -> write("sua peça voltou 5 espaços\n")),
+	sleep(5),
+	voltePeca(Peca,5);
+	X == 4 -> write("Armadilha: Dia de Emplacamento! \n 
+	Pague o Emplacamento e volte a metade da quantidade de casas que você andou até agora!\n"),
+	voltaPeca(Peca,5),%o 5 é pra ser casas andadas /2
+	sleep(5),
+	(5 == 0 -> write("Como a sua peça não andou ainda no tabuleiro a armadilha não teve efeito\n");
+	number_string(5,Formatado),
+	string_concat("Sua peça voltou",Formatado,ToString),
+	string_concat(ToString,"espacos",ToString1),
+	write(ToString1)),
+	sleep(5);
+	number_string(Dado,"",DadoStr),
+	string_concat("Armadilha Positiva :\n Deu Sorte: Carona na abertura de ambulancia!\nSua peça se moveu de forma bônus mais ",DadoStr,ToString2),
+	string_concat(ToString2,"espacos",ToString3),
+	write(ToString3)).%movePeca(tab,numdado,versusBot)
 
 muda(1,0).
 muda(0,1).
@@ -169,11 +200,13 @@ jogaPlayer(Bot, Vez, Dado, Tabuleiro) :-
      get_jogadorB(Tabuleiro,Jogador)),
      write("Escolha uma peca: "),
      get_time(Jogador, Time),
-     get_single_char(X),
-     (X == 49 -> get_peca1(Jogador, Peca);
+     read_line_to_codes(user_input, X1),
+     string_to_atom(X1, X2),
+     atom_number(X2, X),
+     (X == 1 -> get_peca1(Jogador, Peca);
         get_peca2(Jogador, Peca)),
      verificaJogadaPeca(Peca, Dado, Time, Pode),
-     (X \= 49 , X \= 50 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
+     (X \= 1 , X \= 2 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
         Pode == 0 -> write("Essa peca não pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
         movePlayer(Bot,Vez,Peca,X,Dado,Tabuleiro)).
 
@@ -226,7 +259,7 @@ continuaJogo(Bot, Vez, Tabuleiro, Jogador) :-
 
 verificaDesistencia(Bot,Vez,Tabuleiro,Jogador) :- 
     get_single_char(X),
-    (X == 100 -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Tabuleiro,Jogador)).
+    (X == 51 -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Tabuleiro,Jogador)).
 
 jogo(Bot, Vez, Tabuleiro) :-
     sleep(2),
@@ -255,9 +288,9 @@ desistir(Bot,Vez) :-
     encerrou(Bot,Ganhador).
            
 vez(Bot, Vez) :- 
-    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou d para sair:");
-    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou d para sair:");
-    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou d para sair:")),nl.
+    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou 3 para sair:");
+    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou 3 para sair:");
+    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou 3 para sair:")),nl.
     
 inicia(Bot):-
     (Bot == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
