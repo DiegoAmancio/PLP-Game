@@ -10,7 +10,9 @@ get_casas(peca(_,_,Casas,_),Casas).
 get_num(peca(_,_,_,Num),Num).
 
 get_peca1(jogador(Peca1,_,_),Peca1).
+set_peca1(jogador(_,Peca2,Time),Nova,jogador(Nova,Peca2,Time)).
 get_peca2(jogador(_,Peca2,_),Peca2).
+set_peca2(jogador(Peca1,_,Time),Nova,jogador(Peca1,Nova,Time)).
 get_time(jogador(_,_,Time),Time).
 
 get_jogadorA(tabuleiro(JogadorA,_,_),JogadorA).
@@ -57,35 +59,23 @@ gera_matriz(Jog1, Jog2, X) :-
     contaLinha(Jog1, Jog2, 4, 0, [], X5),
 	X = [X1, X2, X3, X4, X5].
 
-casos(-1,_,1).
-casos(0,_,2).
-casos(4,_,3).
-casos(_,20,4).
-casos(_,0,5).
-casos(_,Y,Caso):-
-    (Y == 6 -> Caso is 7;
-    Y == 14 -> Caso is 7;
-    Caso is 6).
-
-
 movePecaA(Peca,0,Peca).
 movePecaA(Peca, Dado, NovaPeca):-
     get_x(Peca,X),
     get_y(Peca,Y),
     get_casas(Peca, Casas),
     get_num(Peca, Num),
-    casos(X,Y,Caso),
     MaisX is X+1,
     MaisY is Y+1,
     MenosX is X-1,
     MenosY is Y-1,
     NovaCasa is Casas+1,
-    (Caso == 1 -> make_peca(0,1,0,Num,PecaAtt), NovoDado is 0; 
-    Caso == 2 -> make_peca(X,MaisY,NovaCasa, Num,PecaAtt), NovoDado is Dado - 1;
-    Caso == 4 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    Caso == 3 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    Caso == 5 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    Caso == 6 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    (X == -1 -> make_peca(0,1,0,Num,PecaAtt), NovoDado is 0; 
+    X == 0 , Y < 20 -> make_peca(X,MaisY,NovaCasa, Num,PecaAtt), NovoDado is Dado - 1;
+    X < 4 , Y == 20 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    X == 4 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    X > 1 , Y == 0 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    X == 1 , Y+Dado < 6 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
     make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
     movePecaA(PecaAtt,NovoDado,NovaPeca).
 
@@ -95,23 +85,22 @@ movePecaB(Peca, Dado, NovaPeca):-
     get_y(Peca,Y),
     get_casas(Peca, Casas),
     get_num(Peca, Num),
-    casos(X,Y,Caso),
     MaisX is X+1,
     MaisY is Y+1,
     MenosX is X-1,
     MenosY is Y-1,
     NovaCasa is Casas+1,
-    (Caso == 1 -> make_peca(4,19,0,Num,PecaAtt), NovoDado is 0; 
-    Caso == 3 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    Caso == 5 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    Caso == 2 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    Caso == 4 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    Caso == 6 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    (X == -1 -> make_peca(4,19,0,Num,PecaAtt), NovoDado is 0; 
+    X == 4 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    X > 0 , Y == 0 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    X == 0 , Y < 20 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    X < 3 , Y == 20 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+    X == 3, Y-Dado > 14 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
     make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
     movePecaA(PecaAtt,NovoDado,NovaPeca).
 
 movePeca(Peca, Dado, "A", NovaPeca) :- movePecaA(Peca,Dado,NovaPeca).
-movePeca(Peca,Dado,"B", NovaPeca) :- movePecaB(Peca,Dado,NovaPeca).
+movePeca(Peca, Dado, "B", NovaPeca) :- movePecaB(Peca,Dado,NovaPeca).
 
 verifica(-1,_,6,_,1).
 verifica(-1,_,_,_,0).
@@ -135,19 +124,96 @@ verificaJogadaJogador(Jog, Dado, Ret) :-
     verificaJogadaPeca(Peca2,Dado, Time, Ret2),
     Ret is Ret1 + Ret2.
 
-encerrou(Bot, TimeVencedor) :- !.
-    %Faz aqui tambem
+muda(1,0).
+muda(0,1).
+
+movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
+    (Vez == 0 -> get_jogadorA(Tabuleiro,Jog), get_jogadorB(Tabuleiro,Ini);
+        get_jogadorA(Tabuleiro,Ini), get_jogadorB(Tabuleiro,Jog)),
+    get_time(Jog, Time),
+    movePeca(Peca,Dado,Time,NovaPeca),
+    get_x(NovaPeca, X),
+    get_y(NovaPeca, Y),
+    (Dado == 6 -> Proximo is Vez;
+        X == 3 , Y == 14 -> Proximo is Vez;
+        X == 1 , Y == 6 -> Proximo is Vez;
+        muda(Vez,Proximo)),
+    (Num == 1 -> set_peca1(Jog, NovaPeca, NovoJogador);
+    set_peca2(Jog, NovaPeca, NovoJogador)),
+    (Vez == 0 -> gera_matriz(NovoJogador, Ini, Matriz),make_tabuleiro(NovoJogador,Ini,Matriz,NovoTab);
+        gera_matriz(Ini, NovoJogador, Matriz),make_tabuleiro(Ini,NovoJogador,Matriz,NovoTab)),
+    jogo(Bot, Proximo,NovoTab).
+
+
+jogaPlayer(Bot, Vez, Dado, Tabuleiro) :-
+    (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
+        get_jogadorB(Tabuleiro,Jogador)),
+        write("Escolha uma peca: "),
+    get_time(Jogador, Time),
+    read_line_to_codes(user_input, X1),
+    string_to_atom(X1, X2),
+    atom_number(X2, X),
+    (X == 1 -> get_peca1(Jogador, Peca);
+        get_peca2(Jogador, Peca)),
+    verificaJogadaPeca(Peca, Dado, Time, Pode),
+    (X \= 1 , X \= 2 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
+        Pode == 0 -> write("Essa peca nao pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
+        movePlayer(Bot,Vez,Peca,X,Dado,Tabuleiro)).
+
+
+moveBot(Peca,Num,Dado,Tabuleiro) :-
+    get_jogadorA(Tabuleiro,JogA),
+    get_jogadorB(Tabuleiro,Bot),
+    movePeca(Peca, Dado,"B",NovaPeca),
+    get_x(NovaPeca, X),
+    get_y(NovaPeca, Y),
+    (Dado == 6 -> Proximo is 1;
+        X == 3 , Y == 14 -> Proximo is 1;
+        Proximo is 0),
+    (Num == 1 -> set_peca1(Bot, NovaPeca, NovoJogador);
+        set_peca2(Bot, NovaPeca, NovoJogador)),
+    gera_matriz(JogA, NovoJogador, Matriz),
+    make_tabuleiro(JogA, NovoJogador, Matriz, NovoTab),
+    jogo(1,Proximo,NovoTab).
+
+
+jogaBot(Dado,Tabuleiro):-
+    pecaBot(X),
+    get_jogadorB(Tabuleiro, Jogador),
+    (X == 1 -> get_peca1(Jogador, Peca);
+        get_peca2(Jogador, Peca)),
+    verificaJogadaPeca(Peca, Dado, "B", Pode),
+    (Pode == 0 -> jogaBot(Dado, Tabuleiro);
+        moveBot(Peca,X,Dado,Tabuleiro)).
+
+
+joga(Bot, Vez, Dado, Tabuleiro) :-
+    (Bot == 0 -> jogaPlayer(Bot,Vez, Dado, Tabuleiro);
+        Bot == 1 , Vez == 0 -> jogaPlayer(Bot, Vez, Dado, Tabuleiro);
+        jogaBot(Dado, Tabuleiro)).
+
 
 jogo(Bot, Vez, Tabuleiro) :-
     %Delay minimo
     %Clear
+    printTabuleiro(Tabuleiro),
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
         get_jogadorB(Tabuleiro, Jogador)),
-    %Print vez igual ao de haskell recebendo modo de jogo e de quem é a vez
-    dado(Dado). 
+    vez(Bot,Vez),
+    dado(Dado),
+    write("Saiu "),write(Dado),write(" no dado"),nl,
+    verificaJogadaJogador(Jogador, Dado, PodeJogar),
+    (Vez == 0 -> Proximo is 1;
+        Proximo is 0),
+    (PodeJogar == 0 -> jogo(Bot, Proximo, Tabuleiro);
+        joga(Bot, Vez, Dado, Tabuleiro)).
 
+encerrou(Bot, TimeVencedor) :-
+    %Faz aqui um print dizendo quem ganhou
+    main.
 
-
+vez(Bot, Vez) :- !.
+    %Faz aqui um print de quem é a vez
 
 inicia(Bot):-
     (Bot == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
@@ -155,22 +221,11 @@ inicia(Bot):-
 	make_peca(-1,-1,0,2,Peca2A),
 	make_peca(-1,-1,0,1,Peca1B),
 	make_peca(-1,-1,0,2,Peca2B),
- /*   verificaJogadaPeca(Peca1A,6,"A",Check),
-    write(Check),nl,
-    movePeca(Peca1A, 6, "A",Peca1A1),
-    movePeca(Peca1A1,5,"A",Peca1A2),
-    movePeca(Peca1A2,2,"A",Peca1A3), */
 	make_jogador(Peca1A,Peca2A,"A",JogadorA),
 	make_jogador(Peca1B,Peca2B,"B",JogadorB),
-    verificaJogadaJogador(JogadorA,5,Check),
-    write(Check),nl,
 	gera_matriz(JogadorA, JogadorB, Tab),
 	make_tabuleiro(JogadorA,JogadorB,Tab,Tabuleiro),
-    dado(Dado),
-    write("saiu "),write(Dado),write(" no dado"),nl,
-	write(Tabuleiro),nl,
-	printTabuleiro(Tabuleiro).
-
+    jogo(Bot, 0, Tabuleiro).
 
 toStringCaso2(String,Index,Saida):- (Index < 10 -> string_concat("0",String,Saida);string_concat(String,"",Saida)).
     
@@ -278,7 +333,7 @@ pecaBot(X) :-
     random(1,3,X).
   
 dado(X):-
-    random(1,7,X).
+    random(5,7,X).
 
 read_file(Stream,[]) :-
     at_end_of_stream(Stream).
