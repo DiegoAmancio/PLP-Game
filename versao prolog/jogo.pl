@@ -192,40 +192,46 @@ joga(Bot, Vez, Dado, Tabuleiro) :-
         Bot == 1 , Vez == 0 -> jogaPlayer(Bot, Vez, Dado, Tabuleiro);
         jogaBot(Dado, Tabuleiro)).
 
+continuaJogo(Bot, Vez, Tabuleiro, Jogador) :-
+    write("!"),nl,
+    sleep(1),dado(Dado),
+    write("Saiu "),write(Dado),write(" no dado"),nl,
+    verificaJogadaJogador(Jogador, Dado, PodeJogar),
+    muda(Vez,Proximo),
+    (PodeJogar == 0 -> jogo(Bot, Proximo, Tabuleiro);
+        joga(Bot, Vez, Dado, Tabuleiro)).
+
+verificaDesistencia(Bot,Vez,Tabuleiro,Jogador) :- 
+    read_line_to_string(user_input, X),
+    (X == "desistir" -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Tabuleiro,Jogador)).
 
 jogo(Bot, Vez, Tabuleiro) :-
-    sleep(3),
+    sleep(2),
     shell(clear),
     printTabuleiro(Tabuleiro),
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
         get_jogadorB(Tabuleiro, Jogador)),
     vez(Bot,Vez),
-    read_line_to_string(user_input, Entrada),
-    (Entrada == "desistir" -> desistir(Bot,Vez);(
-    sleep(3),dado(Dado),
-    write("Saiu "),write(Dado),write(" no dado"),nl,
-    verificaJogadaJogador(Jogador, Dado, PodeJogar),
-    (Vez == 0 -> Proximo is 1;
-        Proximo is 0),
-    (PodeJogar == 0 -> jogo(Bot, Proximo, Tabuleiro);
-        joga(Bot, Vez, Dado, Tabuleiro))
-     )).
+    (Vez == 1 , Bot == 1 -> continuaJogo(Bot,Vez,Tabuleiro,Jogador);
+        verificaDesistencia(Bot, Vez, Tabuleiro,Jogador)).
+
 
 encerrou(Bot, TimeVencedor) :-
     
-    (Bot == 1 ->((TimeVencedor == 1 -> write("o bot ganhou");write("Parabéns você ganhou"));(TimeVencedor == 1 -> write("Player 2 ganhou ,Player 1 perdeu");write("Player 1 ganhou,Player 2 perdeu")))),
+    (Bot == 1 , TimeVencedor == 1 -> write("o bot ganhou\n");
+    Bot == 1 , TimeVencedor == 0 -> write("Parabéns você ganhou\n");
+    Bot == 0 , TimeVencedor == 1 -> write("Player 2 ganhou!\n");
+    write("Player 1 ganhou!\n")),
     main.
+
 desistir(Bot,Vez) :- 
-	(Bot == 1 ,Vez == 0 -> write("Você desistiu, consequentemente... Voce perdeu!");
-    Bot == 0,Vez == 0 -> write("Player 1 desistiu");
-    write("Player 2 desistiu ")),
-    nl,
-    encerrou(Bot,Vez).
-   
-          
+	(Bot == 1 , Vez == 0 -> write("Voce desistiu, consequentemente... Voce perdeu!\n");
+    Bot == 0 , Vez == 0 -> write("Player 1 desistiu\n");
+    write("Player 2 desistiu\n")),
+    muda(Vez,Ganhador),
+    encerrou(Bot,Ganhador).
            
 vez(Bot, Vez) :- 
-    %Faz aqui um print de quem é a vez
     (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:");
     Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:");
     write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:")),nl.
@@ -374,6 +380,8 @@ readRules():-
     printando(Lines),
     main.
     
+sair():-
+    write("Até mais!"),nl.
 
 main:-
     repeat,
@@ -381,5 +389,5 @@ main:-
     read_line_to_codes(user_input, X1),
     string_to_atom(X1, X2),
     atom_number(X2, X),
-    (X == 1 -> inicia(0); X == 2 -> inicia(1); X == 3 -> readHelp(); X == 4 -> readRules()),
+    (X == 1 -> inicia(0); X == 2 -> inicia(1); X == 3 -> readHelp(); X == 4 -> readRules(); X == 5 -> sair()),
     halt(0).
