@@ -138,11 +138,15 @@ movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
         X == 3 , Y == 14 -> Proximo is Vez;
         X == 1 , Y == 6 -> Proximo is Vez;
         muda(Vez,Proximo)),
-    (Num == 1 -> set_peca1(Jog, NovaPeca, NovoJogador);
-    set_peca2(Jog, NovaPeca, NovoJogador)),
+    (Num == 1 -> set_peca1(Jog, NovaPeca, NovoJogador), get_peca2(NovoJogador, OutraPeca);
+    set_peca2(Jog, NovaPeca, NovoJogador), get_peca1(NovoJogador, OutraPeca)),
     (Vez == 0 -> gera_matriz(NovoJogador, Ini, Matriz),make_tabuleiro(NovoJogador,Ini,Matriz,NovoTab);
         gera_matriz(Ini, NovoJogador, Matriz),make_tabuleiro(Ini,NovoJogador,Matriz,NovoTab)),
-    jogo(Bot, Proximo,NovoTab).
+    get_x(OutraPeca, X1),
+    get_Y(OutraPeca, Y1),
+    (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(Bot,Vez);
+    X == 1 , X1 == 1 , Y == 6, Y1 == 6 -> encerrou(Bot, Vez);
+    jogo(Bot, Proximo,NovoTab)).
 
 
 jogaPlayer(Bot, Vez, Dado, Tabuleiro) :-
@@ -170,11 +174,14 @@ moveBot(Peca,Num,Dado,Tabuleiro) :-
     (Dado == 6 -> Proximo is 1;
         X == 3 , Y == 14 -> Proximo is 1;
         Proximo is 0),
-    (Num == 1 -> set_peca1(Bot, NovaPeca, NovoJogador);
-        set_peca2(Bot, NovaPeca, NovoJogador)),
+    (Num == 1 -> set_peca1(Bot, NovaPeca, NovoJogador),get_peca2(NovoJogador,OutraPeca);
+        set_peca2(Bot, NovaPeca, NovoJogador),get_peca1(NovoJogador,OutraPeca)),
     gera_matriz(JogA, NovoJogador, Matriz),
     make_tabuleiro(JogA, NovoJogador, Matriz, NovoTab),
-    jogo(1,Proximo,NovoTab).
+    get_x(OutraPeca, X1),
+    get_Y(OutraPeca, Y1),
+    (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(1,1);
+        jogo(1,Proximo,NovoTab)).
 
 
 jogaBot(Dado,Tabuleiro):-
