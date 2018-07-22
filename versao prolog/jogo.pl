@@ -127,6 +127,18 @@ verificaJogadaJogador(Jog, Dado, Ret) :-
 muda(1,0).
 muda(0,1).
 
+comePeca(Jog, X, Y, NovoJog) :-
+    get_peca1(Jog, Peca1),
+    get_x(Peca1, X1),
+    get_y(Peca1, Y1),
+    (X1 == X , Y1 == Y -> Num is 1;
+        Num is 2),
+    make_peca(-1,-1, 0, Num, NovaPeca),
+    (X1 == X , Y1 == Y -> set_peca1(Jog, NovaPeca, NovoJog);
+         set_peca2(Jog, NovaPeca, NovoJog)).    
+
+
+
 movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
     (Vez == 0 -> get_jogadorA(Tabuleiro,Jog), get_jogadorB(Tabuleiro,Ini);
         get_jogadorA(Tabuleiro,Ini), get_jogadorB(Tabuleiro,Jog)),
@@ -140,8 +152,11 @@ movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
         muda(Vez,Proximo)),
     (Num == 1 -> set_peca1(Jog, NovaPeca, NovoJogador), get_peca2(NovoJogador, OutraPeca);
     set_peca2(Jog, NovaPeca, NovoJogador), get_peca1(NovoJogador, OutraPeca)),
-    (Vez == 0 -> gera_matriz(NovoJogador, Ini, Matriz),make_tabuleiro(NovoJogador,Ini,Matriz,NovoTab);
-        gera_matriz(Ini, NovoJogador, Matriz),make_tabuleiro(Ini,NovoJogador,Matriz,NovoTab)),
+    contaJogador(Ini, X, Y, Cont),
+    (Cont == 1 -> comePeca(Ini, X, Y, NovoIni);
+        NovoIni = Ini),
+    (Vez == 0 -> gera_matriz(NovoJogador, NovoIni, Matriz),make_tabuleiro(NovoJogador,NovoIni,Matriz,NovoTab);
+        gera_matriz(NovoIni, NovoJogador, Matriz),make_tabuleiro(NovoIni,NovoJogador,Matriz,NovoTab)),
     get_x(OutraPeca, X1),
     get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(Bot,Vez);
@@ -154,13 +169,11 @@ jogaPlayer(Bot, Vez, Dado, Tabuleiro) :-
      get_jogadorB(Tabuleiro,Jogador)),
      write("Escolha uma peca: "),
      get_time(Jogador, Time),
-     read_line_to_codes(user_input, X1),
-     string_to_atom(X1, X2),
-     atom_number(X2, X),
-     (X == 1 -> get_peca1(Jogador, Peca);
+     get_single_char(X),
+     (X == 49 -> get_peca1(Jogador, Peca);
         get_peca2(Jogador, Peca)),
      verificaJogadaPeca(Peca, Dado, Time, Pode),
-     (X \= 1 , X \= 2 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
+     (X \= 49 , X \= 50 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
         Pode == 0 -> write("Essa peca não pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
         movePlayer(Bot,Vez,Peca,X,Dado,Tabuleiro)).
 
@@ -176,8 +189,12 @@ moveBot(Peca,Num,Dado,Tabuleiro) :-
         Proximo is 0),
     (Num == 1 -> set_peca1(Bot, NovaPeca, NovoJogador),get_peca2(NovoJogador,OutraPeca);
         set_peca2(Bot, NovaPeca, NovoJogador),get_peca1(NovoJogador,OutraPeca)),
-    gera_matriz(JogA, NovoJogador, Matriz),
-    make_tabuleiro(JogA, NovoJogador, Matriz, NovoTab),
+
+    contaJogador(JogA, X, Y, Cont),
+    (Cont == 1 -> comePeca(JogA, X, Y, NovoJogA);
+        NovoJogA is JogA),
+    gera_matriz(NovoJogA, NovoJogador, Matriz),
+    make_tabuleiro(NovoJogA, NovoJogador, Matriz, NovoTab),
     get_x(OutraPeca, X1),
     get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(1,1);
@@ -200,7 +217,6 @@ joga(Bot, Vez, Dado, Tabuleiro) :-
         jogaBot(Dado, Tabuleiro)).
 
 continuaJogo(Bot, Vez, Tabuleiro, Jogador) :-
-    write("!"),nl,
     sleep(1),dado(Dado),
     write("Saiu "),write(Dado),write(" no dado"),nl,
     verificaJogadaJogador(Jogador, Dado, PodeJogar),
@@ -210,7 +226,7 @@ continuaJogo(Bot, Vez, Tabuleiro, Jogador) :-
 
 verificaDesistencia(Bot,Vez,Tabuleiro,Jogador) :- 
     get_single_char(X),
-    (X == 51 -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Tabuleiro,Jogador)).
+    (X == 100 -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Tabuleiro,Jogador)).
 
 jogo(Bot, Vez, Tabuleiro) :-
     sleep(2),
@@ -239,9 +255,9 @@ desistir(Bot,Vez) :-
     encerrou(Bot,Ganhador).
            
 vez(Bot, Vez) :- 
-    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou 3 para sair:");
-    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou 3 para sair:");
-    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou 3 para sair:")),nl.
+    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou d para sair:");
+    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou d para sair:");
+    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou d para sair:")),nl.
     
 inicia(Bot):-
     (Bot == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
