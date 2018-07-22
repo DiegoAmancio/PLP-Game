@@ -200,25 +200,35 @@ jogo(Bot, Vez, Tabuleiro) :-
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
         get_jogadorB(Tabuleiro, Jogador)),
     vez(Bot,Vez),
-    sleep(3),
-    dado(Dado),
+    read_line_to_string(user_input, Entrada),
+    (Entrada == "desistir" -> desistir(Bot,Vez);(
+    sleep(3),dado(Dado),
     write("Saiu "),write(Dado),write(" no dado"),nl,
     verificaJogadaJogador(Jogador, Dado, PodeJogar),
     (Vez == 0 -> Proximo is 1;
         Proximo is 0),
     (PodeJogar == 0 -> jogo(Bot, Proximo, Tabuleiro);
-        joga(Bot, Vez, Dado, Tabuleiro)).
+        joga(Bot, Vez, Dado, Tabuleiro))
+     )).
 
 encerrou(Bot, TimeVencedor) :-
-    %Faz aqui um print dizendo quem ganhou
-    (Bot == 1 ->((TimeVencedor == 1 -> write("o bot ganhou");write("Parabéns você ganhou"));(TimeVencedor == 1 -> write("Player 2 ganhou \n Player 1 perdeu");write("Player 1 ganhou \n Player 2 perdeu")))),
+    
+    (Bot == 1 ->((TimeVencedor == 1 -> write("o bot ganhou");write("Parabéns você ganhou"));(TimeVencedor == 1 -> write("Player 2 ganhou ,Player 1 perdeu");write("Player 1 ganhou,Player 2 perdeu")))),
     main.
-
+desistir(Bot,Vez) :- 
+	(Bot == 1 ,Vez == 0 -> write("Você desistiu, consequentemente... Voce perdeu!");
+    Bot == 0,Vez == 0 -> write("Player 1 desistiu");
+    write("Player 2 desistiu ")),
+    nl,
+    encerrou(Bot,Vez).
+   
+          
+           
 vez(Bot, Vez) :- 
     %Faz aqui um print de quem é a vez
-    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...\n");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
-    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
-    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n")).
+    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:");
+    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:");
+    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:")),nl.
     
 inicia(Bot):-
     (Bot == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
