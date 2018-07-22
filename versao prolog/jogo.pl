@@ -194,12 +194,13 @@ joga(Bot, Vez, Dado, Tabuleiro) :-
 
 
 jogo(Bot, Vez, Tabuleiro) :-
-    %Delay minimo
-    %Clear
+    sleep(3),
+    shell(clear),
     printTabuleiro(Tabuleiro),
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
         get_jogadorB(Tabuleiro, Jogador)),
     vez(Bot,Vez),
+    sleep(3),
     dado(Dado),
     write("Saiu "),write(Dado),write(" no dado"),nl,
     verificaJogadaJogador(Jogador, Dado, PodeJogar),
@@ -210,11 +211,15 @@ jogo(Bot, Vez, Tabuleiro) :-
 
 encerrou(Bot, TimeVencedor) :-
     %Faz aqui um print dizendo quem ganhou
+    (Bot == 1 ->((TimeVencedor == 1 -> write("o bot ganhou");write("Parabéns você ganhou"));(TimeVencedor == 1 -> write("Player 2 ganhou \n Player 1 perdeu");write("Player 1 ganhou \n Player 2 perdeu")))),
     main.
 
-vez(Bot, Vez) :- !.
+vez(Bot, Vez) :- 
     %Faz aqui um print de quem é a vez
-
+    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...\n");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
+    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:\n");
+    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:\n")).
+    
 inicia(Bot):-
     (Bot == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
 	make_peca(-1,-1,0,1,Peca1A),
