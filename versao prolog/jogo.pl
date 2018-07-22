@@ -143,7 +143,7 @@ movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
     (Vez == 0 -> gera_matriz(NovoJogador, Ini, Matriz),make_tabuleiro(NovoJogador,Ini,Matriz,NovoTab);
         gera_matriz(Ini, NovoJogador, Matriz),make_tabuleiro(Ini,NovoJogador,Matriz,NovoTab)),
     get_x(OutraPeca, X1),
-    get_Y(OutraPeca, Y1),
+    get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(Bot,Vez);
     X == 1 , X1 == 1 , Y == 6, Y1 == 6 -> encerrou(Bot, Vez);
     jogo(Bot, Proximo,NovoTab)).
@@ -151,17 +151,17 @@ movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
 
 jogaPlayer(Bot, Vez, Dado, Tabuleiro) :-
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
-        get_jogadorB(Tabuleiro,Jogador)),
-        write("Escolha uma peca: "),
-    get_time(Jogador, Time),
-    read_line_to_codes(user_input, X1),
-    string_to_atom(X1, X2),
-    atom_number(X2, X),
-    (X == 1 -> get_peca1(Jogador, Peca);
+     get_jogadorB(Tabuleiro,Jogador)),
+     write("Escolha uma peca: "),
+     get_time(Jogador, Time),
+     read_line_to_codes(user_input, X1),
+     string_to_atom(X1, X2),
+     atom_number(X2, X),
+     (X == 1 -> get_peca1(Jogador, Peca);
         get_peca2(Jogador, Peca)),
-    verificaJogadaPeca(Peca, Dado, Time, Pode),
-    (X \= 1 , X \= 2 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
-        Pode == 0 -> write("Essa peca nao pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
+     verificaJogadaPeca(Peca, Dado, Time, Pode),
+     (X \= 1 , X \= 2 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
+        Pode == 0 -> write("Essa peca não pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
         movePlayer(Bot,Vez,Peca,X,Dado,Tabuleiro)).
 
 
@@ -179,7 +179,7 @@ moveBot(Peca,Num,Dado,Tabuleiro) :-
     gera_matriz(JogA, NovoJogador, Matriz),
     make_tabuleiro(JogA, NovoJogador, Matriz, NovoTab),
     get_x(OutraPeca, X1),
-    get_Y(OutraPeca, Y1),
+    get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(1,1);
         jogo(1,Proximo,NovoTab)).
 
@@ -209,8 +209,8 @@ continuaJogo(Bot, Vez, Tabuleiro, Jogador) :-
         joga(Bot, Vez, Dado, Tabuleiro)).
 
 verificaDesistencia(Bot,Vez,Tabuleiro,Jogador) :- 
-    read_line_to_string(user_input, X),
-    (X == "desistir" -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Tabuleiro,Jogador)).
+    get_single_char(X),
+    (X == 51 -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Tabuleiro,Jogador)).
 
 jogo(Bot, Vez, Tabuleiro) :-
     sleep(2),
@@ -239,9 +239,9 @@ desistir(Bot,Vez) :-
     encerrou(Bot,Ganhador).
            
 vez(Bot, Vez) :- 
-    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou desistir para sair:");
-    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou desistir para sair:");
-    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou desistir para sair:")),nl.
+    (Bot == 1,Vez == 1 -> write("Vez do bot : o bot vai jogar o dado...");Bot == 1 ,Vez == 0 -> write("Sua vez  => digite qualquer coisa para rodar o dado ou 3 para sair:");
+    Bot == 0,Vez == 0 -> write("Vez do Player 1  => digite qualquer coisa para rodar o dado ou 3 para sair:");
+    write("Vez do Player 2  => digite qualquer coisa para rodar o dado ou 3 para sair:")),nl.
     
 inicia(Bot):-
     (Bot == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
@@ -393,8 +393,6 @@ sair():-
 main:-
     repeat,
     write("1 - Versus Player        \n2 - Versus Computador         \n3 - Ajuda/Creditos\n4 - Regras        \n5 - Sair          \n"),nl,
-    read_line_to_codes(user_input, X1),
-    string_to_atom(X1, X2),
-    atom_number(X2, X),
-    (X == 1 -> inicia(0); X == 2 -> inicia(1); X == 3 -> readHelp(); X == 4 -> readRules(); X == 5 -> sair()),
+    get_single_char(X),
+    (X == 49 -> inicia(0); X == 50 -> inicia(1); X == 51 -> readHelp(); X == 52 -> readRules(); X == 53 -> sair()),
     halt(0).
