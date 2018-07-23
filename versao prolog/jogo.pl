@@ -124,7 +124,45 @@ verificaJogadaJogador(Jog, Dado, Ret) :-
     verificaJogadaPeca(Peca2,Dado, Time, Ret2),
     Ret is Ret1 + Ret2.
 
-voltePeca(Dado,Peca):- write(2).
+voltaPecaA(Peca,0,Peca).
+voltaPecaA(Peca, Casas, NovaPeca):-
+    get_x(Peca,X),
+    get_y(Peca,Y),
+    get_casas(Peca, Casa),
+    get_num(Peca, Num),
+    MaisX is X+1,
+    MaisY is Y+1,
+    MenosX is X-1,
+    MenosY is Y-1,
+    NovaCasa is Casa-1,
+    (X < 4 , Y == 0 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+    X == 4 , Y < 20 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+    X > 0 , Y == 20 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+    X == 0 , Y > 1 -> make_peca(X,MenosY,NovaCasa, Num,PecaAtt), NovoDado is Casas - 1;
+    make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
+    movePecaA(PecaAtt,NovoDado,NovaPeca).
+
+voltaPecaB(Peca,0,Peca).
+voltaPecaB(Peca, Casas, NovaPeca):-
+    get_x(Peca,X),
+    get_y(Peca,Y),
+    get_casas(Peca, Casa),
+    get_num(Peca, Num),
+    MaisX is X+1,
+    MaisY is Y+1,
+    MenosX is X-1,
+    MenosY is Y-1,
+    NovaCasa is Casa-1,
+    (X > 0 , Y == 20 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+    X == 0 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+    X < 4 , Y == 0 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+    X == 4 , Y < 19 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+    make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
+    movePecaB(PecaAtt,NovoDado,NovaPeca).
+
+
+voltaPeca(Peca, Casas, "A", NovaPeca) :- voltaPecaA(Peca,Casas,NovaPeca).
+voltaPeca(Peca, Casas, "B", NovaPeca) :- voltaPecaB(Peca,Casas,NovaPeca).
 
 geraArmadilha(Dado,Peca):-
 	random(1,6,X),
