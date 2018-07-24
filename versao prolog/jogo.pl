@@ -5,6 +5,8 @@ make_jogador(Peca1, Peca2, Time, jogador(Peca1,Peca2,Time)).
 make_tabuleiro(JogadorA, JogadorB, Matriz, tabuleiro(JogadorA,JogadorB,Matriz)).
 make_local(X,Y,local(X,Y)).
 
+get_x(local(X,_),X).
+get_y(local(_,Y),Y).
 get_x(peca(X,_,_,_),X).
 get_y(peca(_,Y,_,_),Y).
 get_casas(peca(_,_,Casas,_),Casas).
@@ -211,7 +213,7 @@ comePeca(Jog, X, Y, NovoJog) :-
 
 
 
-movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
+movePlayer(Bot, Vez, Peca, Num, Dado, Arm, Tabuleiro) :-
     (Vez == 0 -> get_jogadorA(Tabuleiro,Jog), get_jogadorB(Tabuleiro,Ini);
         get_jogadorA(Tabuleiro,Ini), get_jogadorB(Tabuleiro,Jog)),
     get_time(Jog, Time),
@@ -234,10 +236,10 @@ movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
     get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(Bot,Vez);
     X == 1 , X1 == 1 , Y == 6, Y1 == 6 -> encerrou(Bot, Vez);
-    verificaArmadilha(Bot, Proximo,NovoTab)).
+    jogo(Bot,Proximo,Arm,NovoTab)).
 
 
-jogaPlayer(Bot, Vez, Dado, Tabuleiro) :-
+jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro) :-
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
      get_jogadorB(Tabuleiro,Jogador)),
      write("Escolha uma peca: "),
@@ -248,12 +250,12 @@ jogaPlayer(Bot, Vez, Dado, Tabuleiro) :-
      (X == 49 -> get_peca1(Jogador, Peca);
         get_peca2(Jogador, Peca)),
      verificaJogadaPeca(Peca, Dado, Time, Pode),
-     (X \= 49 , X \= 50 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
-        Pode == 0 -> write("Essa peca não pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Tabuleiro);
-        movePlayer(Bot,Vez,Peca,Num,Dado,Tabuleiro)).
+     (X \= 49 , X \= 50 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
+        Pode == 0 -> write("Essa peca não pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
+        movePlayer(Bot,Vez,Peca,Num,Dado,Arm,Tabuleiro)).
 
 
-moveBot(Peca,Num,Dado,Tabuleiro) :-
+moveBot(Peca,Num,Dado,Arm,Tabuleiro) :-
     get_jogadorA(Tabuleiro,JogA),
     get_jogadorB(Tabuleiro,Bot),
     movePeca(Peca, Dado,"B",NovaPeca),
@@ -273,7 +275,7 @@ moveBot(Peca,Num,Dado,Tabuleiro) :-
     get_x(OutraPeca, X1),
     get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(1,1);
-        jogo(1,Proximo,NovoTab)).
+        jogo(1,Proximo,Arm,NovoTab)).
 
 escolhe(Y):-
     random(0,2,Aux),
@@ -303,42 +305,42 @@ locais_armadilhas(Armadilhas):-
     Armadilhas = [Local1,Local2,Local3,Local4,Local5].
 
 
-jogaBot(Dado,Tabuleiro):-
+jogaBot(Dado, Arm, Tabuleiro):-
     pecaBot(X),
     get_jogadorB(Tabuleiro, Jogador),
     (X == 1 -> get_peca1(Jogador, Peca);
         get_peca2(Jogador, Peca)),
     verificaJogadaPeca(Peca, Dado, "B", Pode),
-    (Pode == 0 -> jogaBot(Dado, Tabuleiro);
-        moveBot(Peca,X,Dado,Tabuleiro)).
+    (Pode == 0 -> jogaBot(Dado, Arm, Tabuleiro);
+        moveBot(Peca,X,Dado,Arm,Tabuleiro)).
 
 
-joga(Bot, Vez, Dado, Tabuleiro) :-
-    (Bot == 0 -> jogaPlayer(Bot,Vez, Dado, Tabuleiro);
-        Bot == 1 , Vez == 0 -> jogaPlayer(Bot, Vez, Dado, Tabuleiro);
-        jogaBot(Dado, Tabuleiro)).
+joga(Bot, Vez, Dado, Arm, Tabuleiro) :-
+    (Bot == 0 -> jogaPlayer(Bot,Vez, Dado, Arm, Tabuleiro);
+        Vez == 0 -> jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
+        jogaBot(Dado, Arm, Tabuleiro)).
 
-continuaJogo(Bot, Vez, Tabuleiro, Jogador) :-
+continuaJogo(Bot, Vez, Arm, Tabuleiro, Jogador) :-
     sleep(1),dado(Dado),
     write("Saiu "),write(Dado),write(" no dado"),nl,
     verificaJogadaJogador(Jogador, Dado, PodeJogar),
     muda(Vez,Proximo),
-    (PodeJogar == 0 -> jogo(Bot, Proximo, Tabuleiro);
-        joga(Bot, Vez, Dado, Tabuleiro)).
+    (PodeJogar == 0 -> jogo(Bot, Proximo, Arm, Tabuleiro);
+        joga(Bot, Vez, Dado, Arm, Tabuleiro)).
 
-verificaDesistencia(Bot,Vez,Tabuleiro,Jogador) :- 
+verificaDesistencia(Bot,Vez,Arm,Tabuleiro,Jogador) :- 
     get_single_char(X),
-    (X == 100 -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Tabuleiro,Jogador)).
+    (X == 100 -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Arm,Tabuleiro,Jogador)).
 
-jogo(Bot, Vez, Tabuleiro) :-
+jogo(Bot, Vez, Arm, Tabuleiro) :-
     sleep(2),
     shell(clear),
     printTabuleiro(Tabuleiro),
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
         get_jogadorB(Tabuleiro, Jogador)),
     vez(Bot,Vez),
-    (Vez == 1 , Bot == 1 -> continuaJogo(Bot,Vez,Tabuleiro,Jogador);
-        verificaDesistencia(Bot, Vez, Tabuleiro,Jogador)).
+    (Vez == 1 , Bot == 1 -> continuaJogo(Bot,Vez,Arm,Tabuleiro,Jogador);
+        verificaDesistencia(Bot, Vez, Arm, Tabuleiro,Jogador)).
 
 
 encerrou(Bot, TimeVencedor) :-
@@ -372,7 +374,7 @@ inicia(Bot):-
 	gera_matriz(JogadorA, JogadorB, Tab),
     locais_armadilhas(Arm),
 	make_tabuleiro(JogadorA,JogadorB,Tab,Tabuleiro),
-    jogo(Bot, 0, Tabuleiro).
+    jogo(Bot, 0, Arm, Tabuleiro).
 
 toStringCaso2(String,Index,Saida):- (Index < 10 -> string_concat("0",String,Saida);string_concat(String,"",Saida)).
     
