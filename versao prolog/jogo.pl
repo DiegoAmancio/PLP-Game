@@ -3,6 +3,7 @@
 make_peca(X,Y,Casas,Num,peca(X,Y,Casas,Num)).
 make_jogador(Peca1, Peca2, Time, jogador(Peca1,Peca2,Time)).
 make_tabuleiro(JogadorA, JogadorB, Matriz, tabuleiro(JogadorA,JogadorB,Matriz)).
+make_local(X,Y,local(X,Y)).
 
 get_x(peca(X,_,_,_),X).
 get_y(peca(_,Y,_,_),Y).
@@ -233,7 +234,7 @@ movePlayer(Bot, Vez, Peca, Num, Dado, Tabuleiro) :-
     get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(Bot,Vez);
     X == 1 , X1 == 1 , Y == 6, Y1 == 6 -> encerrou(Bot, Vez);
-    jogo(Bot, Proximo,NovoTab)).
+    verificaArmadilha(Bot, Proximo,NovoTab)).
 
 
 jogaPlayer(Bot, Vez, Dado, Tabuleiro) :-
@@ -273,6 +274,33 @@ moveBot(Peca,Num,Dado,Tabuleiro) :-
     get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(1,1);
         jogo(1,Proximo,NovoTab)).
+
+escolhe(Y):-
+    random(0,2,Aux),
+    (Aux == 0 -> Y = 0;
+        Y = 20).
+
+gera_y(X, Y):-
+    (X == 0 -> random(0,21,Y);
+        X == 4 -> random(0,21,Y);
+        escolhe(Y)).
+
+gera_x(X):-
+    random(0,5,X).
+
+gera_local(Local):-
+    gera_x(X),
+    gera_y(X, Y),
+    make_local(X,Y,Local).
+
+
+locais_armadilhas(Armadilhas):-
+    gera_local(Local1),
+    gera_local(Local2),
+    gera_local(Local3),
+    gera_local(Local4),
+    gera_local(Local5),
+    Armadilhas = [Local1,Local2,Local3,Local4,Local5].
 
 
 jogaBot(Dado,Tabuleiro):-
@@ -342,6 +370,7 @@ inicia(Bot):-
 	make_jogador(Peca1A,Peca2A,"A",JogadorA),
 	make_jogador(Peca1B,Peca2B,"B",JogadorB),
 	gera_matriz(JogadorA, JogadorB, Tab),
+    locais_armadilhas(Arm),
 	make_tabuleiro(JogadorA,JogadorB,Tab,Tabuleiro),
     jogo(Bot, 0, Tabuleiro).
 
