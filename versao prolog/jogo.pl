@@ -411,23 +411,25 @@ linhaTabuleiro([H|T],Index,4,Resposta):-(Index >  1 , Index < 6),write(Resposta)
 linhaTabuleiro([H|T],Index,4,Resposta):-Index == 11,write(Resposta),write("\033[44m"),string_concat("","   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,4,Saida).
 linhaTabuleiro([H|T],Index,4,Resposta):- Index == 15,write(" "),write(Resposta),write("\033[49m"),string_concat("","  ", Saida),IndexP is Index + 1+ H - H ,linhaTabuleiro(T,IndexP,4,Saida).
 linhaTabuleiro([H|T],Index,4,Resposta):-Index == 1,string_concat(Resposta,"|", Saida),write(Saida),write("\033[49m"),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,4,"  ").
-linhaTabuleiro([H|T],Index,4,Resposta):-Index == 6,write(Resposta),write("\033[42m"),string_concat("","|  ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,4,Saida).
-linhaTabuleiro([H|T],Index,4,Resposta):-(Index >  15 , Index < 20),write(Resposta),write("\033[49m"),string_concat("","   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,4,Saida).
+linhaTabuleiro([H|T],Index,4,Resposta):-Index == 6,write(Resposta),write("\033[42m"),string_concat("","   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,4,Saida).
+linhaTabuleiro([H|T],Index,4,Resposta):-Index == 19,write("      "),IndexP is Index + 1 ,linhaTabuleiro(T,IndexP,4,"").
+linhaTabuleiro([H|T],Index,4,Resposta):-(Index >  15 , Index < 19),write(Resposta),write("\033[49m"),string_concat("","   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,4,Saida).
 linhaTabuleiro([H|T],Index,4,Resposta):-(Index >  6 , Index < 15),string_concat(Resposta,"   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,4,Saida).
 linhaTabuleiro([H|T],Index,4,Resposta):- write("\033[30m"),write("\033[47m"),validaPecaPrint(H,4,A),string_concat(Resposta,A, Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,4,Saida).
 
 linhaTabuleiro(_,Index,5,Resposta):-Index == 1,string_concat(Resposta,"|", Saida),write(Saida),write("\033[49m"),IndexP is Index + 1 ,linhaTabuleiro(_,IndexP,5,"  ").
 linhaTabuleiro(_,Index,5,Resposta):-Index == 15,write(" "),write(Resposta),write("\033[49m"),IndexP is Index + 1 ,linhaTabuleiro(_,IndexP,5,"  ").
 linhaTabuleiro(_,Index,5,Resposta):-Index >  1 , Index < 6,write(Resposta),write("\033[49m"),string_concat("","   ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,5,Saida).
-linhaTabuleiro(_,Index,5,Resposta):-Index == 6,write(Resposta),write("\033[42m"),string_concat("","|  ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,5,Saida).
+linhaTabuleiro(_,Index,5,Resposta):-Index == 6,write(Resposta),write("\033[42m"),string_concat("","   ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,5,Saida).
 linhaTabuleiro(_,Index,5,Resposta):-Index >  10 , Index < 16,write(Resposta),write("\033[44m"),string_concat("","   ", Saida),IndexP is Index + 1 ,linhaTabuleiro(_,IndexP,5,Saida).
 linhaTabuleiro(_,Index,5,Resposta):-Index >  6 , Index < 11,write(Resposta),write("\033[42m"),IndexP is Index + 1 ,linhaTabuleiro(_,IndexP,5,"   ").
+linhaTabuleiro(_,Index,5,Resposta):-Index == 19,write("      "),IndexP is Index + 1 ,linhaTabuleiro(_,IndexP,5,"").
 linhaTabuleiro(_,Index,5,Resposta):- Index == 0,write("\033[47m"),string_concat(Resposta,"|__", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,5,Saida).
-linhaTabuleiro(_,Index,5,Resposta):-Index > 15, Index < 20,write(Resposta),IndexP is Index + 1,linhaTabuleiro(_,IndexP,5,"   ").
+linhaTabuleiro(_,Index,5,Resposta):-Index > 15, Index < 19,write(Resposta),IndexP is Index + 1,linhaTabuleiro(_,IndexP,5,"   ").
 linhaTabuleiro(_,Index,5,Resposta):-Index == 20,write("\033[47m"),string_concat(Resposta,"|__", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,5,Saida).
 
 linhaTabuleiro([H|T],Index,6,Resposta):-Index == 1,string_concat(Resposta,"|", Saida),write(Saida),write("\033[49m"),IndexP is Index + 1 + H - H ,linhaTabuleiro(T,IndexP,6,"  ").
-linhaTabuleiro([H|T],Index,6,Resposta):-Index == 6,write(Resposta),write("\033[42m"),string_concat("","|  ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,6,Saida).
+linhaTabuleiro([H|T],Index,6,Resposta):-Index == 6,write(Resposta),write("\033[42m"),string_concat("","   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,6,Saida).
 linhaTabuleiro([H|T],Index,6,Resposta):-Index >  1 , Index < 6,write(Resposta),write("\033[49m"),string_concat("","   ", Saida),IndexP is Index + 1 + H - H,linhaTabuleiro(T,IndexP,6,Saida).
 linhaTabuleiro([H|T],Index,6,Resposta):-Index >  10 , Index < 15,write(Resposta),write("\033[44m"),string_concat("","   ", Saida),IndexP is Index + 1+ H - H ,linhaTabuleiro(T,IndexP,6,Saida).
 linhaTabuleiro([H|T],Index,6,Resposta):-Index >  6 , Index < 11,write(Resposta),write("\033[42m"),IndexP is Index + 1+ H - H ,linhaTabuleiro(T,IndexP,6,"   ").
@@ -436,7 +438,7 @@ linhaTabuleiro([H|T],Index,6,Resposta):-validaPecaPrint(H,1,A),string_concat(Res
    
 linhaTabuleiro(_,-1,7,Resposta):-string_concat(Resposta,"03", Saida),linhaTabuleiro(_,0,7,Saida).
 linhaTabuleiro(_,Index,7,Resposta):-Index == 1,string_concat(Resposta,"|", Saida),write(Saida),write("\033[49m"),IndexP is Index + 1 ,linhaTabuleiro(_,IndexP,7,"  ").
-linhaTabuleiro(_,Index,7,Resposta):-Index == 6,write(Resposta),write("\033[42m"),string_concat("","|  ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,7,Saida).
+linhaTabuleiro(_,Index,7,Resposta):-Index == 6,write(Resposta),write("\033[42m"),string_concat("","   ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,7,Saida).
 linhaTabuleiro(_,Index,7,Resposta):-Index >  1 , Index < 6,write(Resposta),write("\033[49m"),string_concat("","   ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,7,Saida).
 linhaTabuleiro(_,Index,7,Resposta):-Index >  10 , Index < 15,write(Resposta),write("\033[44m"),string_concat("","   ", Saida),IndexP is Index + 1 ,linhaTabuleiro(_,IndexP,7,Saida).
 linhaTabuleiro(_,Index,7,Resposta):-Index >  6 , Index < 11,write(Resposta),write("\033[42m"),IndexP is Index + 1 ,linhaTabuleiro(_,IndexP,7,"   ").
