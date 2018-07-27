@@ -526,35 +526,35 @@ printTabuleiro(Tabuleiro) :-
 
     write("   "),
     linhaTabuleiro(1,0,-2,""),nl,
-	printForeAndBackground(0,"\033[47m"),
+	printNumeroForeAndBackground(0,"\033[47m"),
    
     linhaTabuleiro(L1,0,0,""),nl,
-    printForeAndBackground(0,"\033[47m"),
+    printNumeroForeAndBackground(0,"\033[47m"),
     
     linhaTabuleiro([],0,1,""),nl,
-	printForeAndBackground(1,"\033[42m"),
+	printNumeroForeAndBackground(1,"\033[42m"),
     
     linhaTabuleiro(L2,0,2,""),nl,
-	printForeAndBackground(1,"\033[42m"),
+	printNumeroForeAndBackground(1,"\033[42m"),
     
     linhaTabuleiro([],0,3,""),nl,
-	printForeAndBackground(2,"\033[47m"),
+	printNumeroForeAndBackground(2,"\033[47m"),
     
     linhaTabuleiro(L3,0,4,""),nl,
-	printForeAndBackground(2,"\033[47m"),
+	printNumeroForeAndBackground(2,"\033[47m"),
     
     linhaTabuleiro([],0,5,""),nl,
 	
-    printForeAndBackground(3,"\033[47m"),
+    printNumeroForeAndBackground(3,"\033[47m"),
     linhaTabuleiro(L4,0,6,""),nl,
 	
-    printForeAndBackground(3,"\033[47m"),
+    printNumeroForeAndBackground(3,"\033[47m"),
     linhaTabuleiro([],0,7,""),nl,
 	
-    printForeAndBackground(4,"\033[47m"),
+    printNumeroForeAndBackground(4,"\033[47m"),
     linhaTabuleiro(L5,0,0,""),nl,
 	
-    printForeAndBackground(4,"\033[47m"),
+    printNumeroForeAndBackground(4,"\033[47m"),
     linhaTabuleiro([],0,1,""),nl,
     
     printaCaixa(Tabuleiro,2).
