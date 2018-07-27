@@ -67,163 +67,159 @@ printando([H|T]) :- write(H),nl,printando(T).
 sair() :-
     write("Até mais!"),nl.
 
-inicia(Bot):-
-    (Bot == 0 -> write("Iniciando VS"),nl; write("Iniciando BOT"),nl),
+inicia(Bot) :-
+    (Bot == 0 -> write("Iniciando VS"),nl; 
+     write("Iniciando BOT"),nl),
+
     make_peca(-1,-1,0,1,Peca1A),
     make_peca(-1,-1,0,2,Peca2A),
     make_peca(-1,-1,0,1,Peca1B),
     make_peca(-1,-1,0,2,Peca2B),
     make_jogador(Peca1A,Peca2A,"A",JogadorA),
     make_jogador(Peca1B,Peca2B,"B",JogadorB),
-    gera_matriz(JogadorA, JogadorB, Tab),
-    locais_armadilhas(Arm),
+    
+    geraTabuleiro(JogadorA, JogadorB, Tab),
+    locaisArmadilhas(Arm),
     make_tabuleiro(JogadorA,JogadorB,Tab,Tabuleiro),
+    
     jogo(Bot, 0, Arm, Tabuleiro).
 
 jogo(Bot, Vez, Arm, Tabuleiro) :-
     sleep(2),
     shell(clear),
     printTabuleiro(Tabuleiro),
+    
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
-        get_jogadorB(Tabuleiro, Jogador)),
+     get_jogadorB(Tabuleiro, Jogador)),
     vez(Bot,Vez),
     (Vez == 1 , Bot == 1 -> continuaJogo(Bot,Vez,Arm,Tabuleiro,Jogador);
-        verificaDesistencia(Bot, Vez, Arm, Tabuleiro,Jogador)).
+     verificaDesistencia(Bot, Vez, Arm, Tabuleiro,Jogador)).
 
 verificaDesistencia(Bot,Vez,Arm,Tabuleiro,Jogador) :- 
     get_single_char(X),
-    (X == 100 -> desistir(Bot,Vez);continuaJogo(Bot,Vez,Arm,Tabuleiro,Jogador)).
+    (X == 100 -> desistir(Bot,Vez); continuaJogo(Bot,Vez,Arm,Tabuleiro,Jogador)).
 
 continuaJogo(Bot, Vez, Arm, Tabuleiro, Jogador) :-
     sleep(1),dado(Dado),
     write("Saiu "),write(Dado),write(" no dado"),nl,
+    
     verificaJogadaJogador(Jogador, Dado, PodeJogar),
     muda(Vez,Proximo),
     (PodeJogar == 0 -> jogo(Bot, Proximo, Arm, Tabuleiro);
-        joga(Bot, Vez, Dado, Arm, Tabuleiro)).
+     joga(Bot, Vez, Dado, Arm, Tabuleiro)).
     
 joga(Bot, Vez, Dado, Arm, Tabuleiro) :-
     (Bot == 0 -> jogaPlayer(Bot,Vez, Dado, Arm, Tabuleiro);
-        Vez == 0 -> jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
-        jogaBot(Dado, Arm, Tabuleiro)).
+     Vez == 0 -> jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
+     jogaBot(Dado, Arm, Tabuleiro)).
 
-jogaBot(Dado, Arm, Tabuleiro):-
+jogaBot(Dado, Arm, Tabuleiro) :-
     pecaBot(X),
     get_jogadorB(Tabuleiro, Jogador),
     (X == 1 -> get_peca1(Jogador, Peca);
-        get_peca2(Jogador, Peca)),
+     get_peca2(Jogador, Peca)),
+
     verificaJogadaPeca(Peca, Dado, "B", Pode),
     (Pode == 0 -> jogaBot(Dado, Arm, Tabuleiro);
-        moveBot(Peca,X,Dado,Arm,Tabuleiro)).
-
-moveBot(Peca,Num,Dado,Arm,Tabuleiro) :-
-    get_jogadorA(Tabuleiro,JogA),
-    get_jogadorB(Tabuleiro,Bot),
-    movePeca(Peca, Dado,"B",NovaPeca),
-    get_x(NovaPeca, X),
-    get_y(NovaPeca, Y),
-    (Dado == 6 -> Proximo is 1;
-        X == 3 , Y == 14 -> Proximo is 1;
-        Proximo is 0),
-    (Num == 1 -> set_peca1(Bot, NovaPeca, NovoJogador),get_peca2(NovoJogador,OutraPeca);
-        set_peca2(Bot, NovaPeca, NovoJogador),get_peca1(NovoJogador,OutraPeca)),
-
-    contaJogador(JogA, X, Y, Cont),
-    (Cont == 1 -> comePeca(JogA, X, Y, NovoJogA);
-        NovoJogA = JogA),
-    gera_matriz(NovoJogA, NovoJogador, Matriz),
-    make_tabuleiro(NovoJogA, NovoJogador, Matriz, NovoTab),
-    get_x(OutraPeca, X1),
-    get_y(OutraPeca, Y1),
-    (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(1,1);
-        jogo(1,Proximo,Arm,NovoTab)).
+     jogada(1,1,Peca,Dado,Arm,Tabuleiro)).
 
 jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro) :-
+    write("Escolha uma peca: "),
+    get_single_char(X),
+    
     (Vez == 0 -> get_jogadorA(Tabuleiro, Jogador);
      get_jogadorB(Tabuleiro,Jogador)),
-     write("Escolha uma peca: "),
-     get_time(Jogador, Time),
-     get_single_char(X),
-     (X == 49 -> Num is 1;
-        Num is 2),
-     (X == 49 -> get_peca1(Jogador, Peca);
-        get_peca2(Jogador, Peca)),
-     verificaJogadaPeca(Peca, Dado, Time, Pode),
-     (X \= 49 , X \= 50 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
-        Pode == 0 -> write("Essa peca não pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
-        movePlayer(Bot,Vez,Peca,Num,Dado,Arm,Tabuleiro)).
+    get_time(Jogador, Time),
+    (X == 49 -> get_peca1(Jogador, Peca);
+     get_peca2(Jogador, Peca)),
 
-movePlayer(Bot, Vez, Peca, Num, Dado, Arm, Tabuleiro) :-
+    verificaJogadaPeca(Peca, Dado, Time, Pode),
+    (X \= 49 , X \= 50 -> write("Escolha uma peca valida"),nl,jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
+     Pode == 0 -> write("Essa peca não pode se mover"),nl,jogaPlayer(Bot, Vez, Dado, Arm, Tabuleiro);
+     jogada(Bot,Vez,Peca,Dado,Arm,Tabuleiro)).
+
+jogada(Bot, Vez, Peca, Dado, Arm, Tabuleiro) :-
     (Vez == 0 -> get_jogadorA(Tabuleiro,Jog), get_jogadorB(Tabuleiro,Ini);
-        get_jogadorA(Tabuleiro,Ini), get_jogadorB(Tabuleiro,Jog)),
+     get_jogadorA(Tabuleiro,Ini), get_jogadorB(Tabuleiro,Jog)),
     get_time(Jog, Time),
+    get_num(Peca, Num),
+
     movePeca(Peca,Dado,Time,PecaAux),
     get_x(PecaAux, XAux),
     get_y(PecaAux, YAux),
-    verifica_armadilha(XAux,YAux,Arm,TemArm),
+
+    verificaArmadilha(XAux,YAux,Arm,TemArm),
     (TemArm == 0 -> NovaPeca = PecaAux;
-        geraArmadilha(PecaAux,Dado,Time,NovaPeca)),
+     aplicaArmadilha(PecaAux,Dado,Time,NovaPeca)),
+
     get_x(NovaPeca, X),
     get_y(NovaPeca, Y),
     (Dado == 6 -> Proximo is Vez;
-        X == 3 , Y == 14 -> Proximo is Vez;
-        X == 1 , Y == 6 -> Proximo is Vez;
-        muda(Vez,Proximo)),
+     X == 3 , Y == 14 -> Proximo is Vez;
+     X == 1 , Y == 6 -> Proximo is Vez;
+     muda(Vez,Proximo)),
+    
     (Num == 1 -> set_peca1(Jog, NovaPeca, NovoJogador), get_peca2(NovoJogador, OutraPeca);
-    set_peca2(Jog, NovaPeca, NovoJogador), get_peca1(NovoJogador, OutraPeca)),
+     set_peca2(Jog, NovaPeca, NovoJogador), get_peca1(NovoJogador, OutraPeca)),
+    
     contaJogador(Ini, X, Y, Cont),
     (Cont == 1 -> comePeca(Ini, X, Y, NovoIni);
-        NovoIni = Ini),
-    (Vez == 0 -> gera_matriz(NovoJogador, NovoIni, Matriz),make_tabuleiro(NovoJogador,NovoIni,Matriz,NovoTab);
-        gera_matriz(NovoIni, NovoJogador, Matriz),make_tabuleiro(NovoIni,NovoJogador,Matriz,NovoTab)),
+     NovoIni = Ini),
+    (Vez == 0 -> geraTabuleiro(NovoJogador, NovoIni, Matriz),make_tabuleiro(NovoJogador,NovoIni,Matriz,NovoTab);
+     geraTabuleiro(NovoIni, NovoJogador, Matriz),make_tabuleiro(NovoIni,NovoJogador,Matriz,NovoTab)),
+    
     get_x(OutraPeca, X1),
     get_y(OutraPeca, Y1),
     (X == 3 , X1 == 3 , Y == 14 , Y1 == 14 -> encerrou(Bot,Vez);
-    X == 1 , X1 == 1 , Y == 6, Y1 == 6 -> encerrou(Bot, Vez);
-    jogo(Bot,Proximo,Arm,NovoTab)).
+     X == 1 , X1 == 1 , Y == 6, Y1 == 6 -> encerrou(Bot, Vez);
+     jogo(Bot,Proximo,Arm,NovoTab)).
 
 movePeca(Peca, Dado, "A", NovaPeca) :- movePecaA(Peca,Dado,NovaPeca).
 movePeca(Peca, Dado, "B", NovaPeca) :- movePecaB(Peca,Dado,NovaPeca).
 
 movePecaA(Peca,0,Peca).
-movePecaA(Peca, Dado, NovaPeca):-
+movePecaA(Peca, Dado, NovaPeca) :-
     get_x(Peca,X),
     get_y(Peca,Y),
     get_casas(Peca, Casas),
     get_num(Peca, Num),
+
     MaisX is X+1,
     MaisY is Y+1,
     MenosX is X-1,
     MenosY is Y-1,
     NovaCasa is Casas+1,
+
     (X == -1 -> make_peca(0,1,0,Num,PecaAtt), NovoDado is 0; 
-    X == 0 , Y < 20 -> make_peca(X,MaisY,NovaCasa, Num,PecaAtt), NovoDado is Dado - 1;
-    X < 4 , Y == 20 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    X == 4 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    X > 1 , Y == 0 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    X == 1 , Y < 6 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
-    movePecaA(PecaAtt,NovoDado,NovaPeca).
+     X == 0 , Y < 20 -> make_peca(X,MaisY,NovaCasa, Num,PecaAtt), NovoDado is Dado - 1;
+     X < 4 , Y == 20 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     X == 4 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     X > 1 , Y == 0 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     X == 1 , Y < 6 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
+     movePecaA(PecaAtt,NovoDado,NovaPeca).
 
 movePecaB(Peca,0,Peca).
-movePecaB(Peca, Dado, NovaPeca):-
+movePecaB(Peca, Dado, NovaPeca) :-
     get_x(Peca,X),
     get_y(Peca,Y),
     get_casas(Peca, Casas),
     get_num(Peca, Num),
+
     MaisX is X+1,
     MaisY is Y+1,
     MenosX is X-1,
     MenosY is Y-1,
     NovaCasa is Casas+1,
+
     (X == -1 -> make_peca(4,19,0,Num,PecaAtt), NovoDado is 0; 
-    X == 4 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    X > 0 , Y == 0 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    X == 0 , Y < 20 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    X < 3 , Y == 20 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    X == 3, Y > 14 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
-    make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
-    movePecaB(PecaAtt,NovoDado,NovaPeca).
+     X == 4 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     X > 0 , Y == 0 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     X == 0 , Y < 20 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     X < 3 , Y == 20 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     X == 3, Y > 14 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Dado - 1;
+     make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
+     movePecaB(PecaAtt,NovoDado,NovaPeca).
 
 verificaJogadaPeca(Peca, Dado, Time, Ret) :-
     get_x(Peca,X),
@@ -242,20 +238,21 @@ comePeca(Jog, X, Y, NovoJog) :-
     get_peca1(Jog, Peca1),
     get_x(Peca1, X1),
     get_y(Peca1, Y1),
+
     (X1 == X , Y1 == Y -> Num is 1;
-        Num is 2),
+     Num is 2),
     make_peca(-1,-1, 0, Num, NovaPeca),
     (X1 == X , Y1 == Y -> set_peca1(Jog, NovaPeca, NovoJog);
-         set_peca2(Jog, NovaPeca, NovoJog)).  
+     set_peca2(Jog, NovaPeca, NovoJog)).  
 
-verifica_local_armadilha(X,Y,local(X,Y),1).
-verifica_local_armadilha(_,_,_,Ret):- Ret is 0.
-verifica_armadilha(X,Y,[A1,A2,A3,A4,A5],Ret):-
-    verifica_local_armadilha(X,Y,A1,R1),
-    verifica_local_armadilha(X,Y,A2,R2),
-    verifica_local_armadilha(X,Y,A3,R3),
-    verifica_local_armadilha(X,Y,A4,R4),
-    verifica_local_armadilha(X,Y,A5,R5),
+verificaLocalArmadilha(X,Y,local(X,Y),1).
+verificaLocalArmadilha(_,_,_,Ret):- Ret is 0.
+verificaArmadilha(X,Y,[A1,A2,A3,A4,A5],Ret) :-
+    verificaLocalArmadilha(X,Y,A1,R1),
+    verificaLocalArmadilha(X,Y,A2,R2),
+    verificaLocalArmadilha(X,Y,A3,R3),
+    verificaLocalArmadilha(X,Y,A4,R4),
+    verificaLocalArmadilha(X,Y,A5,R5),
     Ret is R1+R2+R3+R4+R5.
 
 voltaPeca(Peca, Casas, "A", NovaPeca) :- voltaPecaA(Peca,Casas,NovaPeca).
@@ -267,46 +264,50 @@ voltaPecaA(Peca, Casas, NovaPeca):-
     get_y(Peca,Y),
     get_casas(Peca, Casa),
     get_num(Peca, Num),
+
     MaisX is X+1,
     MaisY is Y+1,
     MenosX is X-1,
     MenosY is Y-1,
     NovaCasa is Casa-1,
+
     (X < 4 , Y == 0 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
-    X == 4 , Y < 20 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
-    X > 0 , Y == 20 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
-    X == 0 , Y > 1 -> make_peca(X,MenosY,NovaCasa, Num,PecaAtt), NovoDado is Casas - 1;
-    make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
-    voltaPecaA(PecaAtt,NovoDado,NovaPeca).
+     X == 4 , Y < 20 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+     X > 0 , Y == 20 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+     X == 0 , Y > 1 -> make_peca(X,MenosY,NovaCasa, Num,PecaAtt), NovoDado is Casas - 1;
+     make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
+     voltaPecaA(PecaAtt,NovoDado,NovaPeca).
 
 voltaPecaB(Peca,0,Peca).
-voltaPecaB(Peca, Casas, NovaPeca):-
+voltaPecaB(Peca, Casas, NovaPeca) :-
     get_x(Peca,X),
     get_y(Peca,Y),
     get_casas(Peca, Casa),
     get_num(Peca, Num),
+
     MaisX is X+1,
     MaisY is Y+1,
     MenosX is X-1,
     MenosY is Y-1,
     NovaCasa is Casa-1,
+
     (X > 0 , Y == 20 -> make_peca(MenosX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
-    X == 0 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
-    X < 4 , Y == 0 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
-    X == 4 , Y < 19 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
-    make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
-    voltaPecaB(PecaAtt,NovoDado,NovaPeca).
+     X == 0 , Y > 0 -> make_peca(X,MenosY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+     X < 4 , Y == 0 -> make_peca(MaisX,Y,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+     X == 4 , Y < 19 -> make_peca(X,MaisY,NovaCasa,Num,PecaAtt), NovoDado is Casas - 1;
+     make_peca(X,Y,Casas,Num,PecaAtt), NovoDado is 0),
+     voltaPecaB(PecaAtt,NovoDado,NovaPeca).
 
 verifica(-1,_,6,_,1).
 verifica(-1,_,_,_,0).
 verifica(3,16,_,_,0).
 verifica(1,6,_,_,0).
 verifica(X,Y,Dado,Time,Ret) :- 
-    (X == 1 , Y+Dado > 6 , Time == "A" -> Ret is 0;
-    X == 3, Y-Dado < 14, Time == "B" -> Ret is 0;
-    Ret is 1).
+    (X == 1 , Y+Dado > 6 , Y \= 0 , Time == "A" -> Ret is 0;
+     X == 3, Y-Dado < 14, Y \= 20, Time == "B" -> Ret is 0;
+     Ret is 1).
        
-gera_matriz(Jog1, Jog2, X) :-
+geraTabuleiro(Jog1, Jog2, X) :-
     contaLinha(Jog1, Jog2, 0, 0, [], X1),
     contaLinha(Jog1, Jog2, 1, 0, [], X2),
     contaLinha(Jog1, Jog2, 2, 0, [], X3),
@@ -316,8 +317,8 @@ gera_matriz(Jog1, Jog2, X) :-
 
 contaLinha(_, _, _, 21, List, List).  
 contaLinha(Jog1, Jog2, X, Y, List, Ret) :-
-    contaLocal(Jog1, Jog2, X, Y, Local),
     NovoInd is Y+1,
+    contaLocal(Jog1, Jog2, X, Y, Local),
     append(List,[Local],NovaLista),   
     contaLinha(Jog1, Jog2, X, NovoInd, NovaLista, Aux),
     Ret = Aux.
@@ -340,67 +341,55 @@ pecaAqui(Pec, X, Y, Ret) :-
     make_peca(X,Y,Casas,Num,Peca),
     (Pec == Peca -> Ret is 1; Ret is 0).
 
-locais_armadilhas(Armadilhas):-
-%    gera_local(Local1),
-    make_local(0,6,Local1),
-%    gera_local(Local2),
-    make_local(0,7,Local2),
-%    gera_local(Local3),
-    make_local(4,14,Local3),
-%    gera_local(Local4),
-    make_local(4,13,Local4),
-    gera_local(Local5),
+locaisArmadilhas(Armadilhas) :-
+%    make_local(0,6,Local1),
+%    make_local(0,7,Local2),
+%    make_local(4,14,Local3),
+%    make_local(4,13,Local4),
+    geraLocal(Local1),
+    geraLocal(Local2),
+    geraLocal(Local3),
+    geraLocal(Local4),
+    geraLocal(Local5),
     Armadilhas = [Local1,Local2,Local3,Local4,Local5].
 
-gera_local(Local) :-
-    gera_x(X),
-    gera_y(X, Y),
+geraLocal(Local) :-
+    geraX(X),
+    geraY(X, Y),
     make_local(X,Y,Local).
 
-gera_x(X) :- random(0,5,X).
+geraX(X) :- random(0,5,X).
 
-gera_y(X, Y) :-
+geraY(X, Y) :-
     (X == 0 -> random(0,21,Y);
-        X == 4 -> random(0,21,Y);
-        escolhe(Y)).
+     X == 4 -> random(0,21,Y);
+     escolhe(Y)).
 
 escolhe(Y) :-
     random(0,2,Aux),
     (Aux == 0 -> Y = 0;
-        Y = 20).
+     Y = 20).
 
-geraArmadilha(Peca,Dado,Time,NovaPeca):-
-    random(1,6,X),
+aplicaArmadilha(Peca,Dado,Time,NovaPeca) :-
+    numArmadilha(X),
     get_casas(Peca,Casas),
     Metade is Casas/2,
-    (X == 1,Dado < 6 ->write("Armadilha: Desvio na avenida local! \n 
-    sua peça foi bloqueada por isso terá que esperar,
-    vc perdeu essa jogada se a peça antes da jogada estiver no tabuleiro\n"),
-    sleep(5),voltaPeca(Peca,Dado,Time,NovaPeca);
-    X == 2 ->write("Armadilha Greve dos caminhoneiros!!\n Gasolina Acabando e o posto a frente cobra muito caro! \n 
-    Retorne 2 espaços para abastecer no posto anterior\n"),
-    write("Sua peça voltou 2 espaços"),
-    sleep(5),
-    voltaPeca(Peca,2,Time,NovaPeca);    
-    X == 3 ->write("Armadilha: Blitz na Rodovia! \n 
-    Se tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços\n"),
-    (Dado mod 2 > 0 -> write("sua peça voltou 5 espaços\n")),
-    sleep(5),
-    voltaPeca(Peca,5,Time,NovaPeca);
-    X == 4 -> write("Armadilha: Dia de Emplacamento! \n 
-    Pague o Emplacamento e volte a metade da quantidade de casas que você andou até agora!\n"),
-    voltaPeca(Peca,Metade,Time,NovaPeca),%o 5 é pra ser casas andadas /2
-    sleep(5),
-    number_string(Metade,Formatado),
-    string_concat("Sua peça voltou ",Formatado,ToString),
-    string_concat(ToString," espacos",ToString1),
-    write(ToString1),
-    sleep(5);
-    number_string(Dado,DadoStr),
-    string_concat("Armadilha Positiva :\n Deu Sorte: Carona na abertura de ambulancia!\nSua peça se moveu de forma bônus mais ",DadoStr,ToString2),
-    string_concat(ToString2," espacos",ToString3),
-    movePeca(Peca,Dado,Time,NovaPeca),
-    write(ToString3)).
+
+    (X == 1,Dado < 6 ->write("Armadilha: Desvio na avenida local! \nSua peça foi bloqueada por isso terá que esperar, você perdeu essa jogada\n"),
+    sleep(4), voltaPeca(Peca,Dado,Time,NovaPeca);
+
+     X == 2 ->write("Armadilha Greve dos caminhoneiros!!\n Gasolina Acabando e o posto a frente cobra muito caro! \nRetorne 2 espaços para abastecer no posto anterior\n"),
+    sleep(4), voltaPeca(Peca,2,Time,NovaPeca), write("Sua peça voltou 2 espaços");
+    
+     X == 3 ->write("Armadilha: Blitz na Rodovia! \nSe tirou par no Dado, indica que você tem carteira e foi liberado, caso não, pagou multa de 5 espaços\n"),
+    (Dado mod 2 > 0 -> sleep(4), voltaPeca(Peca,5,Time,NovaPeca), write("sua peça voltou 5 espaços\n"));
+     
+     X == 4 -> write("Armadilha: Dia de Emplacamento! \nPague o Emplacamento e volte a metade da quantidade de casas que você andou até agora!\n"),
+    sleep(4), voltaPeca(Peca,Metade,Time,NovaPeca), number_string(Metade,Formatado), 
+    string_concat("Sua peça voltou ",Formatado,ToString), string_concat(ToString," espacos",ToString1), write(ToString1);
+    
+     number_string(Dado,DadoStr), string_concat("Armadilha Positiva :\n Deu Sorte: Carona na abertura de ambulancia!\nSua peça se moveu de forma bônus mais ",DadoStr,ToString2),
+    string_concat(ToString2," espacos",ToString3), movePeca(Peca,Dado,Time,NovaPeca), sleep(4), write(ToString3)).
 
 encerrou(Bot, TimeVencedor) :-
     
@@ -426,7 +415,7 @@ vez(Bot, Vez) :-
 
 pecaBot(X) :- random(1,3,X).
   
-dado(X) :- random(1,7,X).
+dado(X) :- random(5,7,X).
 
 numArmadilha(X) :- random(1,6,X).
 
