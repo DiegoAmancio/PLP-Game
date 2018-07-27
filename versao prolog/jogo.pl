@@ -421,10 +421,10 @@ numArmadilha(X) :- random(1,6,X).
 
 toStringCaso2(String,Index,Saida) :- (Index < 10 -> string_concat("0",String,Saida);string_concat(String,"",Saida)).
     
-linhaTabuleiro(_,21,-2,Resposta) :- write(Resposta).
-linhaTabuleiro(_,21,-1,Resposta) :- write(Resposta).
-linhaTabuleiro(_,21,9,Resposta) :- write(Resposta).
-linhaTabuleiro(_,21,_,Resposta) :- string_concat(Resposta,"|",Saida),write(Saida).
+linhaTabuleiro(_,21,-2,Resposta) :- write(Resposta),write("\033[0m").
+linhaTabuleiro(_,21,-1,Resposta) :- write(Resposta),write("\033[0m").
+linhaTabuleiro(_,21,9,Resposta) :- write(Resposta),write("\033[0m").
+linhaTabuleiro(_,21,_,Resposta) :- string_concat(Resposta,"|",Saida),write(Saida),write("\033[0m").
 
 linhaTabuleiro(_,Index,-2,Resposta) :- number_string(Index,ToString1),toStringCaso2(ToString1,Index,ToString2),string_concat(ToString2," ",ToString),string_concat(Resposta,ToString, Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,-2,Saida).
 linhaTabuleiro(_,Index,-1,Resposta) :- string_concat(Resposta,"__ ", Saida),IndexP is Index + 1,linhaTabuleiro(_,IndexP,-1,Saida).
@@ -513,7 +513,7 @@ printaCaixa(Tabuleiro, Jog) :-
     (X2 == -1 -> write("   "),write(Time),write("2   "),write("\033[0m"),write("  "),write(Time),write("2: base"),nl;
     write(Cor),write("        "),write("\033[0m"),write("  "), write(Time), write("2: x: "), write(X2), write("; y: "), write(Y2),nl),
     write(Cor),write("        "),write("\033[0m"),nl.
-
+printNumeroForeAndBackground(Numero,Cor):-string_concat("0",Numero,NConcat),write(NConcat), write("\033[30m"),write(Cor).
 printTabuleiro(Tabuleiro) :- 
     printaCaixa(Tabuleiro, 1),
     
@@ -526,62 +526,35 @@ printTabuleiro(Tabuleiro) :-
 
     write("   "),
     linhaTabuleiro(1,0,-2,""),nl,
-
-    write("00"),
-    write("\033[30m"),
-    write("\033[47m"),
+	printForeAndBackground(0,"\033[47m"),
+   
     linhaTabuleiro(L1,0,0,""),nl,
-
-    write("\033[0m"),
-    write("00"),
-    write("\033[30m"),
-    write("\033[47m"),
+    printForeAndBackground(0,"\033[47m"),
+    
     linhaTabuleiro([],0,1,""),nl,
-
-    write("\033[0m"),
-    write("01"),
-    write("\033[30m"),
-    write("\033[42m"),
+	printForeAndBackground(1,"\033[42m"),
+    
     linhaTabuleiro(L2,0,2,""),nl,
-
-    write("\033[0m"),
-    write("01"),
-    write("\033[30m"),
-    write("\033[42m"),
+	printForeAndBackground(1,"\033[42m"),
+    
     linhaTabuleiro([],0,3,""),nl,
-
-    write("\033[0m"),
-    write("02"),
+	printForeAndBackground(2,"\033[47m"),
+    
     linhaTabuleiro(L3,0,4,""),nl,
-
-     write("\033[0m"),
-    write("02"),
-    write("\033[30m"),
+	printForeAndBackground(2,"\033[47m"),
+    
     linhaTabuleiro([],0,5,""),nl,
-
-    write("\033[0m"),
-    write("03"),
-    write("\033[30m"),
-    write("\033[47m"), 
+	
+    printForeAndBackground(3,"\033[47m"),
     linhaTabuleiro(L4,0,6,""),nl,
-
-    write("\033[0m"),
-    write("03"),
-    write("\033[30m"),
-    write("\033[47m"), 
+	
+    printForeAndBackground(3,"\033[47m"),
     linhaTabuleiro([],0,7,""),nl,
-
-    write("\033[0m"),
-    write("04"),
-    write("\033[30m"),
-    write("\033[47m"),
+	
+    printForeAndBackground(4,"\033[47m"),
     linhaTabuleiro(L5,0,0,""),nl,
-
-    write("\033[0m"),
-    write("04"),
-    write("\033[30m"),
-    write("\033[47m"),
+	
+    printForeAndBackground(4,"\033[47m"),
     linhaTabuleiro([],0,1,""),nl,
-
-    write("\033[0m"),
+    
     printaCaixa(Tabuleiro,2).
